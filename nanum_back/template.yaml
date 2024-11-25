@@ -3,12 +3,33 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   nanum_back
 
-  Sample SAM Template for nanum_back
+  모든 자취생을 위한 나눔장 프로젝트!
+  항상 안전하게 테스트하기!
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 3
+Parameters:
+  TABLENAME:
+    Type: String
+    Description: The DynamoDB table for storing Person information.
+    Default: "PersonTable"
+
+  REGIONNAME:
+    Type: String
+    Description: Default region for deployment.
+    Default: "us-east-1"
+
+  AWSENVNAME:
+    Type: String
+    Description: AWS Environment where code is being executed (AWS_SAM_LOCAL or AWS).
+    Default: "AWS_SAM_LOCAL"
+
+  DEVENVNAME:
+    Type: String
+    Description: Developer environment where code is being executed (OSX, Windows, or Linux).
+    Default: "OSX"
 
 Resources:
   HelloWorldFunction:
@@ -55,6 +76,50 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - app.ts
+  Resources:
+    PersonTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: !Ref TABLENAME
+        AttributeDefinitions:
+          - AttributeName: Id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: Id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+Person:
+  Type: "AWS::Serverless::Function"
+  Properties:
+    Runtime: python3.6
+    Handler: Person.lambda_handler
+    CodeUri: ./src
+    MemorySize: 128
+    Timeout: 300
+    Description: "A simple serverless application to demonstrate GET/PUT using DynamoDB Local."
+    Policies: AmazonDynamoDBFullAccess
+    Environment:
+      Variables:
+        TABLE: !Ref TABLENAME
+        REGION: !Ref REGIONNAME
+        AWSENV: !Ref AWSENVNAME
+        DEVENV: !Ref DEVENVNAME
+
+    Events:
+      PutPerson:
+        Type: Api
+        Properties:
+          Path: /
+          Method: POST
+
+      GetPerson:
+        Type: Api
+        Properties:
+          Path: /
+          Method: GET
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
