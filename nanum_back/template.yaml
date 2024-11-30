@@ -16,20 +16,20 @@ Parameters:
     Description: The DynamoDB table for storing Person information.
     Default: "PersonTable"
 
-  REGIONNAME:
-    Type: String
-    Description: Default region for deployment.
-    Default: "us-east-1"
+  # REGIONNAME:
+  #   Type: String
+  #   Description: Default region for deployment.
+  #   Default: "us-east-1"
 
-  AWSENVNAME:
-    Type: String
-    Description: AWS Environment where code is being executed (AWS_SAM_LOCAL or AWS).
-    Default: "AWS_SAM_LOCAL"
+  # AWSENVNAME:
+  #   Type: String
+  #   Description: AWS Environment where code is being executed (AWS_SAM_LOCAL or AWS).
+  #   Default: "AWS_SAM_LOCAL"
 
-  DEVENVNAME:
-    Type: String
-    Description: Developer environment where code is being executed (OSX, Windows, or Linux).
-    Default: "OSX"
+  # DEVENVNAME:
+  #   Type: String
+  #   Description: Developer environment where code is being executed (OSX, Windows, or Linux).
+  #   Default: "OSX"
 
 Resources:
   HelloWorldFunction:
@@ -76,50 +76,70 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - app.ts
-  Resources:
-    PersonTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: !Ref TABLENAME
-        AttributeDefinitions:
-          - AttributeName: Id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: Id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+  postPersonFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: event-func/pearson
+      Handler: post.postTestHandler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Timeout: 20
+      MemorySize: 1024 # This increases the memory allocation to 1024 MB (1 GB)
+      Events:
+        CreatePerson:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /person
+            Method: post
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - post.ts
+        # External:
+        #   - aws-sdk
+  getPersonFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event-func/pearson
+      Handler: get.getPersonHandler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      Timeout: 20
+      MemorySize: 1024 # This increases the memory allocation to 1024 MB (1 GB)
+      Events:
+        GetPerson:
+          Type: Api
+          Properties:
+            Path: /person/{id} # Path with name parameter
+            Method: get
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - get.ts
 
-Person:
-  Type: "AWS::Serverless::Function"
-  Properties:
-    Runtime: python3.6
-    Handler: Person.lambda_handler
-    CodeUri: ./src
-    MemorySize: 128
-    Timeout: 300
-    Description: "A simple serverless application to demonstrate GET/PUT using DynamoDB Local."
-    Policies: AmazonDynamoDBFullAccess
-    Environment:
-      Variables:
-        TABLE: !Ref TABLENAME
-        REGION: !Ref REGIONNAME
-        AWSENV: !Ref AWSENVNAME
-        DEVENV: !Ref DEVENVNAME
-
-    Events:
-      PutPerson:
-        Type: Api
-        Properties:
-          Path: /
-          Method: POST
-
-      GetPerson:
-        Type: Api
-        Properties:
-          Path: /
-          Method: GET
+  PersonTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref TABLENAME
+      AttributeDefinitions:
+        - AttributeName: Id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
