@@ -11,87 +11,51 @@ Globals:
   Function:
     Timeout: 3
 Parameters:
-  TABLENAME:
+  CoBuyingTableName:
     Type: String
-    Description: The DynamoDB table for storing Person information.
-    Default: "PersonTable"
+    Description: 공구방 테이블을 위한 테이블
+    Default: "CoBuyingTable"
 
-  # REGIONNAME:
-  #   Type: String
-  #   Description: Default region for deployment.
-  #   Default: "us-east-1"
+  REGIONNAME:
+    Type: String
+    Description: Default region for deployment.
+    Default: "ap-northeast-2"
 
-  # AWSENVNAME:
-  #   Type: String
-  #   Description: AWS Environment where code is being executed (AWS_SAM_LOCAL or AWS).
-  #   Default: "AWS_SAM_LOCAL"
+  AWSENVNAME:
+    Type: String
+    Description: AWS Environment where code is being executed (AWS_SAM_LOCAL or AWS).
+    Default: "AWS_SAM_LOCAL"
 
-  # DEVENVNAME:
-  #   Type: String
-  #   Description: Developer environment where code is being executed (OSX, Windows, or Linux).
-  #   Default: "OSX"
+  DEVENVNAME:
+    Type: String
+    Description: Developer environment where code is being executed (OSX, Windows, or Linux).
+    Default: "OSX"
 
 Resources:
-  HelloWorldFunction:
+  CreateCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 공구방 생성 함수
     Properties:
-      CodeUri: event-func/
-      Handler: app.lambdaHandler
+      CodeUri: event-func/cobuying
+      Handler: post.createCoBuyingHandler
       Runtime: nodejs20.x
       Architectures:
         - x86_64
-      Events:
-        HelloWorld:
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        CreateCoBuying:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /hello
-            Method: get
-    Metadata: # Manage esbuild properties
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints:
-          - app.ts
-  TestWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: event-func/
-      Handler: app.lambdaTestHandler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /helloTest
-            Method: get
-    Metadata: # Manage esbuild properties
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints:
-          - app.ts
-  postPersonFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Properties:
-      CodeUri: event-func/pearson
-      Handler: post.postTestHandler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      Timeout: 20
-      MemorySize: 1024 # This increases the memory allocation to 1024 MB (1 GB)
-      Events:
-        CreatePerson:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /person
-            Method: post
+          Properties: # 엔드포인트: POST /co-buying
+            Path: /co-buying # API Gateway 경로
+            Method: post # HTTP 메서드
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+      Environment:
+        Variables:
+          TABLE: !Ref CoBuyingTableName
+          REGION: !Ref REGIONNAME
+          AWSENV: !Ref AWSENVNAME
+          DEVENV: !Ref DEVENVNAME
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -100,37 +64,11 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - post.ts
-        # External:
-        #   - aws-sdk
-  getPersonFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: event-func/pearson
-      Handler: get.getPersonHandler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      Timeout: 20
-      MemorySize: 1024 # This increases the memory allocation to 1024 MB (1 GB)
-      Events:
-        GetPerson:
-          Type: Api
-          Properties:
-            Path: /person/{id} # Path with name parameter
-            Method: get
-    Metadata: # Manage esbuild properties
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints:
-          - get.ts
 
-  PersonTable:
+  CoBuyingTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Ref TABLENAME
+      TableName: !Ref CoBuyingTableName
       AttributeDefinitions:
         - AttributeName: Id
           AttributeType: S
@@ -145,12 +83,12 @@ Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
+  CreateCoBuyingApi:
     Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/co-buying/"
+  CreateCoBuyingFunction:
     Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt HelloWorldFunction.Arn
-  HelloWorldFunctionIamRole:
+    Value: !GetAtt CreateCoBuyingFunction.Arn
+  CreateCoBuyingFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
-    Value: !GetAtt HelloWorldFunctionRole.Arn
+    Value: !GetAtt CreateCoBuyingFunctionRole.Arn

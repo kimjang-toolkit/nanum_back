@@ -17,6 +17,11 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
+stack_name = "nanum-back"
+s3_prefix = "nanum-back"
+region = "ap-northeast-2"
+image_repositories = []
+parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\""
 
 [default.package.parameters]
 resolve_s3 = true

@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: 나눔장 프로젝트 IAM 역할 및 정책
+
+Resources:
+  # 공구 관련 Lambda 함수를 위한 기본 역할
+  postCoBuyingFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}CoBuyingLambdaRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource:
+                  - !ImportValue CoBuyingTableArn
+                  - !Join
+                    - ""
+                    - - !ImportValue CoBuyingTableArn
+                      - "/index/*"
+
+  # API Gateway 관련 역할
+  ApiGatewayRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${AWS::StackName}ApiGatewayRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+
+Outputs:
+  PostCoBuyingFunctionRoleArn:
+    Description: "공구 Lambda 함수 실행 Role ARN"
+    Value: !GetAtt postCoBuyingFunctionRole.Arn
+    Export:
+      Name: !Sub ${AWS::StackName}PostCoBuyingFunctionRoleArn
+
+  ApiGatewayRoleArn:
+    Description: "API Gateway Role ARN"
+    Value: !GetAtt ApiGatewayRole.Arn
+    Export:
+      Name: !Sub ${AWS::StackName}ApiGatewayRoleArn
