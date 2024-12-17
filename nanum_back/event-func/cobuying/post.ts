@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 import { CoBuyingCreateInput, CoBuyingCreateOutput } from './types';
+import { CoBuyingStatus } from './cobuyingStatus';
 
 const validateCoBuyingInput = (input: CoBuyingCreateInput): void => {
     if (!input.productName) {
@@ -22,7 +23,7 @@ const createCoBuyingItem = async (input: CoBuyingCreateInput): Promise<CoBuyingC
     const item = {
         id: uuidv4(),
         createdAt: timestamp,
-        status: 'OPEN',
+        status: CoBuyingStatus.PREPARING,
         ...input,
     };
 
