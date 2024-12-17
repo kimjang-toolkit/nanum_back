@@ -1,10 +1,10 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
-import { CoBuyingCreateInput, CoBuyingCreateOutput } from './types';
+import { CoBuyingCreateRes, CoBuyingCreateReq } from './types';
 import { CoBuyingStatus } from './cobuyingStatus';
 
-const validateCoBuyingInput = (input: CoBuyingCreateInput): void => {
+const validateCoBuyingReq = (input: CoBuyingCreateReq): void => {
     if (!input.productName) {
         throw new Error('필수 필드가 누락되었습니다.');
     }
@@ -16,7 +16,7 @@ const validateCoBuyingInput = (input: CoBuyingCreateInput): void => {
  * @param input 공구글 생성 입력 데이터
  * @returns 공구글 생성 출력 데이터
  */
-const createCoBuyingItem = async (input: CoBuyingCreateInput): Promise<CoBuyingCreateOutput> => {
+const createCoBuyingItem = async (input: CoBuyingCreateReq): Promise<CoBuyingCreateRes> => {
     const dynamodb = new DynamoDB.DocumentClient();
     const timestamp = new Date().toISOString();
 
@@ -27,14 +27,14 @@ const createCoBuyingItem = async (input: CoBuyingCreateInput): Promise<CoBuyingC
         ...input,
     };
 
-    await dynamodb
-        .put({
-            TableName: 'cobuying',
-            Item: item,
-        })
-        .promise();
+    // await dynamodb
+    //     .put({
+    //         TableName: 'cobuying',
+    //         Item: item,
+    //     })
+    //     .promise();
 
-    const outputItem: CoBuyingCreateOutput = {
+    const outputItem: CoBuyingCreateRes = {
         id: item.id,
         productName: item.productName,
         ownerName: item.ownerName,
@@ -54,10 +54,10 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
             };
         }
 
-        const input: CoBuyingCreateInput = JSON.parse(event.body);
-
+        const input: CoBuyingCreateReq = JSON.parse(event.body);
+        console.log('input : ', input);
         try {
-            validateCoBuyingInput(input);
+            validateCoBuyingReq(input);
         } catch (error) {
             return {
                 statusCode: 400,
@@ -66,7 +66,7 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
         }
 
         const item = await createCoBuyingItem(input);
-
+        console.log('item ', item);
         return {
             statusCode: 201,
             body: JSON.stringify(item),

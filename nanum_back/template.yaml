@@ -39,6 +39,8 @@ Resources:
       CodeUri: event-func/cobuying
       Handler: post.createCoBuyingHandler
       Runtime: nodejs20.x
+      MemorySize: 1024
+      Timeout: 10
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성

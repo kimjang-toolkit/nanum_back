@@ -1,4 +1,4 @@
-export interface CoBuyingCreateInput {
+export interface CoBuyingCreateReq {
     productName: string; // 공구글의 이름
     totalPrice: number; // 공구할 상품 총액
     productLink?: string; // 제품 링크 (optional)
@@ -14,7 +14,7 @@ export interface CoBuyingCreateInput {
     ownerPwd: string; // 공구 비밀번호
 }
 
-export interface CoBuyingCreateOutput {
+export interface CoBuyingCreateRes {
     id: string;
     productName: string;
     ownerName: string;
