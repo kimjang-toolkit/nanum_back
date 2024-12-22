@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: 나눔장 프로젝트 Lambda 함수들
+
+Parameters:
+  IAMRoleArn:
+    Type: String
+    Description: Lambda 함수를 위한 IAM Role ARN
+
+Resources:
+  postCoBuyingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event-func/cobuying
+      Handler: post.createCoBuyingHandler
+      Runtime: nodejs20.x
+      Role: !Ref IAMRoleArn
+      Architectures:
+        - x86_64
+      Timeout: 10
+      MemorySize: 1024
+      Events:
+        CreateCoBuying:
+          Type: Api
+          Properties:
+            Path: /co-buying
+            Method: post
+
+Outputs:
+  CreateCoBuyingApi:
+    Description: "공구 생성 API Gateway 엔드포인트 URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cobuying"
+  CreateCoBuyingFunction:
+    Description: "공구 생성 Lambda 함수 ARN"
+    Value: !GetAtt postCoBuyingFunction.Arn

@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  nanum_back
+
+  모든 자취생을 위한 나눔장 프로젝트!
+  항상 안전하게 테스트하기!
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+Parameters:
+  S3BucketName:
+    Type: String
+    Description: S3 bucket name
+    Default: aws-sam-cli-managed-default-samclisourcebucket-wwnykfo1yoib
+  TableStackKey:
+    Type: String
+    Description: Path to the tables stack template
+    Default: infrastructure/tables.yaml
+  IAMStackKey:
+    Type: String
+    Description: Path to the IAM stack template
+    Default: infrastructure/iam.yaml
+
+Resources:
+  TableStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${S3BucketName}.s3.${AWS::Region}.amazonaws.com/${TableStackKey}
+
+  IAMStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${S3BucketName}.s3.${AWS::Region}.amazonaws.com/${IAMStackKey}
+
+  postCoBuyingFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: event-func/cobuying
+      Handler: post.createCoBuyingHandler
+      Runtime: nodejs20.x
+      Role: !Ref IAMRoleArn
+      Architectures:
+        - x86_64
+      Timeout: 10
+      MemorySize: 1024
+      Events:
+        CreateCoBuying:
+          Type: Api
+          Properties:
+            Path: /co-buying
+            Method: post
+
+Outputs:
+  CreateCoBuyingApi:
+    Description: "공구 생성 API Gateway 엔드포인트 URL"
+    Value: !GetAtt FunctionStack.Outputs.CreateCoBuyingApi
