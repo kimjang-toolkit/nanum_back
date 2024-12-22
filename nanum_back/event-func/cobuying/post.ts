@@ -27,12 +27,12 @@ const createCoBuyingItem = async (input: CoBuyingCreateReq): Promise<CoBuyingCre
         ...input,
     };
 
-    // await dynamodb
-    //     .put({
-    //         TableName: 'cobuying',
-    //         Item: item,
-    //     })
-    //     .promise();
+    await dynamodb
+        .put({
+            TableName: 'cobuying',
+            Item: item,
+        })
+        .promise();
 
     const outputItem: CoBuyingCreateRes = {
         id: item.id,
