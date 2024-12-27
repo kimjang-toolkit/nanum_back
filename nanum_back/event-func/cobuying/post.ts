@@ -1,8 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { DynamoDB } from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
-import { CoBuyingCreateRes, CoBuyingCreateReq } from './types';
-import { CoBuyingStatus } from './cobuyingStatus';
+import { CobuyingStatus, CoBuyingCreateReq, CoBuyingSimple } from '@api-interface/cobuying';
 
 const validateCoBuyingReq = (input: CoBuyingCreateReq): void => {
     if (!input.productName) {
@@ -16,14 +15,14 @@ const validateCoBuyingReq = (input: CoBuyingCreateReq): void => {
  * @param input 공구글 생성 입력 데이터
  * @returns 공구글 생성 출력 데이터
  */
-const createCoBuyingItem = async (input: CoBuyingCreateReq): Promise<CoBuyingCreateRes> => {
+const createCoBuyingItem = async (input: CoBuyingCreateReq): Promise<CoBuyingSimple> => {
     const dynamodb = new DynamoDB.DocumentClient();
     const timestamp = new Date().toISOString();
 
     const item = {
         id: uuidv4(),
         createdAt: timestamp,
-        status: CoBuyingStatus.PREPARING,
+        status: CobuyingStatus.PREPARING,
         ...input,
     };
 
@@ -34,7 +33,7 @@ const createCoBuyingItem = async (input: CoBuyingCreateReq): Promise<CoBuyingCre
         })
         .promise();
 
-    const outputItem: CoBuyingCreateRes = {
+    const outputItem: CoBuyingSimple = {
         id: item.id,
         productName: item.productName,
         ownerName: item.ownerName,
