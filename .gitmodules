@@ -1,0 +1,3 @@
+[submodule "nanum_back/api-interface"]
+	path = nanum_back/api-interface
+	url = https://github.com/kimjang-toolkit/kimjang-toolkit-gong-gong99-api-interface.git
