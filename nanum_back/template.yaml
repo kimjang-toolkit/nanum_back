@@ -43,6 +43,13 @@ Resources:
       Timeout: 10
       Architectures:
         - x86_64
+      # Environment:
+      #   Variables:
+      #     DYNAMO_DB_URL:
+      #       !If
+      #         - IsLocal
+      #         - "http://localhost:8000"  # 로컬 DynamoDB 엔드포인트
+      #         - "https://dynamodb.ap-northeast-2.amazonaws.com"  # 배포 후 AWS DynamoDB 엔드포인트
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
         CreateCoBuying:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -94,3 +101,5 @@ Outputs:
   CreateCoBuyingFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt CreateCoBuyingFunctionRole.Arn
+# Conditions:
+#   IsLocal: !Equals [!Ref "AWS::Region", "ap-northeast-2"] # 로컬 환경을 판별하는 조건
