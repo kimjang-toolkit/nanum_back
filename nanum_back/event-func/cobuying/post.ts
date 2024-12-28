@@ -1,47 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { DynamoDB } from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';
-import { CobuyingStatus, CoBuyingCreateReq, CoBuyingSimple } from '@api-interface/cobuying';
+import { CoBuyingCreateReq } from '@api-interface/cobuying';
+import { saveCoBuying } from './dao';
 
 const validateCoBuyingReq = (input: CoBuyingCreateReq): void => {
     if (!input.productName) {
         throw new Error('필수 필드가 누락되었습니다.');
     }
-};
-
-/**
- * DB에 공구글 데이터 생성
- *
- * @param input 공구글 생성 입력 데이터
- * @returns 공구글 생성 출력 데이터
- */
-const createCoBuyingItem = async (input: CoBuyingCreateReq): Promise<CoBuyingSimple> => {
-    const dynamodb = new DynamoDB.DocumentClient();
-    const timestamp = new Date().toISOString();
-
-    const item = {
-        id: uuidv4(),
-        createdAt: timestamp,
-        status: CobuyingStatus.PREPARING,
-        ...input,
-    };
-
-    await dynamodb
-        .put({
-            TableName: 'cobuying',
-            Item: item,
-        })
-        .promise();
-
-    const outputItem: CoBuyingSimple = {
-        id: item.id,
-        productName: item.productName,
-        ownerName: item.ownerName,
-        deadline: item.deadline,
-        createdAt: item.createdAt,
-    };
-
-    return outputItem;
 };
 
 export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -64,7 +28,7 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
             };
         }
 
-        const item = await createCoBuyingItem(input);
+        const item = await saveCoBuying(input);
         console.log('item ', item);
         return {
             statusCode: 201,
