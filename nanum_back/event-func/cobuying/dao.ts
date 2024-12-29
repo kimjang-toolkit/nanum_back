@@ -9,8 +9,7 @@ import {
     CoBuyingPost,
 } from '@api-interface/cobuying';
 import { Attendee } from '@api-interface/user';
-
-// const dynamodb = new DynamoDB.DocumentClient();
+import { insertCoBuying } from './query';
 
 /**
  * DB에 공구글 데이터 생성
@@ -20,6 +19,10 @@ import { Attendee } from '@api-interface/user';
  * @returns 공구글 생성 출력 데이터
  */
 export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSimple> => {
+    // DB 엔드포임트 확인
+    console.log(process.env.DYNAMO_DB_URL);
+    console.log(process.env.REGION);
+
     let cobuying: CoBuyingPost;
     if (input.type === 'quantity') {
         // 수량나눔
@@ -51,15 +54,8 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
     //     })
     //     .promise();
 
-    const outputItem: CoBuyingSimple = {
-        id: cobuying.id,
-        productName: cobuying.productName,
-        ownerName: cobuying.ownerName,
-        deadline: cobuying.deadline,
-        createdAt: cobuying.createdAt,
-    };
-
-    return outputItem;
+    const result: Promise<CoBuyingSimple> = insertCoBuying(cobuying);
+    return result;
 };
 
 function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {

@@ -32,6 +32,7 @@ watch = true
 
 [default.local_start_api.parameters]
 warm_containers = "EAGER"
+env_vars = "config/dev.json"
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
