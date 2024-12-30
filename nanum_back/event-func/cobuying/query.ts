@@ -74,3 +74,43 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
         throw new Error('공구글 저장에 실패했습니다.');
     }
 };
+
+export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => {
+    // DynamoDB에서 'id'로 공구글 조회
+    const params = {
+        TableName: process.env.CoBuyingTableName || '', // 테이블 이름 (환경 변수에서 가져옴)
+        Key: {
+            id: id, // 파라미터로 받은 ID로 조회
+        },
+    };
+
+    try {
+        // DynamoDB에서 해당 id에 해당하는 공구글을 조회
+        const result = await dynamoDB.get(params).promise();
+
+        // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
+        if (!result.Item) {
+            throw new Error('찾으시는 공구글이 존재하지 않아요');
+        }
+
+        // 조회된 공구글 데이터를 CoBuyingSimple 인터페이스로 매핑
+        const cobuying = result.Item as CoBuyingPost;
+
+        // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
+        return {
+            id: cobuying.id,
+            productName: cobuying.productName,
+            ownerName: cobuying.ownerName,
+            totalPrice: cobuying.totalPrice,
+            attendeeCount: cobuying.attendeeCount,
+            deadline: cobuying.deadline,
+            status: cobuying.status,
+            createdAt: cobuying.createdAt,
+            memo: cobuying.memo || null,
+            attendeeList: cobuying.attendeeList || [],
+        } as CoBuyingSimple;
+    } catch (error) {
+        // DB 조회 에러 처리
+        throw new Error('DB 조회 중 문제가 발생했습니다.');
+    }
+};

@@ -47,7 +47,7 @@ Resources:
         CreateCoBuying:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /co-buying
-            Path: /co-buying # API Gateway 경로
+            Path: /api/co-buying # API Gateway 경로
             Method: post # HTTP 메서드
       Policies:
         - DynamoDBCrudPolicy:
@@ -66,6 +66,41 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - post.ts
+
+  GetCoBuyingByIdFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 공구방 생성 함수
+    Properties:
+      CodeUri: event-func/cobuying
+      Handler: get.getCoBuyingByIdHandler
+      Runtime: nodejs20.x
+      MemorySize: 1024
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        CreateCoBuying:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties: # 엔드포인트: POST /co-buying
+            Path: /api/co-buying/{id} # API Gateway 경로
+            Method: get # HTTP 메서드
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+      Environment:
+        Variables:
+          TABLE: !Ref CoBuyingTableName
+          REGION: !Ref REGIONNAME
+          AWSENV: !Ref AWSENVNAME
+          DEVENV: !Ref DEVENVNAME
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - get.ts
 
   CoBuyingTable:
     Type: AWS::DynamoDB::Table
