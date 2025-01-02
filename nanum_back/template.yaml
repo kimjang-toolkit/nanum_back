@@ -33,7 +33,6 @@ Parameters:
   DYNAMO_DB_URL:
     Type: String
     Description: 실행 환경에 따른 DynamoDB Endpoint
-    Default: "https://dynamodb.ap-northeast-2.amazonaws.com"
 
 Resources:
   CreateCoBuyingFunction:
@@ -44,7 +43,7 @@ Resources:
       Handler: post.createCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 1024
-      Timeout: 20
+      Timeout: 200
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
@@ -58,10 +57,11 @@ Resources:
             TableName: !Ref CoBuyingTableName
       Environment:
         Variables:
-          TABLE: !Ref CoBuyingTableName
+          CoBuyingTableName: !Ref CoBuyingTableName
           REGION: !Ref REGIONNAME
           AWSENV: !Ref AWSENVNAME
           DEVENV: !Ref DEVENVNAME
+          DYNAMO_DB_URL: !Ref DYNAMODBURL
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -79,7 +79,7 @@ Resources:
       Handler: get.getCoBuyingByIdHandler
       Runtime: nodejs20.x
       MemorySize: 1024
-      Timeout: 20
+      Timeout: 200
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
@@ -93,11 +93,11 @@ Resources:
             TableName: !Ref CoBuyingTableName
       Environment:
         Variables:
-          TABLE: !Ref CoBuyingTableName
+          CoBuyingTableName: !Ref CoBuyingTableName
           REGION: !Ref REGIONNAME
           AWSENV: !Ref AWSENVNAME
           DEVENV: !Ref DEVENVNAME
-          DYNAMO_DB_URL: !Ref DYNAMO_DB_URL
+          DYNAMO_DB_URL: !Ref DYNAMODBURL
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -114,16 +114,22 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
-        - AttributeName: productName
-          AttributeType: S # productName을 정렬 키로 사용
       KeySchema:
         - AttributeName: id
           KeyType: HASH # 파티션 키
-        - AttributeName: productName
-          KeyType: RANGE # 정렬 키
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
+      # GlobalSecondaryIndexes:
+      #   IndexName: CoBuyingIndex
+      #   KeySchema:
+      #     - AttributeName: ProductId
+      #       KeyType: RANGE # GSI 정렬 키로 ProductId 사용
+      #   Projection:
+      #     ProjectionType: ALL
+      #   ProvisionedThroughput:
+      #     ReadCapacityUnits: 5
+      #     WriteCapacityUnits: 5
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

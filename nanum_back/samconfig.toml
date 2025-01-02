@@ -21,7 +21,7 @@ stack_name = "nanum-back"
 s3_prefix = "nanum-back"
 region = "ap-northeast-2"
 image_repositories = []
-parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMO_DB_URL=\"ap-northeast-2\" "
+parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMO_DB_URL=\"https://dynamodb.ap-northeast-2.amazonaws.com\""
 disable_rollback = true
 
 [default.package.parameters]
@@ -32,7 +32,7 @@ watch = true
 
 [default.local_start_api.parameters]
 warm_containers = "EAGER"
-env_vars = "config/dev.json"
+parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"http://localhost:3300\" "
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"

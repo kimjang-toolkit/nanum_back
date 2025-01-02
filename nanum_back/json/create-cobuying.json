@@ -1,50 +1,19 @@
 {
-  "TableName": "NanumjangTable",
-
- "AttributeDefinitions": [
-        {
-          "AttributeName": "id",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "productName",
-          "AttributeType": "S"
-        },
-        {
-          "AttributeName": "type",
-          "AttributeType": "S"
-        }
-      ],
-      "KeySchema": [
-        {
-          "AttributeName": "id",
-          "KeyType": "HASH"
-        },
-        {
-          "AttributeName": "productName",
-          "KeyType": "RANGE"
-        }
-      ],
+"TableName": "CoBuyingTable",
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "id",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+    }
+  ],
   "ProvisionedThroughput": {
-        "ReadCapacityUnits": 5,
-        "WriteCapacityUnits": 5
-      },
-  "GlobalSecondaryIndexes": [
-        {
-          "IndexName": "ProductNameIndex",
-          "KeySchema": [
-            {
-              "AttributeName": "productName",
-              "KeyType": "HASH"
-            }
-          ],
-          "Projection": {
-            "ProjectionType": "ALL"
-          },
-          "ProvisionedThroughput": {
-            "ReadCapacityUnits": 1,
-            "WriteCapacityUnits": 1
-          }
-        }
-      ]
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  }
 }

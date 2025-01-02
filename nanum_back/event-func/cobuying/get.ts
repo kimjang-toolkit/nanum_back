@@ -13,8 +13,8 @@ export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promi
                 }),
             };
         }
-
-        const cobuying = queryCoBuyingById(pathparams.id);
+        console.log('id : ' + pathparams.id);
+        const cobuying = await queryCoBuyingById(pathparams.id);
 
         return {
             statusCode: 200,
@@ -25,7 +25,7 @@ export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promi
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: '공구 생성 중 오류가 발생했습니다.',
+                message: '공구 조회 중 오류가 발생했습니다.',
             }),
         };
     }

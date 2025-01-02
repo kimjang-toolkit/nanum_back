@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 import { CoBuyingSimple, CoBuyingPost } from '@api-interface/cobuying';
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient({
-    endpoint: process.env.DYNAMO_DB_URL, // 로컬 DynamoDB URL (환경 변수로 설정)
+    endpoint: process.env.DYNAMO_DB_URL || 'http://localhost:3300', // 로컬 DynamoDB URL (환경 변수로 설정)
     region: process.env.REGION, // DynamoDB 리전 설정 (필요시 수정)
 });
 
@@ -13,6 +13,9 @@ const dynamoDBLowLevel = new AWS.DynamoDB({
 
 export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSimple> => {
     const timestamp = new Date().toISOString();
+
+    console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
+    console.log('조회 테이블 URL : ' + process.env.DYNAMO_DB_URL);
 
     // DynamoDB에 삽입할 데이터 맵핑
     const params: AWS.DynamoDB.DocumentClient.PutItemInput = {
@@ -76,6 +79,18 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
 };
 
 export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => {
+    console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
+    console.log('조회 테이블 URL : ' + process.env.DYNAMO_DB_URL);
+    // DynamoDB와 연결 상태 확인
+    try {
+        // DynamoDB 연결 상태 점검
+        await dynamoDBLowLevel.describeTable({ TableName: process.env.CoBuyingTableName || 'CoBuyingTable' }).promise();
+        console.log('DynamoDB 연결 성공');
+    } catch (error) {
+        console.error('DynamoDB 연결 실패:', error);
+        throw new Error('DynamoDB와의 연결에 실패했습니다. ');
+    }
+
     // DynamoDB에서 'id'로 공구글 조회
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름 (환경 변수에서 가져옴)
@@ -92,7 +107,7 @@ export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => 
         if (!result.Item) {
             throw new Error('찾으시는 공구글이 존재하지 않아요');
         }
-
+        console.log('result : \n' + result);
         // 조회된 공구글 데이터를 CoBuyingSimple 인터페이스로 매핑
         const cobuying = result.Item as CoBuyingPost;
 
@@ -109,8 +124,10 @@ export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => 
             memo: cobuying.memo || null,
             attendeeList: cobuying.attendeeList || [],
         } as CoBuyingSimple;
-    } catch (error) {
-        // DB 조회 에러 처리
-        throw new Error('DB 조회 중 문제가 발생했습니다.');
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error(error);
+        }
+        throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
 };
