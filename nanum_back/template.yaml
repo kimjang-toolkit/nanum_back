@@ -30,6 +30,10 @@ Parameters:
     Type: String
     Description: Developer environment where code is being executed (OSX, Windows, or Linux).
     Default: "OSX"
+  DYNAMO_DB_URL:
+    Type: String
+    Description: 실행 환경에 따른 DynamoDB Endpoint
+    Default: "https://dynamodb.ap-northeast-2.amazonaws.com"
 
 Resources:
   CreateCoBuyingFunction:
@@ -93,6 +97,7 @@ Resources:
           REGION: !Ref REGIONNAME
           AWSENV: !Ref AWSENVNAME
           DEVENV: !Ref DEVENVNAME
+          DYNAMO_DB_URL: !Ref DYNAMO_DB_URL
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:

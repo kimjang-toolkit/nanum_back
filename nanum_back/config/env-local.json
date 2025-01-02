@@ -1,7 +1,7 @@
 {
   "Parameters": {
       "CoBuying_TABLE_NAME": "CoBuyingTable",
-      "DYNAMO_DB_URL": "http://localhost:8000",
+      "DYNAMO_DB_URL": "http://localhost:3300",
       "STAGE": "local",
       "REGIONNAME": "ap-northeast-2"
   }
