@@ -1,19 +1,71 @@
 {
-"TableName": "CoBuyingTable",
+  "TableName": "CoBuyingTable",
   "AttributeDefinitions": [
     {
+      "AttributeName": "createdAtDateOnly",
+      "AttributeType": "S"
+    },
+    {
       "AttributeName": "id",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "ownerName",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "deadline",
       "AttributeType": "S"
     }
   ],
   "KeySchema": [
     {
-      "AttributeName": "id",
+      "AttributeName": "createdAtDateOnly",
       "KeyType": "HASH"
+    },
+    {
+      "AttributeName": "id",
+      "KeyType": "RANGE"
     }
   ],
   "ProvisionedThroughput": {
     "ReadCapacityUnits": 5,
     "WriteCapacityUnits": 5
-  }
+  },
+  "LocalSecondaryIndexes": [
+    {
+      "IndexName": "OwnerNameIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "createdAtDateOnly",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "ownerName",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "KEYS_ONLY"
+      }
+    }
+  ],
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "DeadlineIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "deadline",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "KEYS_ONLY"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    }
+  ]
 }

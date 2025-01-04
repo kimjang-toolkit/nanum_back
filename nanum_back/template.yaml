@@ -116,18 +116,41 @@ Resources:
     Properties:
       TableName: CoBuyingTable
       AttributeDefinitions:
+        - AttributeName: createdAtDateOnly
+          AttributeType: S # 날짜를 문자열로 저장 (YYYY-MM-DD 형식)
         - AttributeName: id
-          AttributeType: S
-        - AttributeName: createdAt
-          AttributeType: S
+          AttributeType: S # 공구글 고유 ID
+        - AttributeName: ownerName
+          AttributeType: S # 공구장 이름
+        - AttributeName: deadline
+          AttributeType: S # 마감일자
       KeySchema:
+        - AttributeName: createdAtDateOnly
+          KeyType: HASH # 파티션 키로 생성일 (날짜)
         - AttributeName: id
-          KeyType: HASH # 파티션 키
-        - AttributeName: createdAt
-          KeyType: RANGE # 정렬 키
+          KeyType: RANGE # 정렬 키로 공구글 고유 ID
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
+      LocalSecondaryIndexes:
+        - IndexName: OwnerNameIndex
+          KeySchema:
+            - AttributeName: createdAtDateOnly
+              KeyType: HASH # 파티션 키는 생성일
+            - AttributeName: ownerName
+              KeyType: RANGE # 정렬 키는 공구장 이름
+          Projection:
+            ProjectionType: KEYS_ONLY # 키 속성만 인덱스에 포함
+      GlobalSecondaryIndexes:
+        - IndexName: DeadlineIndex
+          KeySchema:
+            - AttributeName: deadline
+              KeyType: HASH # 파티션 키는 마감일자
+          Projection:
+            ProjectionType: KEYS_ONLY # 키 속성만 인덱스에 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
       # GlobalSecondaryIndexes:
       #   IndexName: CoBuyingIndex
       #   KeySchema:

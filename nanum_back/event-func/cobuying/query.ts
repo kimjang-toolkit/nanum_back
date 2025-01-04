@@ -1,14 +1,6 @@
-import AWS from 'aws-sdk';
-import { CoBuyingSimple, CoBuyingPost } from '@api-interface/cobuying';
+import { CoBuyingSimple, CoBuyingPost, QuantityCoBuying, AttendeeCoBuying } from '@api-interface/cobuying';
 import { DynamoDBClient, ListTablesCommand } from '@aws-sdk/client-dynamodb';
-import {
-    DynamoDBDocument,
-    // DynamoDBDocumentClient,
-    GetCommand,
-    PutCommand,
-    PutCommandInput,
-} from '@aws-sdk/lib-dynamodb';
-// import { getKoreaDay, getKoreaTime } from 'common/time';
+import { DynamoDBDocument, GetCommand, PutCommand, PutCommandInput, QueryCommand } from '@aws-sdk/lib-dynamodb';
 
 const client = new DynamoDBClient({
     endpoint: {
@@ -93,37 +85,31 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
 };
 
 export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => {
-    // console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
-    // console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
-
     // DynamoDB에서 'id'로 공구글 조회
+    // 단건 조회를 위한 파라미터 설정
     const params = {
-        TableName: process.env.CoBuyingTableName || '', // 테이블 이름 (환경 변수에서 가져옴)
+        TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         Key: {
-            id: id, // 파라미터로 받은 ID로 조회
+            createdAtDateOnly: '2025-01-04', // 파티션키로 사용될 날짜 (예: '2025-01-04')
+            id: id, // 조회할 id
         },
     };
 
     try {
         // DynamoDB에서 해당 id에 해당하는 공구글을 조회
+        // 단건 조회를 위한 GetCommand 실행
         const command = new GetCommand(params);
-
         const result = await ddbDocClient.send(command);
 
         // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
         if (!result.Item) {
             throw new Error('찾으시는 공구글이 존재하지 않아요');
         }
-        // // DynamoDB에서 해당 id에 해당하는 공구글을 조회
-        // const result = await dynamoDB.get(params).promise();
+        // 조회된 공구글 데이터를 CoBuyingPost 인터페이스로 매핑
+        const cobuying = mapToCoBuyingPost(result.Item) as CoBuyingPost;
 
-        // // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
-        // if (!result.Item) {
-        //     throw new Error('찾으시는 공구글이 존재하지 않아요');
-        // }
-        console.log('result : \n' + result);
-        // 조회된 공구글 데이터를 CoBuyingSimple 인터페이스로 매핑
-        const cobuying = result.Item as CoBuyingPost;
+        // 조회된 공구글 사용
+        // console.log('조회된 공구글:', cobuying);
 
         // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
         return {
@@ -144,4 +130,28 @@ export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => 
         }
         throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
+};
+
+// 공구글에 맞는 타입으로 매핑하기
+const mapToCoBuyingPost = (item: Record<string, any>): CoBuyingPost => {
+    if (!item || typeof item !== 'object') {
+        throw new Error('유효하지 않은 데이터입니다.');
+    }
+
+    // type 필드가 존재하지 않거나 알 수 없는 값인 경우 예외 처리
+    if (!item.type) {
+        throw new Error('공구글 타입이 존재하지 않습니다.');
+    }
+
+    // 공구글 타입에 따라 필드를 확인하여 적절한 타입으로 변환
+    if (item.type === 'quantity') {
+        return item as QuantityCoBuying;
+    }
+
+    if (item.type === 'attendee') {
+        return item as AttendeeCoBuying;
+    }
+
+    // 유효하지 않은 type일 경우 에러 처리
+    throw new Error(`알 수 없는 공구글 타입입니다: ${item.type}`);
 };
