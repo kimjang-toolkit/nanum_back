@@ -5,7 +5,7 @@ export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promi
     try {
         const pathparams = event.pathParameters;
 
-        if (pathparams === null || !pathparams.id) {
+        if (pathparams === null || !pathparams.id || !pathparams.createdAt) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({
@@ -13,8 +13,9 @@ export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promi
                 }),
             };
         }
+
         console.log('id : ' + pathparams.id);
-        const cobuying = await queryCoBuyingById(pathparams.id);
+        const cobuying = await queryCoBuyingById(pathparams.id, pathparams.createdAt);
 
         return {
             statusCode: 200,

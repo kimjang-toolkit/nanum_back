@@ -84,13 +84,13 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
     }
 };
 
-export const queryCoBuyingById = async (id: string): Promise<CoBuyingSimple> => {
+export const queryCoBuyingById = async (id: string, createdAtDateOnly: string): Promise<CoBuyingSimple> => {
     // DynamoDB에서 'id'로 공구글 조회
     // 단건 조회를 위한 파라미터 설정
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         Key: {
-            createdAtDateOnly: '2025-01-04', // 파티션키로 사용될 날짜 (예: '2025-01-04')
+            createdAtDateOnly: createdAtDateOnly, // 파티션키로 사용될 날짜 (예: '2025-01-04')
             id: id, // 조회할 id
         },
     };
