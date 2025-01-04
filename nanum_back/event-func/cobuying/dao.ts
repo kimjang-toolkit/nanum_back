@@ -10,6 +10,7 @@ import {
 } from '@api-interface/cobuying';
 import { Attendee } from '@api-interface/user';
 import { insertCoBuying } from './query';
+import { getKoreaDay, getKoreaTime } from 'common/time';
 
 /**
  * DB에 공구글 데이터 생성
@@ -59,10 +60,12 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
 };
 
 function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
-    const timestamp = new Date().toISOString();
+    const timestamp = getKoreaTime();
+    const createdAtDateOnly = getKoreaDay();
     const item = {
         id: uuidv4(),
         createdAt: timestamp,
+        createdAtDateOnly: createdAtDateOnly,
         status: CoBuyingStatus.PREPARING,
         ...input,
     };
@@ -98,9 +101,11 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
 
 function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
     const timestamp = new Date().toISOString();
+    const createdAtDateOnly = getKoreaDay();
     const item = {
         id: uuidv4(),
         createdAt: timestamp,
+        createdAtDateOnly: createdAtDateOnly,
         status: CoBuyingStatus.PREPARING,
         ...input,
     };

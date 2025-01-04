@@ -10,6 +10,17 @@ Description: >
 Globals:
   Function:
     Timeout: 3
+    Environment:
+      Variables:
+        CoBuyingTableName: !Ref CoBuyingTableName
+        REGIONNAME: !Ref REGIONNAME
+        AWSENVNAME: !Ref AWSENVNAME
+        DEVENVNAME: !Ref DEVENVNAME
+        DYNAMODBURL: !Ref DYNAMODBURL
+        DYNAMODBHOST: !Ref DYNAMODBHOST
+        DYNAMODBPORT: !Ref DYNAMODBPORT
+        PROTOCAL: !Ref PROTOCAL
+
 Parameters:
   CoBuyingTableName:
     Type: String
@@ -30,9 +41,16 @@ Parameters:
     Type: String
     Description: Developer environment where code is being executed (OSX, Windows, or Linux).
     Default: "OSX"
-  DYNAMO_DB_URL:
+  DYNAMODBURL:
     Type: String
     Description: 실행 환경에 따른 DynamoDB Endpoint
+    Default: "https://dynamodb.ap-northeast-2.amazonaws.com"
+  DYNAMODBHOST:
+    Type: String
+  DYNAMODBPORT:
+    Type: String
+  PROTOCAL:
+    Type: String
 
 Resources:
   CreateCoBuyingFunction:
@@ -43,7 +61,7 @@ Resources:
       Handler: post.createCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 1024
-      Timeout: 200
+      Timeout: 20
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
@@ -55,13 +73,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
-      Environment:
-        Variables:
-          CoBuyingTableName: !Ref CoBuyingTableName
-          REGION: !Ref REGIONNAME
-          AWSENV: !Ref AWSENVNAME
-          DEVENV: !Ref DEVENVNAME
-          DYNAMO_DB_URL: !Ref DYNAMODBURL
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -79,7 +90,7 @@ Resources:
       Handler: get.getCoBuyingByIdHandler
       Runtime: nodejs20.x
       MemorySize: 1024
-      Timeout: 200
+      Timeout: 20
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
@@ -91,13 +102,6 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
-      Environment:
-        Variables:
-          CoBuyingTableName: !Ref CoBuyingTableName
-          REGION: !Ref REGIONNAME
-          AWSENV: !Ref AWSENVNAME
-          DEVENV: !Ref DEVENVNAME
-          DYNAMO_DB_URL: !Ref DYNAMODBURL
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -114,9 +118,13 @@ Resources:
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
+        - AttributeName: createdAt
+          AttributeType: S
       KeySchema:
         - AttributeName: id
           KeyType: HASH # 파티션 키
+        - AttributeName: createdAt
+          KeyType: RANGE # 정렬 키
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
