@@ -1,6 +1,6 @@
 import { CoBuyingSimple, CoBuyingPost, QuantityCoBuying, AttendeeCoBuying } from '@api-interface/cobuying';
-import { DynamoDBClient, ListTablesCommand } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument, GetCommand, PutCommand, PutCommandInput, QueryCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient, ListTablesCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocument, GetCommand, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
 
 const client = new DynamoDBClient({
     endpoint: {
@@ -25,9 +25,10 @@ const ddbDocClient = DynamoDBDocument.from(client);
 // }); // 저수준 API 사용
 
 export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSimple> => {
-    // console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
-    // console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
-    await ddbDocClient.send(new ListTablesCommand({}));
+    console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
+    console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
+    // console.log('입력 Item : ', cobuying);
+    // await ddbDocClient.send(new ListTablesCommand({}));
     // console.log('테이블 조회 결과 : ' + result);
 
     // DynamoDB에 삽입할 데이터 맵핑
@@ -72,7 +73,7 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
             totalPrice: cobuying.totalPrice,
             attendeeCount: cobuying.attendeeCount,
             deadline: cobuying.deadline,
-            status: cobuying.status,
+            coBuyingStatus: cobuying.coBuyingStatus,
             createdAt: cobuying.createdAt, // 생성일 (ISO 형식)
             createdAtDateOnly: cobuying.createdAtDateOnly,
             memo: cobuying.memo || null,
@@ -84,12 +85,31 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
     }
 };
 
-export const queryCoBuyingById = async (id: string, createdAtDateOnly: string): Promise<CoBuyingSimple> => {
+// export const queryCoBuyingWithPage = async (size: number, offset: number): Promise<CoBuyingSimple> => {
+//     const params = {
+//         TableName: process.env.CoBuyingTableName || '',
+//     };
+//     const command = new QueryCommand(params);
+//     const result = await ddbDocClient.send(command);
+
+//     // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
+//     if (!result.Items) {
+//         throw new Error('찾으시는 공구글이 존재하지 않아요');
+//     }
+// };
+
+export const queryCoBuyingById = async (
+    ownerName: string,
+    createdAtDateOnly: string,
+    id: string,
+): Promise<CoBuyingSimple> => {
     // DynamoDB에서 'id'로 공구글 조회
     // 단건 조회를 위한 파라미터 설정
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
+        IndexName: 'OwnerNameGSI',
         Key: {
+            ownerName: ownerName,
             createdAtDateOnly: createdAtDateOnly, // 파티션키로 사용될 날짜 (예: '2025-01-04')
             id: id, // 조회할 id
         },
@@ -119,7 +139,7 @@ export const queryCoBuyingById = async (id: string, createdAtDateOnly: string): 
             totalPrice: cobuying.totalPrice,
             attendeeCount: cobuying.attendeeCount,
             deadline: cobuying.deadline,
-            status: cobuying.status,
+            status: cobuying.coBuyingStatus,
             createdAt: cobuying.createdAtDateOnly,
             memo: cobuying.memo || null,
             attendeeList: cobuying.attendeeList || [],

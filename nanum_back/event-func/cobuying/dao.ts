@@ -21,8 +21,6 @@ import { getKoreaDay, getKoreaTime } from 'common/time';
  */
 export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSimple> => {
     // DB 엔드포임트 확인
-    console.log(process.env.DYNAMO_DB_URL);
-    console.log(process.env.REGION);
 
     let cobuying: CoBuyingPost;
     if (input.type === 'quantity') {
@@ -62,11 +60,16 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
 function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
     const timestamp = getKoreaTime();
     const createdAtDateOnly = getKoreaDay();
+    const id = uuidv4();
+
     const item = {
-        id: uuidv4(),
+        id: id,
         createdAt: timestamp,
         createdAtDateOnly: createdAtDateOnly,
-        status: CoBuyingStatus.PREPARING,
+        coBuyingStatus: CoBuyingStatus.PREPARING,
+        createdAtId: createdAtDateOnly + '#' + id,
+        deadlineId: input.deadline + '#' + id,
+        ownerNameId: input.ownerName + '#' + id,
         ...input,
     };
     if (item.ownerQuantity === undefined) {
@@ -102,11 +105,15 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
 function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
     const timestamp = new Date().toISOString();
     const createdAtDateOnly = getKoreaDay();
+    const id = uuidv4();
     const item = {
-        id: uuidv4(),
+        id: id,
         createdAt: timestamp,
         createdAtDateOnly: createdAtDateOnly,
-        status: CoBuyingStatus.PREPARING,
+        coBuyingStatus: CoBuyingStatus.PREPARING,
+        createdAtId: createdAtDateOnly + '#' + id,
+        deadlineId: input.deadline + '#' + id,
+        ownerNameId: input.ownerName + '#' + id,
         ...input,
     };
     if (item.planAttendeeCount === undefined) {

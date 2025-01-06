@@ -2,29 +2,33 @@
   "TableName": "CoBuyingTable",
   "AttributeDefinitions": [
     {
-      "AttributeName": "createdAtDateOnly",
+      "AttributeName": "coBuyingStatus",
+      "AttributeType": "N"
+    },
+    {
+      "AttributeName": "createdAtId",
       "AttributeType": "S"
     },
     {
-      "AttributeName": "id",
+      "AttributeName": "deadlineId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "ownerNameId",
       "AttributeType": "S"
     },
     {
       "AttributeName": "ownerName",
       "AttributeType": "S"
-    },
-    {
-      "AttributeName": "deadline",
-      "AttributeType": "S"
     }
   ],
   "KeySchema": [
     {
-      "AttributeName": "createdAtDateOnly",
+      "AttributeName": "coBuyingStatus",
       "KeyType": "HASH"
     },
     {
-      "AttributeName": "id",
+      "AttributeName": "createdAtId",
       "KeyType": "RANGE"
     }
   ],
@@ -34,33 +38,53 @@
   },
   "LocalSecondaryIndexes": [
     {
-      "IndexName": "OwnerNameIndex",
+      "IndexName": "DeadlineIndex",
       "KeySchema": [
         {
-          "AttributeName": "createdAtDateOnly",
+          "AttributeName": "coBuyingStatus",
           "KeyType": "HASH"
         },
         {
-          "AttributeName": "ownerName",
+          "AttributeName": "deadlineId",
           "KeyType": "RANGE"
         }
       ],
       "Projection": {
-        "ProjectionType": "KEYS_ONLY"
+        "ProjectionType": "ALL"
+      }
+    },
+    {
+      "IndexName": "OwnerNameIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "coBuyingStatus",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "ownerNameId",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
       }
     }
   ],
   "GlobalSecondaryIndexes": [
     {
-      "IndexName": "DeadlineIndex",
+      "IndexName": "OwnerNameGSI",
       "KeySchema": [
         {
-          "AttributeName": "deadline",
+          "AttributeName": "ownerName",
           "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "createdAtId",
+          "KeyType": "RANGE"
         }
       ],
       "Projection": {
-        "ProjectionType": "KEYS_ONLY"
+        "ProjectionType": "ALL"
       },
       "ProvisionedThroughput": {
         "ReadCapacityUnits": 5,
