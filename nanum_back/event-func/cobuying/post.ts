@@ -29,7 +29,7 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
         }
 
         const item = await saveCoBuying(input);
-        console.log('item ', item);
+
         return {
             statusCode: 201,
             body: JSON.stringify(item),

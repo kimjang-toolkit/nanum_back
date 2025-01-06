@@ -9,6 +9,8 @@ stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도�
 
 `aws dynamodb list-tables --endpoint-url http://localhost:3300`으로 테이블 조회
 
+`aws dynamodb scan --endpoint-url http://localhost:3300 --table-name CoBuyingTable`
+
 
 ### DynamoDB Document Client
 

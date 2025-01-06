@@ -6,11 +6,11 @@ import { queryCoBuyingById } from './query';
  * @param event
  * @returns
  */
-export const getCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     try {
-        const pathparams = event.pathParameters;
+        const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
 
-        if (pathparams === null || !pathparams.ownerName || !pathparams.createdAt || !pathparams.id) {
+        if (!ownerName || !createdAt || !id) {
             return {
                 statusCode: 400,
                 body: JSON.stringify({
@@ -19,8 +19,8 @@ export const getCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<A
             };
         }
 
-        console.log('id : ' + pathparams.id + ' ownerName : ' + pathparams.ownerName);
-        const cobuying = await queryCoBuyingById(pathparams.ownerName, pathparams.createdAt, pathparams.id);
+        console.log(' ownerName : ' + ownerName + '\n createdAt : ' + createdAt + '\n id : ' + id);
+        const cobuying = await queryCoBuyingById(ownerName, createdAt, id);
 
         return {
             statusCode: 200,
@@ -31,7 +31,7 @@ export const getCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<A
         return {
             statusCode: 500,
             body: JSON.stringify({
-                message: '공구 조회 중 오류가 발생했습니다.',
+                message: err,
             }),
         };
     }
