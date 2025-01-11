@@ -140,29 +140,25 @@ export const queryCoBuyingById = async (
         if (result.Items && result.Items.length > 0) {
             console.log(result.Items[0]);
             const cobuying = mapToCoBuyingPost(result.Items[0]) as CoBuyingPost;
+            // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
+            return {
+                id: cobuying.id,
+                productName: cobuying.productName,
+                ownerName: cobuying.ownerName,
+                totalPrice: cobuying.totalPrice,
+                attendeeCount: cobuying.attendeeCount,
+                deadline: cobuying.deadline,
+                status: cobuying.coBuyingStatus,
+                createdAt: cobuying.createdAtDateOnly,
+                memo: cobuying.memo || null,
+                attendeeList: cobuying.attendeeList || [],
+            } as CoBuyingSimple;
             // 필요한 추가 로직
         } else {
             throw new Error('찾으시는 공구글이 존재하지 않아요');
         }
-        // 조회된 공구글 데이터를 CoBuyingPost 인터페이스로 매핑
-        const cobuying = mapToCoBuyingPost(result.Items[0]) as CoBuyingPost;
-
         // 조회된 공구글 사용
         // console.log('조회된 공구글:', cobuying);
-
-        // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
-        return {
-            id: cobuying.id,
-            productName: cobuying.productName,
-            ownerName: cobuying.ownerName,
-            totalPrice: cobuying.totalPrice,
-            attendeeCount: cobuying.attendeeCount,
-            deadline: cobuying.deadline,
-            status: cobuying.coBuyingStatus,
-            createdAt: cobuying.createdAtDateOnly,
-            memo: cobuying.memo || null,
-            attendeeList: cobuying.attendeeList || [],
-        } as CoBuyingSimple;
     } catch (error: unknown) {
         if (error instanceof Error) {
             console.error(error);
