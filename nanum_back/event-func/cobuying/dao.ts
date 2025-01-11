@@ -7,6 +7,7 @@ import {
     QuantityCoBuying,
     AttendeeCoBuying,
     CoBuyingPost,
+    CoBuyingQueryParams,
 } from '@api-interface/cobuying';
 import { Attendee } from '@api-interface/user';
 import { insertCoBuying } from './query';
@@ -149,3 +150,9 @@ function calculatOwnerQuantityPrice(input: CoBuyingCreateReq): number {
 function calculatOwnerAttendeePrice(input: CoBuyingCreateReq): number {
     return input.totalPrice / (input.planAttendeeCount || 1);
 }
+
+// export const queryCoBuyingPage = async (input: CoBuyingQueryParams): Promise<CoBuyingSimple> => {
+//     // 정렬 기준에 따라 다른 쿼리를 이용할 예정
+
+//     return {};
+// };

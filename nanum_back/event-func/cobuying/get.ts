@@ -1,5 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { queryCoBuyingById } from './query';
+import { CoBuyingQueryParams } from '@api-interface/cobuying';
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회
@@ -55,48 +56,35 @@ export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promi
  * @param event
  * @returns
  */
-// export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-//     try {
-//         const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
+export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    try {
+        // 본문 확인
+        if (!event.body) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: '요청 본문이 비어있습니다.' }),
+            };
+        }
 
-//         if (!ownerName || !createdAt || !id) {
-//             return {
-//                 statusCode: 400,
-//                 body: JSON.stringify({
-//                     message: '찾고자하는 공구글을 입력해주세요.',
-//                 }),
-//             };
-//         }
-//         if (!event.body) {
-//             return {
-//                 statusCode: 400,
-//                 body: JSON.stringify({ message: '요청 본문이 비어있습니다.' }),
-//             };
-//         }
+        const input: CoBuyingQueryParams = JSON.parse(event.body);
+        if (!input.sort || !input.sort.sortCriteria) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: '조회를 위한 정렬기준을 알려주세요.' }),
+            };
+        }
 
-//         const input: string = JSON.parse(event.body);
-//         // 본문 확인
-//         if (!event.body) {
-//             return {
-//                 statusCode: 400,
-//                 body: JSON.stringify({ message: '요청 본문이 비어있습니다.' }),
-//             };
-//         }
-
-//         console.log(' ownerName : ' + ownerName + '\n createdAt : ' + createdAt + '\n id : ' + id);
-//         const cobuying = await queryCoBuyingById(ownerName, createdAt, id);
-
-//         return {
-//             statusCode: 200,
-//             body: JSON.stringify(cobuying),
-//         };
-//     } catch (err) {
-//         console.error(err);
-//         return {
-//             statusCode: 500,
-//             body: JSON.stringify({
-//                 message: err,
-//             }),
-//         };
-//     }
-// };
+        return {
+            statusCode: 200,
+            body: '',
+        };
+    } catch (err) {
+        console.error(err);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: err,
+            }),
+        };
+    }
+};

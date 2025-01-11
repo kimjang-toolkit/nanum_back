@@ -7,9 +7,8 @@ import {
     CoBuyingStatus,
 } from '@api-interface/cobuying';
 import { Attendee } from '@api-interface/user';
-import { DynamoDBClient, ListTablesCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument, GetCommand, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
-import { TokenFileWebIdentityCredentials } from 'aws-sdk';
+import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocument, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
 
 const client = new DynamoDBClient({
     endpoint: {
@@ -60,11 +59,8 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
                 totalPrice: cobuying.totalPrice,
                 attendeeCount: cobuying.attendeeCount,
                 deadline: cobuying.deadline,
-                coBuyingStatus: cobuying.coBuyingStatus,
-                createdAt: cobuying.createdAt, // 생성일 (ISO 형식)
-                createdAtDateOnly: cobuying.createdAtDateOnly,
-                memo: cobuying.memo || null,
-                attendeeList: cobuying.attendeeList || [],
+                status: cobuying.coBuyingStatus,
+                createdAt: cobuying.createdAtDateOnly,
             } as CoBuyingSimple;
         // 성공적으로 삽입한 후, CoBuyingSimple 타입으로 반환
         else {
@@ -123,9 +119,9 @@ export const queryCoBuyingById = async (
     // 불변값으로 조희
 
     const createdAtId = createdAtDateOnly + '#' + id;
-    console.log('ownerName : ', ownerName);
-    console.log('createdAt : ', createdAtId);
-    console.log(createdAtId === '2025-01-07#3e3ad1dd-3ef0-4a50-8e77-d3344bc4da98');
+    // console.log('ownerName : ', ownerName);
+    // console.log('createdAt : ', createdAtId);
+    // console.log(createdAtId === '2025-01-07#3e3ad1dd-3ef0-4a50-8e77-d3344bc4da98');
 
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
@@ -157,8 +153,6 @@ export const queryCoBuyingById = async (
                 deadline: cobuying.deadline,
                 status: cobuying.coBuyingStatus,
                 createdAt: cobuying.createdAtDateOnly,
-                memo: cobuying.memo || null,
-                attendeeList: cobuying.attendeeList || [],
             } as CoBuyingSimple;
             // 필요한 추가 로직
         } else {
@@ -219,8 +213,8 @@ const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): CoBuyingP
         const attendeeCoBuying: AttendeeCoBuying = {
             ...baseCoBuying,
             type: 'attendee',
-            planAttendeeCount: Number(item.totalAttendeeQuantity.N), // 예시로 총 참석자 수를 사용
-            perAttendeePrice: Number(item.unitPrice.N), // 예시로 단가를 사용
+            planAttendeeCount: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
+            perAttendeePrice: Number(item.perAttendeePrice.N), // 예시로 단가를 사용
         };
 
         return attendeeCoBuying;
