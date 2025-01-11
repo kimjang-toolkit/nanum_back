@@ -60,7 +60,7 @@ Resources:
       CodeUri: event-func/cobuying
       Handler: post.createCoBuyingHandler
       Runtime: nodejs20.x
-      MemorySize: 1024
+      MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
@@ -89,7 +89,7 @@ Resources:
       CodeUri: event-func/cobuying
       Handler: get.getCoBuyingByIdHandler
       Runtime: nodejs20.x
-      MemorySize: 1024
+      MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64

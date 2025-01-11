@@ -9,11 +9,11 @@ import {
 import { Attendee } from '@api-interface/user';
 import { DynamoDBClient, ListTablesCommand, QueryCommand } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument, GetCommand, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
+import { TokenFileWebIdentityCredentials } from 'aws-sdk';
 
 const client = new DynamoDBClient({
     endpoint: {
         hostname: process.env.DYNAMODBHOST || 'dynamodb.ap-northeast-2.amazonaws.com',
-        port: Number(process.env.DYNAMODBPORT) || 3300,
         path: '',
         protocol: process.env.PROTOCAL || 'https:',
     },
@@ -44,28 +44,6 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
         TableName: process.env.CoBuyingTableName || 'CoBuyingTable', // 환경 변수로 테이블 이름 지정
         Item: {
             ...cobuying,
-            // id: cobuying.id, // 공구글 고유 ID
-            // productName: cobuying.productName, // 상품 이름
-            // productLink: cobuying.productLink || null, // 상품 링크 (선택적, null 허용)
-            // ownerName: cobuying.ownerName, // 공구장 이름
-            // totalPrice: cobuying.totalPrice, // 공구 상품 총액
-            // attendeeCount: cobuying.attendeeCount, // 신청자 수 (공구장 포함)
-            // deadline: cobuying.deadline, // 신청 마감일
-            // memo: cobuying.memo || null, // 메모 (선택적)
-            // attendeeList: cobuying.attendeeList || [], // 신청자 리스트 (빈 배열 기본값)
-            // createdAt: cobuying.createdAt, // 생성일 (ISO 형식)
-            // createdAtDateOnly: cobuying.createdAtDateOnly,
-            // status: cobuying.status, // 공구글 상태 (예: 'PREPARING')
-            // 수량나눔에만 해당하는 필드
-            // totalQuantity: cobuying.type === 'quantity' ? cobuying.totalQuantity : undefined,
-            // ownerQuantity: cobuying.type === 'quantity' ? cobuying.ownerQuantity : undefined,
-            // ownerPrice: cobuying.type === 'quantity' ? cobuying.ownerPrice : undefined,
-            // totalAttendeePrice: cobuying.type === 'quantity' ? cobuying.totalAttendeePrice : undefined,
-            // totalAttendeeQuantity: cobuying.type === 'quantity' ? cobuying.totalAttendeeQuantity : undefined,
-            // unitPrice: cobuying.type === 'quantity' ? cobuying.unitPrice : undefined,
-            // // 인원나눔에만 해당하는 필드
-            // planAttendeeCount: cobuying.type === 'attendee' ? cobuying.planAttendeeCount : undefined,
-            // perAttendeePrice: cobuying.type === 'attendee' ? cobuying.perAttendeePrice : undefined,
         },
     };
 
@@ -73,23 +51,52 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
     try {
         const command = new PutCommand(params);
         const result = await ddbDocClient.send(command);
-        console.log(result.Attributes);
-        return {
-            id: cobuying.id,
-            productName: cobuying.productName,
-            ownerName: cobuying.ownerName,
-            totalPrice: cobuying.totalPrice,
-            attendeeCount: cobuying.attendeeCount,
-            deadline: cobuying.deadline,
-            coBuyingStatus: cobuying.coBuyingStatus,
-            createdAt: cobuying.createdAt, // 생성일 (ISO 형식)
-            createdAtDateOnly: cobuying.createdAtDateOnly,
-            memo: cobuying.memo || null,
-            attendeeList: cobuying.attendeeList || [],
-        } as CoBuyingSimple; // 성공적으로 삽입한 후, CoBuyingSimple 타입으로 반환
+        console.log(result);
+        if (result.$metadata.httpStatusCode == 200)
+            return {
+                id: cobuying.id,
+                productName: cobuying.productName,
+                ownerName: cobuying.ownerName,
+                totalPrice: cobuying.totalPrice,
+                attendeeCount: cobuying.attendeeCount,
+                deadline: cobuying.deadline,
+                coBuyingStatus: cobuying.coBuyingStatus,
+                createdAt: cobuying.createdAt, // 생성일 (ISO 형식)
+                createdAtDateOnly: cobuying.createdAtDateOnly,
+                memo: cobuying.memo || null,
+                attendeeList: cobuying.attendeeList || [],
+            } as CoBuyingSimple;
+        // 성공적으로 삽입한 후, CoBuyingSimple 타입으로 반환
+        else {
+            // result를 사용하여 새로운 Error 객체를 생성
+            const errorMessage = `DynamoDB 삽입 오류: 상태 코드 ${
+                result.$metadata.httpStatusCode
+            }, 요청 결과: ${JSON.stringify(result)}`;
+            throw new Error(errorMessage); // result를 포함한 에러 메시지 던지기
+        }
     } catch (error) {
         console.error('DynamoDB 삽입 중 오류 발생:', error);
-        throw new Error('공구글 저장에 실패했습니다.');
+
+        // DynamoDB에서 발생할 수 있는 에러를 구체적으로 처리
+        if (error instanceof Error) {
+            if (error.name === 'ValidationException') {
+                throw new Error('데이터 형식이 잘못되었습니다. 입력값을 확인하세요.');
+            } else if (error.name === 'ProvisionedThroughputExceededException') {
+                throw new Error('DynamoDB 읽기/쓰기 용량이 초과되었습니다. 나중에 다시 시도해주세요.');
+            } else if (error.name === 'ConditionalCheckFailedException') {
+                throw new Error('조건을 만족하는 항목이 없습니다.');
+            } else if (error.name === 'ResourceNotFoundException') {
+                throw new Error('지정된 DynamoDB 테이블을 찾을 수 없습니다.');
+            } else if (error.name === 'InternalServerError') {
+                throw new Error('DynamoDB 내부 서버 오류가 발생했습니다.');
+            } else {
+                // 알 수 없는 오류 발생시
+                throw new Error(`알 수 없는 오류 발생: ${error.message}`);
+            }
+        }
+
+        // 예상하지 못한 에러 처리
+        throw new Error('공구글 저장에 실패했습니다. 오류를 확인해주세요.');
     }
 };
 

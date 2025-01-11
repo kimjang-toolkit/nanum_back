@@ -32,7 +32,7 @@ watch = true
 
 [default.local_start_api.parameters]
 warm_containers = "EAGER"
-parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"http://host.docker.internal:3300\" DYNAMODBHOST=\"host.docker.internal\" DYNAMODBPORT=\"3300\" PROTOCAL=\"http:\""
+parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"http://host.docker.internal:3300\" DYNAMODBHOST=\"host.docker.internal:3300\" DYNAMODBPORT=\"3300\" PROTOCAL=\"http:\""
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"

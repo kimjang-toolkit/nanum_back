@@ -126,7 +126,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
     const ownerPrice: number = calculatOwnerAttendeePrice(item);
     const hostAttende: Attendee = {
         attendeeName: item.ownerName,
-        appliedQuantity: item.ownerQuantity || undefined,
+        appliedQuantity: item.ownerQuantity || 1,
         attendeePrice: ownerPrice,
     };
     const attendeeCoBuying: AttendeeCoBuying = {
@@ -137,6 +137,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
         attendeeCount: 1,
         attendeeList: [hostAttende],
     };
+
+    console.log('attendee item : ', attendeeCoBuying);
     return attendeeCoBuying;
 }
 
