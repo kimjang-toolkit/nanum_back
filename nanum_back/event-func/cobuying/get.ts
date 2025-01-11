@@ -27,6 +27,14 @@ export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promi
             body: JSON.stringify(cobuying),
         };
     } catch (err) {
+        if (err instanceof Error && err.message == '찾으시는 공구글이 존재하지 않아요') {
+            return {
+                statusCode: 404,
+                body: JSON.stringify({
+                    message: err.message,
+                }),
+            };
+        }
         console.error(err);
         return {
             statusCode: 500,

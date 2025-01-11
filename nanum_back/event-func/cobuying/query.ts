@@ -159,9 +159,10 @@ export const queryCoBuyingById = async (
         }
         // 조회된 공구글 사용
         // console.log('조회된 공구글:', cobuying);
-    } catch (error: unknown) {
+    } catch (error) {
         if (error instanceof Error) {
             console.error(error);
+            throw new Error(error.message);
         }
         throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
