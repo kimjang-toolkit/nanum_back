@@ -53,12 +53,13 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
     if (item.ownerQuantity === undefined) {
         throw new Error('공구장의 수량을 정해주세요.');
     }
-    if (item.unitPrice === undefined) {
-        throw new Error('단위 금액을 입력해주세요.');
-    }
 
     // 공구장의 수량 결정
     const ownerPrice: number = calculatOwnerQuantityPrice(item);
+
+    // 공구글 단위 가격 계산
+    const unitPrice: number = calculatUnitPrice(item);
+
     const hostAttende: Attendee = {
         attendeeName: item.ownerName,
         appliedQuantity: item.ownerQuantity || undefined,
@@ -68,7 +69,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
     const quantityCoBuying: QuantityCoBuying = {
         ...item,
         type: 'quantity',
-        unitPrice: item.unitPrice,
+        unitPrice: unitPrice,
         ownerQuantity: item.ownerQuantity,
         ownerPrice: ownerPrice,
         totalAttendeeQuantity: item.ownerQuantity,
@@ -94,26 +95,29 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
         ownerNameId: input.ownerName + '#' + id,
         ...input,
     };
-    if (item.planAttendeeCount === undefined) {
+    if (item.recruitmentNumbers === undefined) {
         throw new Error('목표 신청자 수를 정해주세요.');
     }
-    if (item.perAttendeePrice === undefined) {
+    if (item.recruitmentNumbers === undefined) {
         throw new Error('신청자 1인당 부담 금액을 정해주세요.');
     }
-    // 인원 나눔에서 공구장 부담액 계산
-    const ownerPrice: number = calculatOwnerAttendeePrice(item);
-    const hostAttende: Attendee = {
+
+    // 인당 가격 계산
+    const perAttendeePrice: number = calculatAttendeePrice(item);
+
+    const hostAttendee: Attendee = {
         attendeeName: item.ownerName,
         appliedQuantity: item.ownerQuantity || 1,
-        attendeePrice: ownerPrice,
+        attendeePrice: perAttendeePrice, // 일단 단순 계산, 공구가 마감될 때 totalPrice - totalAttendeeCount*perAttendeePrice 로 업데이트
     };
+
     const attendeeCoBuying: AttendeeCoBuying = {
         ...item,
         type: 'attendee',
-        planAttendeeCount: item.planAttendeeCount, // item으로 바로 사용
-        perAttendeePrice: item.perAttendeePrice, // item으로 바로 사용
+        recruitmentNumbers: item.recruitmentNumbers, // item으로 바로 사용
+        perAttendeePrice: perAttendeePrice,
         attendeeCount: 1,
-        attendeeList: [hostAttende],
+        attendeeList: [hostAttendee],
     };
 
     console.log('attendee item : ', attendeeCoBuying);
@@ -124,8 +128,12 @@ function calculatOwnerQuantityPrice(input: CoBuyingCreateReq): number {
     return ((input.ownerQuantity || 0) * input.totalPrice) / input.totalQuantity;
 }
 
-function calculatOwnerAttendeePrice(input: CoBuyingCreateReq): number {
-    return input.totalPrice / (input.planAttendeeCount || 1);
+function calculatAttendeePrice(input: CoBuyingCreateReq): number {
+    return input.totalPrice / (input.recruitmentNumbers || 1);
+}
+
+function calculatUnitPrice(input: CoBuyingCreateReq): number {
+    return input.totalPrice/(input.totalQuantity || 1)
 }
 
 // export const queryCoBuyingPage = async (input: CoBuyingQueryParams): Promise<CoBuyingSimple> => {

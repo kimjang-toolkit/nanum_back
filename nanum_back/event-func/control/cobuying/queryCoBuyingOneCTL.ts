@@ -1,5 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { queryCoBuyingById } from 'dao/cobuying/queryCoBuyingOne';
+import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
+
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회
