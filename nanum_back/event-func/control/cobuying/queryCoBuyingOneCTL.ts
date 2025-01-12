@@ -1,6 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
+<<<<<<< HEAD
 
+=======
+>>>>>>> c2ccfd4 (임포트 경로 수정)
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회

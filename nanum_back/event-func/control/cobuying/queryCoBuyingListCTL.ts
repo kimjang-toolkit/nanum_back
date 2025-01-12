@@ -22,6 +22,8 @@ export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promi
         }
 
         const input: CoBuyingQueryParams = JSON.parse(event.body);
+        console.log(input);
+
         if (!input.sort || !input.sort.sortCriteria) {
             return {
                 statusCode: 400,
