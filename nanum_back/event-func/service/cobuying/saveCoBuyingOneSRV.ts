@@ -133,7 +133,7 @@ function calculatAttendeePrice(input: CoBuyingCreateReq): number {
 }
 
 function calculatUnitPrice(input: CoBuyingCreateReq): number {
-    return input.totalPrice/(input.totalQuantity || 1)
+    return input.totalPrice / (input.totalQuantity || 1);
 }
 
 // export const queryCoBuyingPage = async (input: CoBuyingQueryParams): Promise<CoBuyingSimple> => {

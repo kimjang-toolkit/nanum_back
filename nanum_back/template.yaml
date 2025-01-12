@@ -105,7 +105,7 @@ Resources:
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-        CreateCoBuying:
+        GetCoBuyingOne:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /co-buying
             Path: /api/co-buying # API Gateway 경로
@@ -134,14 +134,14 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       CodeUri: event-func/control/cobuying
-      Handler: queryCoBuyingListCTL.getCoBuyingByIdHandler
+      Handler: queryCoBuyingListCTL.getCoBuyingListHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-        CreateCoBuying:
+        GetCoBuyingList:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /co-buying
             Path: /api/co-buying/page # API Gateway 경로
