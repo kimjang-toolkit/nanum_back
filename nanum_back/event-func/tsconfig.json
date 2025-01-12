@@ -13,8 +13,14 @@
       "baseUrl": "./",
       "preserveValueImports": false,
       "paths": {
-        "@api-interface/*": ["../api-interface/src/*"]
-      }
+        "@api-interface/*": ["../api-interface/src/*"],
+        "@cobuying/*": [
+          "../event-func/control/cobuying/*", 
+          "../event-func/service/cobuying/*", 
+          "../event-func/dao/cobuying/*"
+        ],
+        "@product/*": ["../event-func/control/product", "../event-func/service/product", "../event-func/dao/product"]
+    }
     },
     // "exclude": ["node_modules", "**/*.test.ts"]
   }

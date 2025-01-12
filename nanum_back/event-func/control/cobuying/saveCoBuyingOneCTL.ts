@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { CoBuyingCreateReq } from '@api-interface/cobuying';
-import { saveCoBuying } from 'service/cobuying/saveCoBuyingOne';
+import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 
 const validateCoBuyingReq = (input: CoBuyingCreateReq): void => {
     if (!input.productName) {

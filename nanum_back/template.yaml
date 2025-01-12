@@ -68,7 +68,7 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       CodeUri: event-func/control/cobuying
-      Handler: saveCoBuyingOne.createCoBuyingHandler
+      Handler: saveCoBuyingOneCTL.createCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
@@ -91,14 +91,14 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - saveCoBuyingOne.ts
+          - saveCoBuyingOneCTL.ts
 
   GetCoBuyingByIdFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 생성 함수
     Properties:
       CodeUri: event-func/control/cobuying
-      Handler: queryCoBuyingOne.getCoBuyingByIdHandler
+      Handler: queryCoBuyingOneCTL.getCoBuyingByIdHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
@@ -128,7 +128,7 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - queryCoBuyingOne.ts
+          - queryCoBuyingOneCTL.ts
 
   CoBuyingTable:
     Type: AWS::DynamoDB::Table

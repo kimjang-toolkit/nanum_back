@@ -10,7 +10,7 @@ import {
 } from '@api-interface/cobuying';
 import { Attendee } from '@api-interface/user';
 import { getKoreaDay, getKoreaTime } from 'common/time';
-import { insertCoBuying } from 'dao/cobuying/saveCoBuyingOne';
+import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 
 /**
  * DB에 공구글 데이터 생성
