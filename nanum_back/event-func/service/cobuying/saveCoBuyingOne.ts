@@ -7,11 +7,10 @@ import {
     QuantityCoBuying,
     AttendeeCoBuying,
     CoBuyingPost,
-    CoBuyingQueryParams,
 } from '@api-interface/cobuying';
 import { Attendee } from '@api-interface/user';
-import { insertCoBuying } from './query';
 import { getKoreaDay, getKoreaTime } from 'common/time';
+import { insertCoBuying } from 'dao/cobuying/saveCoBuyingOne';
 
 /**
  * DB에 공구글 데이터 생성
@@ -31,28 +30,6 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
         // 인원나눔
         cobuying = getAttendeeCoBuying(input);
     }
-
-    // const params: DynamoDB.DocumentClient.PutItemInput = {
-    //     TableName: 'CoBuyingTable', // DynamoDB 테이블 이름
-    //     Item: {
-    //         id: item.id,
-    //         productName: item.productName, // 정렬 키로 사용할 productName
-    //         productLink: item.productLink || null, // 상품 링크
-    //         ownerName: item.ownerName,
-    //         totalPrice: item.totalPrice,
-    //         attendeeCount: 1, // 공구장 본인
-    //         deadline: item.deadline,
-    //         memo: item.memo || null, // 선택적 필드는 null 처리
-    //         attendeeList: [], // 공구장만 포함된 상태.
-    //     },
-    // };
-
-    // await dynamodb
-    //     .put({
-    //         TableName: 'cobuying',
-    //         Item: item,
-    //     })
-    //     .promise();
 
     const result: Promise<CoBuyingSimple> = insertCoBuying(cobuying);
     return result;
