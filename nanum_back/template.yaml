@@ -170,18 +170,20 @@ Resources:
       AttributeDefinitions:
         - AttributeName: coBuyingStatus
           AttributeType: N # 공구글 상태
-        - AttributeName: createdAtId
-          AttributeType: S # 공구글 생성일 + ID
-        - AttributeName: deadlineId
-          AttributeType: S # 마감일 + ID
-        - AttributeName: ownerNameId
-          AttributeType: S # 공구장 이름 + ID
+        - AttributeName: createdAt # 공구글 생성일로 파티셔닝
+          AttributeType: S
+        - AttributeName: createdAtId # 생성시간 + id로 정렬
+          AttributeType: S
+        - AttributeName: deadline
+          AttributeType: S # 마감일 기준 정렬
+        - AttributeName: id
+          AttributeType: S # ID
         - AttributeName: ownerName
           AttributeType: S # 공구장 이름
       KeySchema:
         - AttributeName: createdAt
           KeyType: HASH # 파티션 키
-        - AttributeName: Id
+        - AttributeName: createdAtId
           KeyType: RANGE # 정렬 키
       ProvisionedThroughput:
         ReadCapacityUnits: 5

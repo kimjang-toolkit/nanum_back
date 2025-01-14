@@ -42,10 +42,10 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
 
     const item = {
         id: id,
-        createdAt: timestamp,
+        createdAt: createdAtDateOnly,
         createdAtDateOnly: createdAtDateOnly,
         coBuyingStatus: CoBuyingStatus.PREPARING,
-        createdAtId: createdAtDateOnly + '#' + id,
+        createdAtId: timestamp + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         ...input,
@@ -87,10 +87,10 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
     const id = uuidv4();
     const item = {
         id: id,
-        createdAt: timestamp,
+        createdAt: createdAtDateOnly,
         createdAtDateOnly: createdAtDateOnly,
         coBuyingStatus: CoBuyingStatus.PREPARING,
-        createdAtId: createdAtDateOnly + '#' + id,
+        createdAtId: timestamp + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         ...input,
