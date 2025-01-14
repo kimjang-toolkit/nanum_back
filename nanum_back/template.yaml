@@ -58,10 +58,11 @@ Resources:
     Properties:
       StageName: Prode
       Cors:
-        AllowMethods: "'POST, GET, PUT, DELETE'"
-        AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For'"
-        AllowOrigin: "'http://localhost:5173'" # 실제 로컬에서 사용하는 포트로 설정
+        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
+        AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token'"
+        AllowOrigin: "'*'" # 실제 로컬에서 사용하는 포트로 설정
         MaxAge: "'200'"
+        # AllowCredentials: true
 
   CreateCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -80,7 +81,8 @@ Resources:
           Properties: # 엔드포인트: POST /co-buying
             Path: /api/co-buying # API Gateway 경로
             Method: post # HTTP 메서드
-            RestApiId: !Ref ApiGatewayApi # API Gateway와 직접 연결
+            RestApiId:
+              Ref: ApiGatewayApi # API Gateway와 직접 연결
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
@@ -110,7 +112,8 @@ Resources:
           Properties: # 엔드포인트: POST /co-buying
             Path: /api/co-buying # API Gateway 경로
             Method: get # HTTP 메서드
-            RestApiId: !Ref ApiGatewayApi # API Gateway와 직접 연결
+            RestApiId:
+              Ref: ApiGatewayApi # API Gateway와 직접 연결
             RequestParameters: # 쿼리 매개변수 정의
               - method.request.querystring.ownerName:
                   Required: true
@@ -146,7 +149,8 @@ Resources:
           Properties: # 엔드포인트: POST /co-buying
             Path: /api/co-buying/page # API Gateway 경로
             Method: post # HTTP 메서드
-            RestApiId: !Ref ApiGatewayApi # API Gateway와 직접 연결
+            RestApiId:
+              Ref: ApiGatewayApi # API Gateway와 직접 연결
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
@@ -175,9 +179,9 @@ Resources:
         - AttributeName: ownerName
           AttributeType: S # 공구장 이름
       KeySchema:
-        - AttributeName: coBuyingStatus
+        - AttributeName: createdAt
           KeyType: HASH # 파티션 키
-        - AttributeName: createdAtId
+        - AttributeName: Id
           KeyType: RANGE # 정렬 키
       ProvisionedThroughput:
         ReadCapacityUnits: 5
@@ -185,17 +189,17 @@ Resources:
       LocalSecondaryIndexes:
         - IndexName: DeadlineIndex
           KeySchema:
-            - AttributeName: coBuyingStatus
+            - AttributeName: deadline
               KeyType: HASH # 파티션 키는 coBuyingStatus
-            - AttributeName: deadlineId
+            - AttributeName: id
               KeyType: RANGE # 정렬 키는 deadline#id
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
         - IndexName: OwnerNameIndex
           KeySchema:
-            - AttributeName: coBuyingStatus
+            - AttributeName: ownerName
               KeyType: HASH # 파티션 키는 coBuyingStatus
-            - AttributeName: ownerNameId
+            - AttributeName: Id
               KeyType: RANGE # 정렬 키는 ownerName#id
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함

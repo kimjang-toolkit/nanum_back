@@ -1,5 +1,13 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
+import { BaseHeader, APIERROR } from 'common/responseType';
+
+const validateInput = (event: APIGatewayProxyEvent): void => {
+    const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
+    if (!ownerName || !createdAt || !id) {
+        throw Error('공구글 조회를 위한 필수 입력값이 없어요.');
+    }
+};
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회
@@ -7,40 +15,37 @@ import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
  * @returns
  */
 export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    let ownerName;
+    let createdAt;
+    let id;
+
     try {
-        const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
-
-        if (!ownerName || !createdAt || !id) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({
-                    message: '찾고자하는 공구글을 입력해주세요.',
-                }),
-            };
-        }
-
+        validateInput(event);
+        const params = event.queryStringParameters ?? {};
+        ownerName = params.ownerName || '';
+        createdAt = params.createdAt || '';
+        id = params.id || '';
+    } catch (error) {
+        return {
+            statusCode: 400,
+            headers: BaseHeader,
+            body: JSON.stringify({ message: (error as Error).message }),
+        };
+    }
+    try {
         console.log(' ownerName : ' + ownerName + '\n createdAt : ' + createdAt + '\n id : ' + id);
         const cobuying = await queryCoBuyingById(ownerName, createdAt, id);
 
         return {
             statusCode: 200,
+            headers: BaseHeader,
             body: JSON.stringify(cobuying),
         };
-    } catch (err) {
-        if (err instanceof Error && err.message == '찾으시는 공구글이 존재하지 않아요') {
-            return {
-                statusCode: 404,
-                body: JSON.stringify({
-                    message: err.message,
-                }),
-            };
-        }
-        console.error(err);
+    } catch (error) {
         return {
             statusCode: 500,
-            body: JSON.stringify({
-                message: err,
-            }),
+            headers: BaseHeader,
+            body: JSON.stringify({ message: (error as Error).message }),
         };
     }
 };

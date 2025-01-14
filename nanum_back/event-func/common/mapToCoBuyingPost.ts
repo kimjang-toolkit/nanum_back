@@ -51,7 +51,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
         const attendeeCoBuying: AttendeeCoBuying = {
             ...baseCoBuying,
             type: 'attendee',
-            planAttendeeCount: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
+            recruitmentNumbers: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
             perAttendeePrice: Number(item.perAttendeePrice.N), // 예시로 단가를 사용
         };
 
