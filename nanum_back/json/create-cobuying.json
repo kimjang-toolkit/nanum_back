@@ -2,19 +2,19 @@
   "TableName": "CoBuyingTable",
   "AttributeDefinitions": [
     {
-      "AttributeName": "coBuyingStatus",
-      "AttributeType": "N"
-    },
-    {
       "AttributeName": "createdAtId",
       "AttributeType": "S"
     },
     {
-      "AttributeName": "deadlineId",
+      "AttributeName": "createdAt",
       "AttributeType": "S"
     },
     {
-      "AttributeName": "ownerNameId",
+      "AttributeName": "deadline",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "id",
       "AttributeType": "S"
     },
     {
@@ -24,7 +24,7 @@
   ],
   "KeySchema": [
     {
-      "AttributeName": "coBuyingStatus",
+      "AttributeName": "createdAt",
       "KeyType": "HASH"
     },
     {
@@ -36,40 +36,6 @@
     "ReadCapacityUnits": 5,
     "WriteCapacityUnits": 5
   },
-  "LocalSecondaryIndexes": [
-    {
-      "IndexName": "DeadlineIndex",
-      "KeySchema": [
-        {
-          "AttributeName": "coBuyingStatus",
-          "KeyType": "HASH"
-        },
-        {
-          "AttributeName": "deadlineId",
-          "KeyType": "RANGE"
-        }
-      ],
-      "Projection": {
-        "ProjectionType": "ALL"
-      }
-    },
-    {
-      "IndexName": "OwnerNameIndex",
-      "KeySchema": [
-        {
-          "AttributeName": "coBuyingStatus",
-          "KeyType": "HASH"
-        },
-        {
-          "AttributeName": "ownerNameId",
-          "KeyType": "RANGE"
-        }
-      ],
-      "Projection": {
-        "ProjectionType": "ALL"
-      }
-    }
-  ],
   "GlobalSecondaryIndexes": [
     {
       "IndexName": "OwnerNameGSI",
@@ -80,6 +46,26 @@
         },
         {
           "AttributeName": "createdAtId",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    },
+    {
+      "IndexName": "DeadlineIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "deadline",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "id",
           "KeyType": "RANGE"
         }
       ],

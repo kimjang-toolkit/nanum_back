@@ -1,18 +1,9 @@
 import { CoBuyingPost, CoBuyingSimple } from '@api-interface/cobuying';
-import { DynamoDBClient, QueryCommand } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
+import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { mapToCoBuyingPost } from 'common/mapToCoBuyingPost';
+import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
-const client = new DynamoDBClient({
-    endpoint: {
-        hostname: process.env.DYNAMODBHOST || 'dynamodb.ap-northeast-2.amazonaws.com',
-        path: '',
-        protocol: process.env.PROTOCAL || 'https:',
-    },
-    region: process.env.REGIONNAME,
-});
-
-const ddbDocClient = DynamoDBDocument.from(client);
+const ddbDocClient = createDynamoDBDocClient();
 
 export const queryCoBuyingById = async (
     ownerName: string,

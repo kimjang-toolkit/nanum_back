@@ -1,17 +1,8 @@
 import { CoBuyingSimple, CoBuyingPost } from '@api-interface/cobuying';
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocument, PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
+import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
-const client = new DynamoDBClient({
-    endpoint: {
-        hostname: process.env.DYNAMODBHOST || 'dynamodb.ap-northeast-2.amazonaws.com',
-        path: '',
-        protocol: process.env.PROTOCAL || 'https:',
-    },
-    region: process.env.REGIONNAME,
-});
-
-const ddbDocClient = DynamoDBDocument.from(client);
+const ddbDocClient = createDynamoDBDocClient();
 
 export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSimple> => {
     console.log('조회 테이블 : ' + process.env.CoBuyingTableName);

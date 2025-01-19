@@ -19,7 +19,7 @@ Globals:
         DYNAMODBURL: !Ref DYNAMODBURL
         DYNAMODBHOST: !Ref DYNAMODBHOST
         DYNAMODBPORT: !Ref DYNAMODBPORT
-        PROTOCAL: !Ref PROTOCAL
+        DB_PROTOCAL: !Ref DB_PROTOCAL
 
 Parameters:
   CoBuyingTableName:
@@ -49,8 +49,10 @@ Parameters:
     Type: String
   DYNAMODBPORT:
     Type: String
-  PROTOCAL:
+  DB_PROTOCAL:
     Type: String
+    Description: DynamoDB 연결 프로토콜
+    Default: "http:"
 
 Resources:
   ApiGatewayApi:
@@ -168,8 +170,6 @@ Resources:
     Properties:
       TableName: CoBuyingTable
       AttributeDefinitions:
-        - AttributeName: coBuyingStatus
-          AttributeType: N # 공구글 상태
         - AttributeName: createdAt # 공구글 생성일로 파티셔닝
           AttributeType: S
         - AttributeName: createdAtId # 생성시간 + id로 정렬
@@ -188,23 +188,6 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
-      LocalSecondaryIndexes:
-        - IndexName: DeadlineIndex
-          KeySchema:
-            - AttributeName: deadline
-              KeyType: HASH # 파티션 키는 coBuyingStatus
-            - AttributeName: id
-              KeyType: RANGE # 정렬 키는 deadline#id
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
-        - IndexName: OwnerNameIndex
-          KeySchema:
-            - AttributeName: ownerName
-              KeyType: HASH # 파티션 키는 coBuyingStatus
-            - AttributeName: Id
-              KeyType: RANGE # 정렬 키는 ownerName#id
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
       GlobalSecondaryIndexes:
         - IndexName: OwnerNameGSI
           KeySchema:
@@ -212,6 +195,17 @@ Resources:
               KeyType: HASH # 파티션 키는 ownerName
             - AttributeName: createdAtId
               KeyType: RANGE # 정렬 키는 createdAt#id
+          Projection:
+            ProjectionType: ALL # 인덱스에 모든 속성 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        - IndexName: DeadlineIndex
+          KeySchema:
+            - AttributeName: deadline
+              KeyType: HASH # 파티션 키는 coBuyingStatus
+            - AttributeName: id
+              KeyType: RANGE # 정렬 키는 deadline#id
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
