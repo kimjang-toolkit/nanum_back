@@ -1,10 +1,11 @@
 import { CoBuyingQueryParams, CreatedAtKey, DeadlineKey, PageingQuery } from '@api-interface/cobuying';
 
 export const settingPageingQuery = (input: CoBuyingQueryParams, query: PageingQuery): void => {
-    setTableIndex(input, query);
     setLastEvaluatedKey(input, query);
+    setExclusiveStartKey(input, query);
+    setIndexName(input, query);
+    // setKeyConditionExpression(input, query);
     if (input.filters) {
-        setKeyConditionExpression(input, query);
         setExpressionValues(input, query);
     }
 
@@ -31,20 +32,19 @@ export const setLastEvaluatedKey = (input: CoBuyingQueryParams, query: PageingQu
 };
 
 export const setExpressionValues = (input: CoBuyingQueryParams, query: PageingQuery): void => {
-    const expressionValues: any = {};
     if (input.filters) {
         const filters = input.filters;
-
+        query.ExpressionAttributeValues = {};
         // FilterExpression 설정 (createdAt 범위 필터링)
         if (filters.createdAt?.from || filters.createdAt?.to) {
             const createdAtFilter = [];
             if (filters.createdAt?.from) {
                 createdAtFilter.push('createdAt >= :fromCreatedAt');
-                expressionValues[':fromCreatedAt'] = { S: filters.createdAt.from };
+                query.ExpressionAttributeValues[':fromCreatedAt'] = { S: filters.createdAt.from };
             }
             if (filters.createdAt?.to) {
                 createdAtFilter.push('createdAt <= :toCreatedAt');
-                expressionValues[':toCreatedAt'] = { S: filters.createdAt.to };
+                query.ExpressionAttributeValues[':toCreatedAt'] = { S: filters.createdAt.to };
             }
             if (createdAtFilter.length) {
                 query.FilterExpression += createdAtFilter.join(' AND ');
@@ -56,11 +56,11 @@ export const setExpressionValues = (input: CoBuyingQueryParams, query: PageingQu
             const deadlineFilter = [];
             if (filters.deadline?.from) {
                 deadlineFilter.push('deadline >= :fromDeadline');
-                expressionValues[':fromDeadline'] = { S: filters.deadline.from };
+                query.ExpressionAttributeValues[':fromDeadline'] = { S: filters.deadline.from };
             }
             if (filters.deadline?.to) {
                 deadlineFilter.push('deadline <= :toDeadline');
-                expressionValues[':toDeadline'] = { S: filters.deadline.to };
+                query.ExpressionAttributeValues[':toDeadline'] = { S: filters.deadline.to };
             }
             if (deadlineFilter.length) {
                 if (query.FilterExpression && query.FilterExpression.length > 0) {
@@ -76,12 +76,9 @@ export const setExpressionValues = (input: CoBuyingQueryParams, query: PageingQu
                 query.FilterExpression += ' AND ';
             }
             query.FilterExpression += 'ownerName = :ownerName';
-            expressionValues[':ownerName'] = { S: filters.ownerName };
+            query.ExpressionAttributeValues[':ownerName'] = { S: filters.ownerName };
         }
     }
-
-    // ExpressionAttributeValues에 값 할당
-    query.ExpressionAttributeValues = expressionValues;
 };
 
 // [필수!] 정렬순서를 결정
@@ -97,15 +94,97 @@ export const setSortOrder = (input: CoBuyingQueryParams, query: PageingQuery): v
         }
     }
 };
-function setTableIndex(input: CoBuyingQueryParams, query: PageingQuery) {
-    if (input.sort.sortCriteria === 'deadline') {
-        query.IndexName = 'DeadlineIndex';
-    }
-}
 function setKeyConditionExpression(input: CoBuyingQueryParams, query: PageingQuery) {
     if (input.sort.sortCriteria) {
         if (input.sort.sortCriteria === 'createdAt') {
-            query.KeyConditionExpression = '';
+            query.IndexName = 'CreatedAtIndex';
+            // createdAt 인덱스 이용
+            const filter = input.filters?.createdAt;
+
+            if (filter) {
+                if (filter.from && filter.to) {
+                    // from과 to가 모두 있는 경우
+                    query.KeyConditionExpression = 'createdAt BETWEEN :fromCreatedAtIdx AND :toCreatedAtIdx';
+                    query.ExpressionAttributeValues = {
+                        ':fromCreatedAtIdx': { S: filter.from },
+                        ':toCreatedAtIdx': { S: filter.to },
+                    };
+                } else if (filter.from) {
+                    // from만 있는 경우 from부터 5000-12-31까지
+                    query.KeyConditionExpression = 'createdAt >= :fromCreatedAtIdx';
+                    query.ExpressionAttributeValues = {
+                        ':fromCreatedAtIdx': { S: filter.from },
+                    };
+                } else if (filter.to) {
+                    // to만 있는 경우 1000-01-01부터 to까지
+                    query.KeyConditionExpression = 'createdAt <= :toCreatedAtIdx';
+                    query.ExpressionAttributeValues = {
+                        ':toCreatedAtIdx': { S: filter.to },
+                    };
+                }
+            } else {
+                // from과 to가 전부 없는 경우 전체 범위 조회
+                query.KeyConditionExpression = 'createdAt BETWEEN :defaultStart AND :defaultEnd';
+                query.ExpressionAttributeValues = {
+                    ':defaultStart': { S: '1000-01-01' },
+                    ':defaultEnd': { S: '5000-12-31' },
+                };
+            }
+        } else if (input.sort.sortCriteria === 'deadline') {
+            query.IndexName = 'DeadlineIndex';
+            // deadline 인덱스 이용
+            const filter = input.filters?.deadline;
+
+            if (filter) {
+                if (filter.from && filter.to) {
+                    // from과 to가 모두 있는 경우
+                    query.KeyConditionExpression = 'deadline BETWEEN :fromDeadlineIdx AND :toDeadlineIdx';
+                    query.ExpressionAttributeValues = {
+                        ':fromDeadlineIdx': { S: filter.from },
+                        ':toDeadlineIdx': { S: filter.to },
+                    };
+                } else if (filter.from) {
+                    // from만 있는 경우 from부터 5000-12-31까지
+                    query.KeyConditionExpression = 'deadline >= :fromDeadlineIdx';
+                    query.ExpressionAttributeValues = {
+                        ':fromDeadlineIdx': { S: filter.from },
+                    };
+                } else if (filter.to) {
+                    // to만 있는 경우 1000-01-01부터 to까지
+                    query.KeyConditionExpression = 'deadline <= :toDeadlineIdx';
+                    query.ExpressionAttributeValues = {
+                        ':toDeadlineIdx': { S: filter.to },
+                    };
+                }
+            } else {
+                // from과 to가 전부 없는 경우 전체 범위 조회
+                query.KeyConditionExpression = 'deadline BETWEEN :defaultStart AND :defaultEnd';
+                query.ExpressionAttributeValues = {
+                    ':defaultStart': { S: '1000-01-01' },
+                    ':defaultEnd': { S: '5000-12-31' },
+                };
+            }
+        }
+    }
+}
+function setIndexName(input: CoBuyingQueryParams, query: PageingQuery) {
+    if (input.sort.sortCriteria) {
+        if (input.sort.sortCriteria === 'createdAt') {
+            query.IndexName = 'CreatedAtIndex';
+        } else if (input.sort.sortCriteria === 'deadline') {
+            query.IndexName = 'DeadlineIndex';
+        }
+    }
+}
+function setExclusiveStartKey(input: CoBuyingQueryParams, query: PageingQuery) {
+    if (input.lastEvaluatedKey) {
+        query.ExclusiveStartKey = {};
+        if (input.lastEvaluatedKey.key === 'createdAt') {
+            query.ExclusiveStartKey['createdAt'] = { S: input.lastEvaluatedKey.createdAt };
+            query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
+        } else if (input.lastEvaluatedKey.key === 'deadline') {
+            query.ExclusiveStartKey['deadline'] = { S: input.lastEvaluatedKey.deadline };
+            query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
         }
     }
 }

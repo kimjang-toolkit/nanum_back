@@ -200,12 +200,23 @@ Resources:
           ProvisionedThroughput:
             ReadCapacityUnits: 5
             WriteCapacityUnits: 5
+        - IndexName: CreatedAtIndex
+          KeySchema:
+            - AttributeName: createdAt
+              KeyType: HASH # 파티션 키는 createdAt
+            - AttributeName: id
+              KeyType: RANGE # 정렬 키는 id
+          Projection:
+            ProjectionType: ALL # 인덱스에 모든 속성 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
         - IndexName: DeadlineIndex
           KeySchema:
             - AttributeName: deadline
-              KeyType: HASH # 파티션 키는 coBuyingStatus
+              KeyType: HASH # 파티션 키는 deadline
             - AttributeName: id
-              KeyType: RANGE # 정렬 키는 deadline#id
+              KeyType: RANGE # 정렬 키는 id
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
