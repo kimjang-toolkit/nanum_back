@@ -1,5 +1,6 @@
-import { CoBuyingSimple, CoBuyingPost } from '@api-interface/cobuying';
 import { PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
+import { CoBuyingPost } from '@domain/cobuying';
+import { CoBuyingSimple } from '@interface/cobuying';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();

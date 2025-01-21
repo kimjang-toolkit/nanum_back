@@ -1,5 +1,6 @@
-import { CoBuyingPost, CoBuyingSimple } from '@api-interface/cobuying';
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
+import { CoBuyingPost } from '@domain/cobuying';
+import { CoBuyingSimple } from '@interface/cobuying';
 import { mapToCoBuyingPost } from 'common/mapToCoBuyingPost';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 

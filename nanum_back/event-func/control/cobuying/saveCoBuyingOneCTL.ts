@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { CoBuyingCreateReq } from '@api-interface/cobuying';
 import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 import { BaseHeader } from 'common/responseType';
+import { CoBuyingCreateReq } from '@interface/cobuying';
 
 const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
     if (!event.body) {

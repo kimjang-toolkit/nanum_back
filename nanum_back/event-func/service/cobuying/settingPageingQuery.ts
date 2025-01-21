@@ -1,4 +1,5 @@
-import { CoBuyingQueryParams, CreatedAtKey, DeadlineKey, PageingQuery } from '@api-interface/cobuying';
+import { CreatedAtKey, DeadlineKey } from '@interface/cobuying';
+import { CoBuyingQueryParams, PageingQuery } from '@interface/cobuyingList';
 
 export const settingPageingQuery = (input: CoBuyingQueryParams, query: PageingQuery): void => {
     setLastEvaluatedKey(input, query);

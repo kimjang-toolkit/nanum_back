@@ -1,4 +1,4 @@
-import { CoBuyingQueryParams } from '@api-interface/cobuying';
+import { CoBuyingQueryParams } from '@interface/cobuyingList';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BaseHeader } from 'common/responseType';
 import { queryCoBuyingListSRV } from 'service/cobuying/queryCoBuyingListSRV';

@@ -1,6 +1,6 @@
-import { CoBuyingQueryParams, PageingQuery } from '@api-interface/cobuying';
 import { queryCoBuyingListDAO } from '@cobuying/queryCoBuyingListDAO';
 import { settingPageingQuery } from '@cobuying/settingPageingQuery';
+import { CoBuyingQueryParams, PageingQuery } from '@interface/cobuyingList';
 
 export const queryCoBuyingListSRV = async (input: CoBuyingQueryParams): Promise<void> => {
     const query: PageingQuery = {

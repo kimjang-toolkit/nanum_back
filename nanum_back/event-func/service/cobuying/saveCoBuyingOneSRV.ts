@@ -1,16 +1,10 @@
 // import { DynamoDB } from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
-import {
-    CoBuyingStatus,
-    CoBuyingCreateReq,
-    CoBuyingSimple,
-    QuantityCoBuying,
-    AttendeeCoBuying,
-    CoBuyingPost,
-} from '@api-interface/cobuying';
-import { Attendee } from '@api-interface/user';
+import { CoBuyingStatus, QuantityCoBuying, AttendeeCoBuying, CoBuyingPost } from '@domain/cobuying';
+import { Attendee } from '@domain/user';
 import { getKoreaDay, getKoreaTime } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
+import { CoBuyingCreateReq, CoBuyingSimple } from '@interface/cobuying';
 
 /**
  * DB에 공구글 데이터 생성

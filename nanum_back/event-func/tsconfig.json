@@ -13,7 +13,8 @@
       "baseUrl": "./",
       "preserveValueImports": false,
       "paths": {
-        "@api-interface/*": ["../api-interface/src/*"],
+        "@domain/*": ["../api-interface/src/domain/*"],
+        "@interface/*": ["../api-interface/src/interface/*"],
         "@cobuying/*": [
           "../event-func/control/cobuying/*", 
           "../event-func/service/cobuying/*", 

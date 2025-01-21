@@ -1,11 +1,5 @@
-import {
-    AttendeeCoBuying,
-    BaseCoBuying,
-    CoBuyingPost,
-    CoBuyingStatus,
-    QuantityCoBuying,
-} from '@api-interface/cobuying';
-import { Attendee } from '@api-interface/user';
+import { AttendeeCoBuying, BaseCoBuying, CoBuyingPost, CoBuyingStatus, QuantityCoBuying } from '@domain/cobuying';
+import { Attendee } from '@domain/user';
 
 // 공구글에 맞는 타입으로 매핑하기
 export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): CoBuyingPost => {

@@ -1,6 +1,6 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
-import { BaseHeader, APIERROR } from 'common/responseType';
+import { BaseHeader } from 'common/responseType';
 
 const validateInput = (event: APIGatewayProxyEvent): void => {
     const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
