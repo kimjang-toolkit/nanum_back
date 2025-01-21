@@ -35,6 +35,7 @@ export const setLastEvaluatedKey = (input: CoBuyingQueryParams, query: PageingQu
 export const setExpressionValues = (input: CoBuyingQueryParams, query: PageingQuery): void => {
     if (input.filters) {
         const filters = input.filters;
+        query.FilterExpression = '';
         query.ExpressionAttributeValues = {};
         // FilterExpression 설정 (createdAt 범위 필터링)
         if (filters.createdAt?.from || filters.createdAt?.to) {
@@ -95,6 +96,7 @@ export const setSortOrder = (input: CoBuyingQueryParams, query: PageingQuery): v
         }
     }
 };
+
 function setKeyConditionExpression(input: CoBuyingQueryParams, query: PageingQuery) {
     if (input.sort.sortCriteria) {
         if (input.sort.sortCriteria === 'createdAt') {
@@ -177,6 +179,7 @@ function setIndexName(input: CoBuyingQueryParams, query: PageingQuery) {
         }
     }
 }
+
 function setExclusiveStartKey(input: CoBuyingQueryParams, query: PageingQuery) {
     if (input.lastEvaluatedKey) {
         query.ExclusiveStartKey = {};

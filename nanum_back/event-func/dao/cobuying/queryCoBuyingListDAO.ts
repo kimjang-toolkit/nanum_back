@@ -1,12 +1,12 @@
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingSimple } from '@interface/cobuying';
-import { PageingQuery } from '@interface/cobuyingList';
-import { mapToCoBuyingSimple } from 'common/mapCoBuyingList';
+import { CoBuyingPageingRes, PageingQuery } from '@interface/cobuyingList';
+import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSimple } from 'common/mapCoBuyingList';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<void> => {
+export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<CoBuyingPageingRes> => {
     try {
         // const query: any = {
         //     TableName: process.env.CoBuyingTableName || '', // 테이블 이름
@@ -21,6 +21,16 @@ export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<void> =
         const response = await ddbDocClient.send(command);
         console.log('res : ', response);
         const coBuyingList: CoBuyingSimple[] = mapToCoBuyingSimple(response.Items);
+
+        const res: CoBuyingPageingRes = {
+            coBuyingList: coBuyingList,
+            count: response.Count ? response.Count : 0,
+        };
+        if (response.LastEvaluatedKey) {
+            const lastEvaluatedKey = mapToCoBuyingEvaluatedKey(response.LastEvaluatedKey);
+            res['lastEvaluatedKey'] = lastEvaluatedKey;
+        }
+        return res;
     } catch (error) {
         if (error instanceof Error) {
             console.error(error);
