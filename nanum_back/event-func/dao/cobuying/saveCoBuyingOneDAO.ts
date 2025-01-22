@@ -30,7 +30,7 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
                 totalPrice: cobuying.totalPrice,
                 attendeeCount: cobuying.attendeeCount,
                 deadline: cobuying.deadline,
-                status: cobuying.coBuyingStatus,
+                coBuyingStatus: cobuying.coBuyingStatus,
                 createdAt: cobuying.createdAt,
             } as CoBuyingSimple;
         // 성공적으로 삽입한 후, CoBuyingSimple 타입으로 반환

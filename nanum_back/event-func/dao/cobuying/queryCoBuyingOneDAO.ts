@@ -1,21 +1,16 @@
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
-import { CoBuyingPost } from '@domain/cobuying';
 import { CoBuyingSimple } from '@interface/cobuying';
-import { mapToCoBuyingPost } from 'common/mapToCoBuyingPost';
+import { mapToCoBuyingSimple } from 'common/mapCoBuyingList';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const queryCoBuyingById = async (
-    ownerName: string,
-    createdAtDateOnly: string,
-    id: string,
-): Promise<CoBuyingSimple> => {
+export const queryCoBuyingById = async (ownerName: string, createdAt: string, id: string): Promise<CoBuyingSimple> => {
     // DynamoDB에서 'id'로 공구글 조회
     // 단건 조회를 위한 파라미터 설정
     // 불변값으로 조희
 
-    const createdAtId = createdAtDateOnly + '#' + id;
+    const createdAtId = createdAt + '#' + id;
     // console.log('ownerName : ', ownerName);
     // console.log('createdAt : ', createdAtId);
     // console.log(createdAtId === '2025-01-07#3e3ad1dd-3ef0-4a50-8e77-d3344bc4da98');
@@ -39,18 +34,9 @@ export const queryCoBuyingById = async (
         // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
         if (result.Items && result.Items.length > 0) {
             console.log(result.Items[0]);
-            const cobuying = mapToCoBuyingPost(result.Items[0]) as CoBuyingPost;
+            const cobuying: CoBuyingSimple[] = mapToCoBuyingSimple(result.Items);
             // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
-            return {
-                id: cobuying.id,
-                productName: cobuying.productName,
-                ownerName: cobuying.ownerName,
-                totalPrice: cobuying.totalPrice,
-                attendeeCount: cobuying.attendeeCount,
-                deadline: cobuying.deadline,
-                status: cobuying.coBuyingStatus,
-                createdAt: cobuying.createdAtDateOnly,
-            } as CoBuyingSimple;
+            return cobuying[0];
             // 필요한 추가 로직
         } else {
             throw new Error('찾으시는 공구글이 존재하지 않아요');

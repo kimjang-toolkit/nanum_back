@@ -30,7 +30,6 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
 };
 
 function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
-    const timestamp = getKoreaTime();
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
 
@@ -39,7 +38,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
         createdAt: createdAtDateOnly,
         createdAtDateOnly: createdAtDateOnly,
         coBuyingStatus: CoBuyingStatus.PREPARING,
-        createdAtId: timestamp + '#' + id,
+        createdAtId: createdAtDateOnly + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         ...input,
@@ -68,6 +67,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
         ownerPrice: ownerPrice,
         totalAttendeeQuantity: item.ownerQuantity,
         totalAttendeePrice: ownerPrice, // 아직 공구장 밖에 신청자가 없기 때문에 공구장 부담액이 전체 부담액.
+        remainQuantity: item.totalQuantity - item.ownerQuantity,
         attendeeCount: 1,
         attendeeList: [hostAttende],
     };
@@ -76,7 +76,6 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
 }
 
 function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
-    const timestamp = new Date().toISOString();
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
@@ -84,7 +83,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
         createdAt: createdAtDateOnly,
         createdAtDateOnly: createdAtDateOnly,
         coBuyingStatus: CoBuyingStatus.PREPARING,
-        createdAtId: timestamp + '#' + id,
+        createdAtId: createdAtDateOnly + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         ...input,

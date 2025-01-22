@@ -1,3 +1,4 @@
+import { CreatedAtKey } from '@interface/cobuying';
 import { CoBuyingQueryParams } from '@interface/cobuyingList';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BaseHeader } from 'common/responseType';
@@ -22,6 +23,10 @@ function validInput(input: APIGatewayProxyEvent) {
             throw new Error('정렬 조건과 이전 조회 값을 다시 확인해주세요.');
         }
     }
+
+    if (params.size && params.size > 50) {
+        throw new Error('한번에 50개 이상 조회할 수 없어요.');
+    }
 }
 
 /**
@@ -35,10 +40,29 @@ function validInput(input: APIGatewayProxyEvent) {
  * @returns
  */
 export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    let input: CoBuyingQueryParams;
+    const input: CoBuyingQueryParams = {};
     try {
-        validInput(event);
-        input = JSON.parse(event.body || '');
+        // validInput(event);
+        // input = JSON.parse(event.body || '');
+        const params = event.queryStringParameters ?? {};
+        const id = params.id || '';
+        const createdAt = params.createdAt || '';
+        if (id && createdAt) {
+            const key: CreatedAtKey = {
+                id: id,
+                key: 'createdAt',
+                createdAt: createdAt,
+            };
+            input['lastEvaluatedKey'] = key;
+        }
+
+        input['sort'] = {
+            sortCriteria: 'createdAt',
+            sortingOrder: 'desc',
+        };
+
+        input['size'] = 20;
+
         console.log(input);
     } catch (error) {
         console.error(error);
@@ -62,6 +86,7 @@ export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promi
         console.log(error);
         return {
             statusCode: 500,
+            headers: BaseHeader,
             body: JSON.stringify({
                 message: (error as Error).message,
             }),

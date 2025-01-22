@@ -98,7 +98,7 @@ export const setSortOrder = (input: CoBuyingQueryParams, query: PageingQuery): v
 };
 
 function setKeyConditionExpression(input: CoBuyingQueryParams, query: PageingQuery) {
-    if (input.sort.sortCriteria) {
+    if (input.sort && input.sort.sortCriteria) {
         if (input.sort.sortCriteria === 'createdAt') {
             query.IndexName = 'CreatedAtIndex';
             // createdAt 인덱스 이용
@@ -171,7 +171,7 @@ function setKeyConditionExpression(input: CoBuyingQueryParams, query: PageingQue
     }
 }
 function setIndexName(input: CoBuyingQueryParams, query: PageingQuery) {
-    if (input.sort.sortCriteria) {
+    if (input.sort && input.sort.sortCriteria) {
         if (input.sort.sortCriteria === 'createdAt') {
             query.IndexName = 'CreatedAtIndex';
         } else if (input.sort.sortCriteria === 'deadline') {

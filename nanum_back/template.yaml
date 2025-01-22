@@ -19,7 +19,7 @@ Globals:
         DYNAMODBURL: !Ref DYNAMODBURL
         DYNAMODBHOST: !Ref DYNAMODBHOST
         DYNAMODBPORT: !Ref DYNAMODBPORT
-        DB_PROTOCAL: !Ref DB_PROTOCAL
+        DBPROTOCAL: !Ref DBPROTOCAL
 
 Parameters:
   CoBuyingTableName:
@@ -49,7 +49,7 @@ Parameters:
     Type: String
   DYNAMODBPORT:
     Type: String
-  DB_PROTOCAL:
+  DBPROTOCAL:
     Type: String
     Description: DynamoDB 연결 프로토콜
     Default: "http:"
@@ -150,9 +150,14 @@ Resources:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /co-buying
             Path: /api/co-buying/page # API Gateway 경로
-            Method: post # HTTP 메서드
+            Method: get # HTTP 메서드
             RestApiId:
               Ref: ApiGatewayApi # API Gateway와 직접 연결
+            RequestParameters: # 쿼리 매개변수 정의
+              - method.request.querystring.id:
+                  Required: false
+              - method.request.querystring.createdAt:
+                  Required: false
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
