@@ -1,5 +1,5 @@
 import { CoBuyingStatus } from '@domain/cobuying';
-import { CoBuyingKey, CoBuyingSimple } from '@interface/cobuying';
+import { CoBuyingDetail, CoBuyingKey, CoBuyingSimple } from '@interface/cobuying';
 
 export function mapToCoBuyingSimple(res: any): CoBuyingSimple[] {
     // res.Items가 undefined인 경우 빈 배열을 반환하도록 수정

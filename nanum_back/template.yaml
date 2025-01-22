@@ -97,6 +97,44 @@ Resources:
         EntryPoints:
           - saveCoBuyingOneCTL.ts
 
+  GetCoBuyingDetailFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 공구방 생성 함수
+    Properties:
+      CodeUri: event-func/control/cobuying
+      Handler: queryCoBuyingDetailOneCTL.getCoBuyingDetailHandler
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        GetCoBuyingOne:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties: # 엔드포인트: POST /co-buying
+            Path: /api/co-buying/detail # API Gateway 경로
+            Method: get # HTTP 메서드
+            RestApiId:
+              Ref: ApiGatewayApi # API Gateway와 직접 연결
+            RequestParameters: # 쿼리 매개변수 정의
+              - method.request.querystring.ownerName:
+                  Required: true
+              - method.request.querystring.createdAt:
+                  Required: true
+              - method.request.querystring.id:
+                  Required: true
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - queryCoBuyingDetailOneCTL.ts
+
   GetCoBuyingByIdFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 생성 함수
@@ -134,6 +172,7 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - queryCoBuyingOneCTL.ts
+
   GetCoBuyingListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 생성 함수

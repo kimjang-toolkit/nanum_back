@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
 import { BaseHeader } from 'common/responseType';
+import { CoBuyingDetail } from '@interface/cobuying';
+import { queryCoBuyingDetail } from '@cobuying/queryCoBuyingDetailDAO';
 
 const validateInput = (event: APIGatewayProxyEvent): void => {
     const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
@@ -14,7 +15,7 @@ const validateInput = (event: APIGatewayProxyEvent): void => {
  * @param event
  * @returns
  */
-export const getDetailCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const getCoBuyingDetailHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let ownerName;
     let createdAt;
     let id;
@@ -34,7 +35,7 @@ export const getDetailCoBuyingByIdHandler = async (event: APIGatewayProxyEvent):
     }
     try {
         console.log(' ownerName : ' + ownerName + '\n createdAt : ' + createdAt + '\n id : ' + id);
-        const cobuying = await queryCoBuyingById(ownerName, createdAt, id);
+        const cobuying: CoBuyingDetail = await queryCoBuyingDetail(ownerName, createdAt, id);
 
         return {
             statusCode: 200,
