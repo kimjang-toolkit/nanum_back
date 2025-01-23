@@ -39,7 +39,7 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
             statusCode: 500,
             headers: BaseHeader,
             body: JSON.stringify({
-                message: '공구 생성 중 오류가 발생했습니다.',
+                message: (err as Error).message,
             }),
         };
     }

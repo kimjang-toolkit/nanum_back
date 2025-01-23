@@ -38,7 +38,7 @@ export const queryCoBuyingDetail = async (
         // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
         if (result.Items && result.Items.length > 0) {
             const cobuying: CoBuyingDetail = mapToCoBuyingDetail(result.Items[0]);
-            // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
+            // CoBuyingDetail 인터페이스에 맞게 데이터를 매핑하여 반환
             return cobuying;
             // 필요한 추가 로직
         } else {
