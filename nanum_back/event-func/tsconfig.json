@@ -20,7 +20,8 @@
           "../event-func/service/cobuying/*", 
           "../event-func/dao/cobuying/*"
         ],
-        "@product/*": ["../event-func/control/product", "../event-func/service/product", "../event-func/dao/product"]
+        "@product/*": ["../event-func/control/product", "../event-func/service/product", "../event-func/dao/product"],
+        "@auth/*":["../event-func/control/auth", "../event-func/service/auth", "../event-func/dao/auth"],
     }
     },
     // "exclude": ["node_modules", "**/*.test.ts"]

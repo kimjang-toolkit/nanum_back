@@ -5,12 +5,10 @@ import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const queryCoBuyingById = async (ownerName: string, createdAt: string, id: string): Promise<CoBuyingSimple> => {
+export const queryCoBuyingById = async (ownerName: string, id: string): Promise<CoBuyingSimple> => {
     // DynamoDB에서 'id'로 공구글 조회
     // 단건 조회를 위한 파라미터 설정
     // 불변값으로 조희
-
-    const createdAtId = createdAt + '#' + id;
     // console.log('ownerName : ', ownerName);
     // console.log('createdAt : ', createdAtId);
     // console.log(createdAtId === '2025-01-07#3e3ad1dd-3ef0-4a50-8e77-d3344bc4da98');
@@ -18,10 +16,10 @@ export const queryCoBuyingById = async (ownerName: string, createdAt: string, id
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         IndexName: 'OwnerNameGSI', // 사용할 GSI
-        KeyConditionExpression: 'ownerName = :ownerName AND createdAtId = :createdAtId', // 쿼리 조건
+        KeyConditionExpression: 'ownerName = :ownerName AND id = :id', // 쿼리 조건
         ExpressionAttributeValues: {
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
-            ':createdAtId': { S: createdAtId }, // GSI 정렬 키 값
+            ':id': { S: id }, // GSI 정렬 키 값
         },
     };
 

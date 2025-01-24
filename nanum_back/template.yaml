@@ -53,6 +53,10 @@ Parameters:
     Type: String
     Description: DynamoDB 연결 프로토콜
     Default: "http:"
+  AUTHSECRETKEY:
+    Type: String
+    Description: 비밀번호 암호화를 위한 키
+    Default: "abcd1234~~!!"
 
 Resources:
   ApiGatewayApi:
@@ -237,7 +241,7 @@ Resources:
           KeySchema:
             - AttributeName: ownerName
               KeyType: HASH # 파티션 키는 ownerName
-            - AttributeName: createdAtId
+            - AttributeName: id
               KeyType: RANGE # 정렬 키는 createdAt#id
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함

@@ -4,8 +4,8 @@ import { CoBuyingDetail } from '@interface/cobuying';
 import { queryCoBuyingDetail } from '@cobuying/queryCoBuyingDetailDAO';
 
 const validateInput = (event: APIGatewayProxyEvent): void => {
-    const { ownerName, createdAt, id } = event.queryStringParameters ?? {};
-    if (!ownerName || !createdAt || !id) {
+    const { ownerName, id } = event.queryStringParameters ?? {};
+    if (!ownerName || !id) {
         throw Error('공구글 조회를 위한 필수 입력값이 없어요.');
     }
 };
@@ -17,14 +17,12 @@ const validateInput = (event: APIGatewayProxyEvent): void => {
  */
 export const getCoBuyingDetailHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let ownerName;
-    let createdAt;
     let id;
 
     try {
         validateInput(event);
         const params = event.queryStringParameters ?? {};
         ownerName = params.ownerName || '';
-        createdAt = params.createdAt || '';
         id = params.id || '';
     } catch (error) {
         return {
@@ -34,8 +32,8 @@ export const getCoBuyingDetailHandler = async (event: APIGatewayProxyEvent): Pro
         };
     }
     try {
-        console.log(' ownerName : ' + ownerName + '\n createdAt : ' + createdAt + '\n id : ' + id);
-        const cobuying: CoBuyingDetail = await queryCoBuyingDetail(ownerName, createdAt, id);
+        console.log(' ownerName : ' + ownerName + '\n id : ' + id);
+        const cobuying: CoBuyingDetail = await queryCoBuyingDetail(ownerName, id);
 
         return {
             statusCode: 200,

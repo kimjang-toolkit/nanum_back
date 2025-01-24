@@ -5,6 +5,7 @@ import { Attendee } from '@domain/user';
 import { getKoreaDay, getKoreaTime } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSimple } from '@interface/cobuying';
+import { hashPassword } from 'service/auth/authEncrptorSRV';
 
 /**
  * DB에 공구글 데이터 생성
@@ -17,6 +18,8 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
     // DB 엔드포임트 확인
 
     let cobuying: CoBuyingPost;
+    input.ownerPwd = await hashPassword(input.ownerPwd);
+
     if (input.type === 'quantity') {
         // 수량나눔
         cobuying = getQuantityCoBuying(input);
@@ -32,7 +35,6 @@ export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSi
 function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
-
     const item = {
         id: id,
         createdAt: createdAtDateOnly,
