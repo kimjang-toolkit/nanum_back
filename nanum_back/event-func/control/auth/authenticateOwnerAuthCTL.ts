@@ -1,6 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { BaseHeader } from 'common/responseType';
+import { APIERROR, BaseHeader } from 'common/responseType';
 import { CoBuyingOwnerAuth } from '@domain/user';
+import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
 
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
     const id = event.pathParameters?.id;
@@ -33,13 +34,20 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
     }
     try {
         console.log(' id : ', auth.id, ' ownerName : ', auth.ownerName);
-
+        const jwt = await authenticateOwnerAuthSRV(auth);
         return {
             statusCode: 200,
             headers: BaseHeader,
             body: JSON.stringify('auth'),
         };
     } catch (error) {
+        if (error instanceof APIERROR) {
+            return {
+                statusCode: error.statusCode,
+                headers: BaseHeader,
+                body: JSON.stringify({ message: error.message }),
+            };
+        }
         return {
             statusCode: 500,
             headers: BaseHeader,

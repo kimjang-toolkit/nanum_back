@@ -4,10 +4,16 @@ type Header = {
     'Access-Control-Allow-Methods': string; // Allow only POST request
 };
 
-export interface APIERROR extends Error {
+export class APIERROR extends Error {
     statusCode: number;
-    headers: Header;
-    body: string;
+
+    constructor(statusCode: number, message: string) {
+        super(message); // Error 클래스의 message 속성 설정
+        this.statusCode = statusCode;
+
+        // Error 객체와 상속된 클래스의 프로토타입 연결
+        Object.setPrototypeOf(this, APIERROR.prototype);
+    }
 }
 
 export interface ApiResponse {
@@ -21,9 +27,3 @@ export const BaseHeader = {
     'Access-Control-Allow-Origin': "'*'", // Allow from anywhere
     'Access-Control-Allow-Methods': "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token'", // Allow only POST request
 };
-
-export const CoBuyingNotFoundERROR = {
-    statusCode: 404,
-    headers: BaseHeader,
-    body: JSON.stringify({ message: '찾으시는 공구글이 없어요.' }),
-} as APIERROR;

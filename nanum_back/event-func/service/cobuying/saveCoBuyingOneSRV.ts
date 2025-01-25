@@ -2,10 +2,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CoBuyingStatus, QuantityCoBuying, AttendeeCoBuying, CoBuyingPost } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { getKoreaDay, getKoreaTime } from 'common/time';
+import { getKoreaDay } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSimple } from '@interface/cobuying';
-import { hashPassword } from 'service/auth/authEncrptorSRV';
+import { hashPassword } from '@auth/authEncrptorSRV';
 
 /**
  * DB에 공구글 데이터 생성
