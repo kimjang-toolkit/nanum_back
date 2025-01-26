@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: "2010-09-09"
+AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
   nanum_back
@@ -25,26 +25,26 @@ Parameters:
   CoBuyingTableName:
     Type: String
     Description: 공구방 테이블을 위한 테이블
-    Default: "CoBuyingTable"
+    Default: 'CoBuyingTable'
 
   REGIONNAME:
     Type: String
     Description: Default region for deployment.
-    Default: "ap-northeast-2"
+    Default: 'ap-northeast-2'
 
   AWSENVNAME:
     Type: String
     Description: AWS Environment where code is being executed (AWS_SAM_LOCAL or AWS).
-    Default: "AWS_SAM_LOCAL"
+    Default: 'AWS_SAM_LOCAL'
 
   DEVENVNAME:
     Type: String
     Description: Developer environment where code is being executed (OSX, Windows, or Linux).
-    Default: "OSX"
+    Default: 'OSX'
   DYNAMODBURL:
     Type: String
     Description: 실행 환경에 따른 DynamoDB Endpoint
-    Default: "https://dynamodb.ap-northeast-2.amazonaws.com"
+    Default: 'https://dynamodb.ap-northeast-2.amazonaws.com'
   DYNAMODBHOST:
     Type: String
   DYNAMODBPORT:
@@ -52,11 +52,11 @@ Parameters:
   DBPROTOCAL:
     Type: String
     Description: DynamoDB 연결 프로토콜
-    Default: "http:"
+    Default: 'http:'
   AUTHSECRETKEY:
     Type: String
     Description: 비밀번호 암호화를 위한 키
-    Default: "abcd1234~~!!"
+    Default: 'abcd1234~~!!'
 
 Resources:
   ApiGatewayApi:
@@ -96,10 +96,41 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - saveCoBuyingOneCTL.ts
+
+  AuthenticateOwnerAuthFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 공구장 인증 함수
+    Properties:
+      CodeUri: event-func/control/auth
+      Handler: authenticateOwnerAuthCTL.authenticateOwnerAuth
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        CreateCoBuying:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties: # 엔드포인트: POST /auth
+            Path: /api/auth/{coBuyingId} # API Gateway 경로
+            Method: post # HTTP 메서드
+            RestApiId:
+              Ref: ApiGatewayApi # API Gateway와 직접 연결
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: 'es2020'
+        Sourcemap: true
+        EntryPoints:
+          - authenticateOwnerAuthCTL.ts
 
   GetCoBuyingDetailFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -134,7 +165,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - queryCoBuyingDetailOneCTL.ts
@@ -172,7 +203,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - queryCoBuyingOneCTL.ts
@@ -208,7 +239,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: 'es2020'
         Sourcemap: true
         EntryPoints:
           - queryCoBuyingListCTL.ts
@@ -276,11 +307,11 @@ Outputs:
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   CreateCoBuyingApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/co-buying/"
+    Description: 'API Gateway endpoint URL for Prod stage for Hello World function'
+    Value: !Sub 'https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/co-buying/'
   CreateCoBuyingFunction:
-    Description: "Hello World Lambda Function ARN"
+    Description: 'Hello World Lambda Function ARN'
     Value: !GetAtt CreateCoBuyingFunction.Arn
   CreateCoBuyingFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
+    Description: 'Implicit IAM Role created for Hello World function'
     Value: !GetAtt CreateCoBuyingFunctionRole.Arn

@@ -1,6 +1,6 @@
-export const getKoreaTime = (): string => {
+export const getKoreaTime = (): Date => {
     const timestamp = new Date();
-    const koreanTime = new Date(timestamp.getTime() + 9 * 60 * 60 * 1000).toISOString(); // UTC에서 9시간을 더함
+    const koreanTime = new Date(timestamp.getTime() + 9 * 60 * 60 * 1000); // UTC에서 9시간을 더함
     return koreanTime;
 };
 

@@ -1,7 +1,7 @@
 import { ScanCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingSimple } from '@interface/cobuying';
 import { CoBuyingPageingRes, PageingQuery } from '@interface/cobuyingList';
-import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSimple } from 'common/mapCoBuyingList';
+import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSimple } from 'mappers/mapCoBuyingList';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();

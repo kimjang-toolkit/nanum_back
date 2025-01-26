@@ -1,5 +1,9 @@
 {
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/uuid": "^10.0.0"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
   }
 }

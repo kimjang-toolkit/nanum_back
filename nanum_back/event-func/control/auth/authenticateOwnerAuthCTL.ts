@@ -1,18 +1,17 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, BaseHeader } from 'common/responseType';
-import { CoBuyingOwnerAuth } from '@domain/user';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-
+import { CoBuyingOwnerAuth } from '@interface/auth';
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
     const id = event.pathParameters?.id;
-    const { ownerName, password } = JSON.parse(event.body || '');
-    if (!ownerName || !password || !id) {
+    const { ownerName, ownerPassword } = JSON.parse(event.body || '');
+    if (!ownerName || !ownerPassword || !id) {
         throw Error('정확한 인증 정보를 전달해주세요.');
     }
     return {
         ownerName: ownerName,
-        password: password,
-        id: id,
+        ownerPassword: ownerPassword,
+        coBuyingId: id,
     } as CoBuyingOwnerAuth;
 };
 
@@ -33,12 +32,12 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         };
     }
     try {
-        console.log(' id : ', auth.id, ' ownerName : ', auth.ownerName);
+        console.log(' coBuyingId : ', auth.coBuyingId, ' ownerName : ', auth.ownerName);
         const jwt = await authenticateOwnerAuthSRV(auth);
         return {
             statusCode: 200,
             headers: BaseHeader,
-            body: JSON.stringify('auth'),
+            body: JSON.stringify(jwt),
         };
     } catch (error) {
         if (error instanceof APIERROR) {

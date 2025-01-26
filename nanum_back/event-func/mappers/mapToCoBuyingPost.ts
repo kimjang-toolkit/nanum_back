@@ -38,6 +38,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
             totalAttendeePrice: Number(item.totalAttendeePrice.N),
             totalAttendeeQuantity: Number(item.totalAttendeeQuantity.N),
             unitPrice: Number(item.unitPrice.N),
+            remainQuantity: Number(item.remainQuantity.N),
         };
 
         return quantityCoBuying;
