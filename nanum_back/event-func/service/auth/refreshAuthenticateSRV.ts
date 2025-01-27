@@ -1,5 +1,5 @@
-import { AuthToken, UserAuth } from "@interface/auth";
-import { validateUserAuthJWT } from "@auth/validateUserAuthJWT";
+import { AuthToken } from "@interface/auth";
+import { validateUserAuthJWT } from "@auth/validateUserAuthJWTSRV";
 import { regenerateToken } from "service/auth/authEncrptorSRV";
 
 

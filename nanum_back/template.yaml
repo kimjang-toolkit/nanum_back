@@ -251,8 +251,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: createdAt # 공구글 생성일로 파티셔닝
           AttributeType: S
-        - AttributeName: createdAtId # 생성시간 + id로 정렬
-          AttributeType: S
         - AttributeName: deadline
           AttributeType: S # 마감일 기준 정렬
         - AttributeName: id
@@ -260,25 +258,14 @@ Resources:
         - AttributeName: ownerName
           AttributeType: S # 공구장 이름
       KeySchema:
-        - AttributeName: createdAt
-          KeyType: HASH # 파티션 키
-        - AttributeName: createdAtId
-          KeyType: RANGE # 정렬 키
+        - AttributeName: ownerName
+          KeyType: HASH # 파티션 키는 ownerName
+        - AttributeName: id
+          KeyType: RANGE # 정렬 키는 createdAt#id
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
       GlobalSecondaryIndexes:
-        - IndexName: OwnerNameGSI
-          KeySchema:
-            - AttributeName: ownerName
-              KeyType: HASH # 파티션 키는 ownerName
-            - AttributeName: id
-              KeyType: RANGE # 정렬 키는 createdAt#id
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
         - IndexName: CreatedAtIndex
           KeySchema:
             - AttributeName: createdAt

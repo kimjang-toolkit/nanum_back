@@ -15,7 +15,6 @@ export const queryCoBuyingById = async (ownerName: string, id: string): Promise<
 
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
-        IndexName: 'OwnerNameGSI', // 사용할 GSI
         KeyConditionExpression: 'ownerName = :ownerName AND id = :id', // 쿼리 조건
         ExpressionAttributeValues: {
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
