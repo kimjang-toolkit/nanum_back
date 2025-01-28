@@ -1,0 +1,338 @@
+{
+    "Items": [
+        {
+            "ownerQuantity": {
+                "N": "3"
+            },
+            "unitPrice": {
+                "N": "1000"
+            },
+            "deadlineId": {
+                "S": "2025-01-08#75caf96a-629f-422c-b60b-6edaac5f2d70"
+            },
+            "totalAttendeeQuantity": {
+                "N": "3"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "memo": {
+                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+            },
+            "type": {
+                "N": "0"
+            },
+            "ownerNameId": {
+                "S": "오찬솔#75caf96a-629f-422c-b60b-6edaac5f2d70"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "오찬솔"
+                            },
+                            "attendeePrice": {
+                                "N": "3000"
+                            },
+                            "appliedQuantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
+            },
+            "productName": {
+                "S": "싱싱한 바나나 공구!"
+            },
+            "ownerPassword": {
+                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
+            },
+            "createdAt": {
+                "S": "2025-01-28"
+            },
+            "createdAtId": {
+                "S": "2025-01-28#75caf96a-629f-422c-b60b-6edaac5f2d70"
+            },
+            "totalQuantity": {
+                "N": "15"
+            },
+            "ownerName": {
+                "S": "오찬솔"
+            },
+            "ownerPrice": {
+                "N": "3000"
+            },
+            "productLink": {
+                "S": "https://example.com/상품링크"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "75caf96a-629f-422c-b60b-6edaac5f2d70"
+            },
+            "deadline": {
+                "S": "2025-01-08"
+            },
+            "remainQuantity": {
+                "N": "12"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "totalAttendeePrice": {
+                "N": "3000"
+            }
+        },
+        {
+            "ownerQuantity": {
+                "N": "3"
+            },
+            "unitPrice": {
+                "N": "1000"
+            },
+            "deadlineId": {
+                "S": "2025-01-08#ed5b51f9-4d63-4687-8e04-4b8be16ac254"
+            },
+            "totalAttendeeQuantity": {
+                "N": "3"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "memo": {
+                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+            },
+            "type": {
+                "N": "0"
+            },
+            "ownerNameId": {
+                "S": "오찬솔#ed5b51f9-4d63-4687-8e04-4b8be16ac254"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "오찬솔"
+                            },
+                            "attendeePrice": {
+                                "N": "3000"
+                            },
+                            "appliedQuantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
+            },
+            "productName": {
+                "S": "싱싱한 바나나 공구!"
+            },
+            "ownerPassword": {
+                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
+            },
+            "createdAt": {
+                "S": "2025-01-28"
+            },
+            "createdAtId": {
+                "S": "2025-01-28#ed5b51f9-4d63-4687-8e04-4b8be16ac254"
+            },
+            "totalQuantity": {
+                "N": "15"
+            },
+            "ownerName": {
+                "S": "오찬솔"
+            },
+            "ownerPrice": {
+                "N": "3000"
+            },
+            "productLink": {
+                "S": "https://example.com/상품링크"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "ed5b51f9-4d63-4687-8e04-4b8be16ac254"
+            },
+            "deadline": {
+                "S": "2025-01-08"
+            },
+            "remainQuantity": {
+                "N": "12"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "totalAttendeePrice": {
+                "N": "3000"
+            }
+        },
+        {
+            "ownerQuantity": {
+                "N": "3"
+            },
+            "unitPrice": {
+                "N": "1000"
+            },
+            "deadlineId": {
+                "S": "2025-02-17#58525b4b-3d23-46c3-a5cf-c6241632eec2"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "memo": {
+                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+            },
+            "targetAttendeeCount": {
+                "N": "15"
+            },
+            "type": {
+                "S": "attendee"
+            },
+            "ownerNameId": {
+                "S": "김철수#58525b4b-3d23-46c3-a5cf-c6241632eec2"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "김철수"
+                            },
+                            "attendeePrice": {
+                                "N": "1000"
+                            },
+                            "appliedQuantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
+            },
+            "productName": {
+                "S": "대나무 같은 참외 공구!"
+            },
+            "ownerPassword": {
+                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
+            },
+            "createdAt": {
+                "S": "2025-01-29"
+            },
+            "createdAtId": {
+                "S": "2025-01-29#58525b4b-3d23-46c3-a5cf-c6241632eec2"
+            },
+            "totalQuantity": {
+                "N": "15"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "productLink": {
+                "S": "https://example.com/상품링크"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "58525b4b-3d23-46c3-a5cf-c6241632eec2"
+            },
+            "deadline": {
+                "S": "2025-02-17"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "perAttendeePrice": {
+                "N": "1000"
+            }
+        },
+        {
+            "ownerQuantity": {
+                "N": "3"
+            },
+            "unitPrice": {
+                "N": "1000"
+            },
+            "deadlineId": {
+                "S": "2025-02-17#80a4f174-4764-4d06-bd8a-a09ace1b7f24"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "memo": {
+                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+            },
+            "targetAttendeeCount": {
+                "N": "15"
+            },
+            "type": {
+                "N": "1"
+            },
+            "ownerNameId": {
+                "S": "김철수#80a4f174-4764-4d06-bd8a-a09ace1b7f24"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "김철수"
+                            },
+                            "attendeePrice": {
+                                "N": "1000"
+                            },
+                            "appliedQuantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
+            },
+            "productName": {
+                "S": "대나무 같은 참외 공구!"
+            },
+            "ownerPassword": {
+                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
+            },
+            "createdAt": {
+                "S": "2025-01-28"
+            },
+            "createdAtId": {
+                "S": "2025-01-28#80a4f174-4764-4d06-bd8a-a09ace1b7f24"
+            },
+            "totalQuantity": {
+                "N": "15"
+            },
+            "createdAtDateOnly": {
+                "S": "2025-01-28"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "productLink": {
+                "S": "https://example.com/상품링크"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "80a4f174-4764-4d06-bd8a-a09ace1b7f24"
+            },
+            "deadline": {
+                "S": "2025-02-17"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "perAttendeePrice": {
+                "N": "1000"
+            }
+        }
+    ],
+    "Count": 4,
+    "ScannedCount": 4,
+    "ConsumedCapacity": null
+}
