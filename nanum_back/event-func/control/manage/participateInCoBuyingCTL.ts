@@ -69,6 +69,7 @@ export const participateInCoBuyingHandler = async (event: APIGatewayProxyEvent):
             body: JSON.stringify(participation.attendeeName + '님! 공구 신청 감사합니다!'),
         };
     } catch (error) {
+        console.error('error : ', error);
         if (error instanceof APIERROR) {
             return {
                 statusCode: error.statusCode,

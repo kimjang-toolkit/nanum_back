@@ -18,7 +18,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
         totalQuantity: Number(res.totalQuantity.N),
         attendeeCount: Number(res.attendeeCount.N),
         deadline: res.deadline.S,
-        type: Number(res.type.N),
+        type: res.type.S as DivideType,
         memo: res.memo?.S,
         attendeeList:
             res.attendeeList?.L?.map(
@@ -49,8 +49,8 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
         return {
             ...baseDetail,
             type: DivideType.attendee,
+            remainQuantity: Number(res.remainQuantity.N),
             targetAttendeeCount: Number(res.targetAttendeeCount.N),
-            recruitmentNumbers: Number(res.recruitmentNumbers.N),
             perAttendeePrice: Number(res.perAttendeePrice.N),
         } as AttendeeCoBuyingDetail;
     } else {

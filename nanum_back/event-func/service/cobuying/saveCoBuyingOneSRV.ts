@@ -22,7 +22,7 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     console.log('input type : ', input.type);
     console.log('DivideType.quantity : ', DivideType.quantity);
     // 방법 1: 문자열로 비교
-    if (input.type.toString() === 'quantity') {
+    if (input.type === DivideType.quantity) {
         // 수량나눔
         cobuying = getQuantityCoBuying(input as CoBuyingCreateReq<DivideType.quantity>);
     } else {
@@ -106,6 +106,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
     const attendeeCoBuying: AttendeeCoBuying = {
         ...item,
         type: DivideType.attendee,
+        remainQuantity: item.targetAttendeeCount - 1, // 공구장 신청자 수 1명 빼기
         targetAttendeeCount: item.targetAttendeeCount,
         perAttendeePrice: perAttendeePrice,
         attendeeCount: 1,
