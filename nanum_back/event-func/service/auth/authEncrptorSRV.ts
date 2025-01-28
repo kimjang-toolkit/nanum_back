@@ -7,7 +7,6 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const SECRET_KEY = process.env.AUTHSECRETKEY || 'your-secret-key'; // 서버에서만 관리
 
-
 // 비밀번호 해싱 함수
 export async function hashPassword(password: string): Promise<string> {
     // 비밀키를 사용해 HMAC 생성 => 인증키 + 해싱
@@ -31,61 +30,73 @@ export function verifyPassword(inputPassword: string, storedHash: string): boole
 }
 
 export function generateToken(owner: CoBuyingOwnerAuth): AuthToken {
-
-    let accessToken : string;
-    let accessTokenExpiresIn : number;
-    let refreshToken : string;
-    let refreshTokenExpiresIn : number;
-    
-    refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7;
+    const refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7;
 
     const tokenOwner = {
-        ownerName : owner.ownerName,
-        coBuyingId : owner.coBuyingId
+        ownerName: owner.ownerName,
+        coBuyingId: owner.coBuyingId,
     } as UserAuth;
 
-    if(owner.expiresIn && owner.expiresIn > 0){
-        accessTokenExpiresIn = owner.expiresIn;
-    }else{
-        accessTokenExpiresIn = 1000 * 60 * 60;
-    }
+    const accessTokenExpiresIn = 1000 * 60 * 60;
 
-    accessToken = createToken(tokenOwner, accessTokenExpiresIn);
+    const accessToken = createToken(tokenOwner, accessTokenExpiresIn);
 
     // 리프레시 토큰 생성 유효기간 7일
-    refreshToken = createToken(tokenOwner, refreshTokenExpiresIn);
+    const refreshToken = createToken(tokenOwner, refreshTokenExpiresIn);
 
-    const token = getAuthToken(accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn, tokenOwner, 'Bearer', 'owner');
-    
+    const token = getAuthToken(
+        accessToken,
+        refreshToken,
+        accessTokenExpiresIn,
+        refreshTokenExpiresIn,
+        tokenOwner,
+        'Bearer',
+        'owner',
+    );
+
     return token;
 }
 
 export function regenerateToken(auth: UserAuth): AuthToken {
-    let accessToken : string;
-    const accessTokenExpiresIn : number = 1000 * 60 * 60;
-    let refreshToken : string;
-    let refreshTokenExpiresIn : number = 1000 * 60 * 60 * 24 * 7;
+    const accessTokenExpiresIn: number = 1000 * 60 * 60;
+    const refreshTokenExpiresIn: number = 1000 * 60 * 60 * 24 * 7;
 
-    accessToken = createToken(auth, accessTokenExpiresIn);
+    const accessToken = createToken(auth, accessTokenExpiresIn);
 
     // 리프레시 토큰 생성 유효기간 7일
-    refreshToken = createToken(auth, refreshTokenExpiresIn);
+    const refreshToken = createToken(auth, refreshTokenExpiresIn);
 
-    const token = getAuthToken(accessToken, refreshToken, accessTokenExpiresIn, refreshTokenExpiresIn, auth, 'Bearer', 'owner');
-    
+    const token = getAuthToken(
+        accessToken,
+        refreshToken,
+        accessTokenExpiresIn,
+        refreshTokenExpiresIn,
+        auth,
+        'Bearer',
+        'owner',
+    );
+
     return token;
 }
 
-function getAuthToken(accessToken: string, refreshToken: string, accessTokenExpiresIn: number, refreshTokenExpiresIn: number, tokenOwner: UserAuth, tokenType: string, scope: string): AuthToken {
+function getAuthToken(
+    accessToken: string,
+    refreshToken: string,
+    accessTokenExpiresIn: number,
+    refreshTokenExpiresIn: number,
+    tokenOwner: UserAuth,
+    tokenType: string,
+    scope: string,
+): AuthToken {
     const issuedAt = getKoreaTime();
-    const token : AuthToken = {
-        accesstoken : accessToken,
-        refreshToken : refreshToken,
-        accessTokenExpiresIn : accessTokenExpiresIn,
-        refreshTokenExpiresIn : refreshTokenExpiresIn,
-        user : tokenOwner,
-        tokenType : tokenType,
-        scope : scope,
+    const token: AuthToken = {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        accessTokenExpiresIn: accessTokenExpiresIn,
+        refreshTokenExpiresIn: refreshTokenExpiresIn,
+        user: tokenOwner,
+        tokenType: tokenType,
+        scope: scope,
         issuedAt: issuedAt,
     } as AuthToken;
     return token;
@@ -96,13 +107,12 @@ function createToken(tokenOwner: UserAuth, expiresIn: number): string {
     return accessToken;
 }
 
-export function extractPayload(token: string): JwtPayload{
-
-    // jwt를 이용해서 token이 같은 암호키를 이용해서 만들어진 jwt인지 검증 
+export function extractPayload(token: string): JwtPayload {
+    // jwt를 이용해서 token이 같은 암호키를 이용해서 만들어진 jwt인지 검증
     try {
         // jwt를 이용해서 token이 같은 암호키를 이용해서 만들어진 jwt인지 검증
         const decoded = jwt.verify(token, SECRET_KEY);
-        return decoded as JwtPayload// 디코딩이 성공하면 true 반환
+        return decoded as JwtPayload; // 디코딩이 성공하면 true 반환
     } catch (error) {
         console.error('Token validation error:', error);
         // 검증 실패 시 ERROR 반환

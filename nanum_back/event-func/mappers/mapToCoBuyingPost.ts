@@ -1,4 +1,11 @@
-import { AttendeeCoBuying, BaseCoBuying, CoBuyingPost, CoBuyingStatus, QuantityCoBuying } from '@domain/cobuying';
+import {
+    AttendeeCoBuying,
+    CoBuyingDB,
+    CoBuyingPost,
+    CoBuyingStatus,
+    DivideType,
+    QuantityCoBuying,
+} from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 
 // 공구글에 맞는 타입으로 매핑하기
@@ -8,7 +15,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
     }
 
     // 공구 타입에 따라 매핑할 인터페이스를 구분합니다.
-    const baseCoBuying: BaseCoBuying = {
+    const baseCoBuying: CoBuyingDB = {
         createdAtId: item.createdAtId.S,
         deadlineId: item.deadlineId.S,
         ownerNameId: item.ownerNameId.S,
@@ -18,20 +25,20 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
         ownerName: item.ownerName.S,
         ownerPassword: item.ownerPwd?.S,
         totalPrice: Number(item.totalPrice.N),
+        totalQuantity: Number(item.totalQuantity.N),
         attendeeCount: Number(item.attendeeCount.N),
         deadline: item.deadline.S,
-        type: item.type.S === 'quantity' ? 'quantity' : 'attendee',
+        type: item.type.S === 'quantity' ? DivideType.quantity : DivideType.attendee,
         memo: item.memo?.S,
         attendeeList: mapAttendeeList(item.attendeeList.L),
         createdAt: item.createdAt.S,
-        createdAtDateOnly: item.createdAtDateOnly.S,
         coBuyingStatus: Number(item.coBuyingStatus.N) as CoBuyingStatus,
     };
 
-    if (baseCoBuying.type === 'quantity') {
+    if (baseCoBuying.type === DivideType.quantity) {
         const quantityCoBuying: QuantityCoBuying = {
             ...baseCoBuying,
-            type: 'quantity',
+            type: DivideType.quantity,
             totalQuantity: Number(item.totalQuantity.N),
             ownerQuantity: Number(item.ownerQuantity.N),
             ownerPrice: Number(item.ownerPrice.N),
@@ -45,8 +52,8 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
     } else {
         const attendeeCoBuying: AttendeeCoBuying = {
             ...baseCoBuying,
-            type: 'attendee',
-            recruitmentNumbers: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
+            type: DivideType.attendee,
+            targetAttendeeCount: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
             perAttendeePrice: Number(item.perAttendeePrice.N), // 예시로 단가를 사용
         };
 

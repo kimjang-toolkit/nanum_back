@@ -2,7 +2,11 @@
   "TableName": "CoBuyingTable",
   "AttributeDefinitions": [
     {
-      "AttributeName": "createdAtId",
+      "AttributeName": "ownerName",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "id",
       "AttributeType": "S"
     },
     {
@@ -12,23 +16,15 @@
     {
       "AttributeName": "deadline",
       "AttributeType": "S"
-    },
-    {
-      "AttributeName": "id",
-      "AttributeType": "S"
-    },
-    {
-      "AttributeName": "ownerName",
-      "AttributeType": "S"
     }
   ],
   "KeySchema": [
     {
-      "AttributeName": "createdAt",
+      "AttributeName": "ownerName",
       "KeyType": "HASH"
     },
     {
-      "AttributeName": "createdAtId",
+      "AttributeName": "id",
       "KeyType": "RANGE"
     }
   ],
@@ -37,26 +33,6 @@
     "WriteCapacityUnits": 5
   },
   "GlobalSecondaryIndexes": [
-    {
-      "IndexName": "OwnerNameGSI",
-      "KeySchema": [
-        {
-          "AttributeName": "ownerName",
-          "KeyType": "HASH"
-        },
-        {
-          "AttributeName": "id",
-          "KeyType": "RANGE"
-        }
-      ],
-      "Projection": {
-        "ProjectionType": "ALL"
-      },
-      "ProvisionedThroughput": {
-        "ReadCapacityUnits": 5,
-        "WriteCapacityUnits": 5
-      }
-    },
     {
       "IndexName": "CreatedAtIndex",
       "KeySchema": [

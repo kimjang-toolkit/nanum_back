@@ -6,7 +6,6 @@ import { mapToCoBuyingOwnerAuth } from 'mappers/mapOwnerAuth';
 const ddbDocClient = createDynamoDBDocClient();
 
 export const queryCoBuyingOwnerById = async (ownerName: string, id: string): Promise<CoBuyingOwnerAuth> => {
-
     // DynamoDB에서 'id'로 공구글 조회
     // 단건 조회를 위한 파라미터 설정
     // 불변값으로 조희
@@ -21,7 +20,7 @@ export const queryCoBuyingOwnerById = async (ownerName: string, id: string): Pro
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
             ':id': { S: id }, // GSI 정렬 키 값
         },
-        ProjectionExpression:'id, ownerName, ownerPassword'
+        ProjectionExpression: 'id, ownerName, ownerPassword',
     };
     let result;
     try {
@@ -37,10 +36,10 @@ export const queryCoBuyingOwnerById = async (ownerName: string, id: string): Pro
         throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
 
-    if(result.Items && result.Items.length > 0){
+    if (result.Items && result.Items.length > 0) {
         const owner = mapToCoBuyingOwnerAuth(result.Items[0]);
         return owner;
-    }else{
+    } else {
         throw new APIERROR(404, '조회된 공구글이 없습니다.');
     }
 };

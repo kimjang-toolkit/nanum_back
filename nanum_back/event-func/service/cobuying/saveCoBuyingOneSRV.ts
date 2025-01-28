@@ -1,10 +1,10 @@
 // import { DynamoDB } from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
-import { CoBuyingStatus, QuantityCoBuying, AttendeeCoBuying, CoBuyingPost } from '@domain/cobuying';
+import { CoBuyingStatus, QuantityCoBuying, AttendeeCoBuying, CoBuyingPost, DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import { getKoreaDay } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
-import { CoBuyingCreateReq, CoBuyingSimple } from '@interface/cobuying';
+import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
 
 /**
@@ -14,36 +14,37 @@ import { hashPassword } from '@auth/authEncrptorSRV';
  * @param input 공구글 생성 입력 데이터
  * @returns 공구글 생성 출력 데이터
  */
-export const saveCoBuying = async (input: CoBuyingCreateReq): Promise<CoBuyingSimple> => {
+export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promise<CoBuyingSummary> => {
     // DB 엔드포임트 확인
 
     let cobuying: CoBuyingPost;
-    input.ownerPwd = await hashPassword(input.ownerPwd);
-
-    if (input.type === 'quantity') {
+    input.ownerPassword = await hashPassword(input.ownerPassword);
+    console.log('input type : ', input.type);
+    console.log('DivideType.quantity : ', DivideType.quantity);
+    // 방법 1: 문자열로 비교
+    if (input.type.toString() === 'quantity') {
         // 수량나눔
-        cobuying = getQuantityCoBuying(input);
+        cobuying = getQuantityCoBuying(input as CoBuyingCreateReq<DivideType.quantity>);
     } else {
         // 인원나눔
-        cobuying = getAttendeeCoBuying(input);
+        cobuying = getAttendeeCoBuying(input as CoBuyingCreateReq<DivideType.attendee>);
     }
 
-    const result: Promise<CoBuyingSimple> = insertCoBuying(cobuying);
+    const result: Promise<CoBuyingSummary> = insertCoBuying(cobuying);
     return result;
 };
 
-function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
+function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): QuantityCoBuying {
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
+        ...input,
         id: id,
         createdAt: createdAtDateOnly,
-        createdAtDateOnly: createdAtDateOnly,
-        coBuyingStatus: CoBuyingStatus.PREPARING,
+        coBuyingStatus: CoBuyingStatus.APPLYING,
         createdAtId: createdAtDateOnly + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
-        ...input,
     };
     if (item.ownerQuantity === undefined) {
         throw new Error('공구장의 수량을 정해주세요.');
@@ -57,13 +58,13 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
 
     const hostAttende: Attendee = {
         attendeeName: item.ownerName,
-        appliedQuantity: item.ownerQuantity || undefined,
+        appliedQuantity: item.ownerQuantity,
         attendeePrice: ownerPrice,
     };
     // 수량나눔
     const quantityCoBuying: QuantityCoBuying = {
         ...item,
-        type: 'quantity',
+        type: DivideType.quantity,
         unitPrice: unitPrice,
         ownerQuantity: item.ownerQuantity,
         ownerPrice: ownerPrice,
@@ -77,24 +78,20 @@ function getQuantityCoBuying(input: CoBuyingCreateReq): QuantityCoBuying {
     return quantityCoBuying;
 }
 
-function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
+function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): AttendeeCoBuying {
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
+        ...input,
         id: id,
         createdAt: createdAtDateOnly,
-        createdAtDateOnly: createdAtDateOnly,
-        coBuyingStatus: CoBuyingStatus.PREPARING,
+        coBuyingStatus: CoBuyingStatus.APPLYING,
         createdAtId: createdAtDateOnly + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
-        ...input,
     };
-    if (item.recruitmentNumbers === undefined) {
+    if (item.targetAttendeeCount === undefined) {
         throw new Error('목표 신청자 수를 정해주세요.');
-    }
-    if (item.recruitmentNumbers === undefined) {
-        throw new Error('신청자 1인당 부담 금액을 정해주세요.');
     }
 
     // 인당 가격 계산
@@ -108,8 +105,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
 
     const attendeeCoBuying: AttendeeCoBuying = {
         ...item,
-        type: 'attendee',
-        recruitmentNumbers: item.recruitmentNumbers, // item으로 바로 사용
+        type: DivideType.attendee,
+        targetAttendeeCount: item.targetAttendeeCount,
         perAttendeePrice: perAttendeePrice,
         attendeeCount: 1,
         attendeeList: [hostAttendee],
@@ -119,16 +116,16 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq): AttendeeCoBuying {
     return attendeeCoBuying;
 }
 
-function calculatOwnerQuantityPrice(input: CoBuyingCreateReq): number {
-    return ((input.ownerQuantity || 0) * input.totalPrice) / input.totalQuantity;
+function calculatOwnerQuantityPrice(input: CoBuyingCreateReq<DivideType.quantity>): number {
+    return (input.ownerQuantity * input.totalPrice) / input.totalQuantity;
 }
 
-function calculatAttendeePrice(input: CoBuyingCreateReq): number {
-    return input.totalPrice / (input.recruitmentNumbers || 1);
+function calculatAttendeePrice(input: CoBuyingCreateReq<DivideType.attendee>): number {
+    return input.totalPrice / input.targetAttendeeCount;
 }
 
-function calculatUnitPrice(input: CoBuyingCreateReq): number {
-    return input.totalPrice / (input.totalQuantity || 1);
+function calculatUnitPrice(input: CoBuyingCreateReq<DivideType>): number {
+    return input.totalPrice / input.totalQuantity;
 }
 
 // export const queryCoBuyingPage = async (input: CoBuyingQueryParams): Promise<CoBuyingSimple> => {

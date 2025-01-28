@@ -1,11 +1,11 @@
 import { PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
 import { CoBuyingPost } from '@domain/cobuying';
-import { CoBuyingSimple } from '@interface/cobuying';
+import { CoBuyingSummary } from '@interface/cobuying';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSimple> => {
+export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSummary> => {
     console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
     console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
 
@@ -32,19 +32,17 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
                 deadline: cobuying.deadline,
                 coBuyingStatus: cobuying.coBuyingStatus,
                 createdAt: cobuying.createdAt,
-            } as CoBuyingSimple;
-        // 성공적으로 삽입한 후, CoBuyingSimple 타입으로 반환
+                type: cobuying.type,
+            } as CoBuyingSummary;
         else {
-            // result를 사용하여 새로운 Error 객체를 생성
             const errorMessage = `DynamoDB 삽입 오류: 상태 코드 ${
                 result.$metadata.httpStatusCode
             }, 요청 결과: ${JSON.stringify(result)}`;
-            throw new Error(errorMessage); // result를 포함한 에러 메시지 던지기
+            throw new Error(errorMessage);
         }
     } catch (error) {
         console.error('DynamoDB 삽입 중 오류 발생:', error);
 
-        // DynamoDB에서 발생할 수 있는 에러를 구체적으로 처리
         if (error instanceof Error) {
             if (error.name === 'ValidationException') {
                 throw new Error('데이터 형식이 잘못되었습니다. 입력값을 확인하세요.');
@@ -57,12 +55,10 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSi
             } else if (error.name === 'InternalServerError') {
                 throw new Error('DynamoDB 내부 서버 오류가 발생했습니다.');
             } else {
-                // 알 수 없는 오류 발생시
                 throw new Error(`알 수 없는 오류 발생: ${error.message}`);
             }
         }
 
-        // 예상하지 못한 에러 처리
         throw new Error('공구글 저장에 실패했습니다. 오류를 확인해주세요.');
     }
 };

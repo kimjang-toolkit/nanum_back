@@ -1,11 +1,12 @@
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
-import { CoBuyingSimple } from '@interface/cobuying';
-import { mapToCoBuyingSimple } from 'mappers/mapCoBuyingList';
+// import { CoBuyingSimple } from '@interface/cobuying';
+import { CoBuyingSummary } from '@interface/cobuying';
+import { mapToCoBuyingSummary } from 'mappers/mapCoBuyingList';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const queryCoBuyingById = async (ownerName: string, id: string): Promise<CoBuyingSimple> => {
+export const queryCoBuyingById = async (ownerName: string, id: string): Promise<CoBuyingSummary> => {
     // DynamoDB에서 'id'로 공구글 조회
     // 단건 조회를 위한 파라미터 설정
     // 불변값으로 조희
@@ -31,7 +32,7 @@ export const queryCoBuyingById = async (ownerName: string, id: string): Promise<
         // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
         if (result.Items && result.Items.length > 0) {
             console.log(result.Items[0]);
-            const cobuying: CoBuyingSimple[] = mapToCoBuyingSimple(result.Items);
+            const cobuying: CoBuyingSummary[] = mapToCoBuyingSummary(result.Items);
             // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
             return cobuying[0];
             // 필요한 추가 로직

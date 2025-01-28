@@ -1,11 +1,13 @@
-import { CoBuyingStatus } from '@domain/cobuying';
-import { CoBuyingDetail, CoBuyingKey, CoBuyingSimple } from '@interface/cobuying';
+import { CoBuyingStatus, DivideType } from '@domain/cobuying';
+// import { CoBuyingDetail, CoBuyingKey, CoBuyingSimple } from '@interface/cobuying';
+import { CoBuyingKey, CoBuyingSummary } from '@interface/cobuying';
 
-export function mapToCoBuyingSimple(res: any): CoBuyingSimple[] {
+export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
     // res.Items가 undefined인 경우 빈 배열을 반환하도록 수정
     return (res || []).map((item: any) => ({
         id: item.id.S, // `id` 필드는 `S`로 저장됨
-        coBuyingStatus: item.coBuyingStatus ? CoBuyingStatus[item.coBuyingStatus.N] : CoBuyingStatus.PREPARING, // 상태는 가정에 맞게 처리
+        coBuyingStatus: item.coBuyingStatus ? CoBuyingStatus[item.coBuyingStatus.N] : CoBuyingStatus.APPLYING, // 상태는 가정에 맞게 처리
+        type: item.type ? DivideType[item.type.N] : DivideType.quantity, // 상태는 가정에 맞게 처리
         totalPrice: item.totalPrice ? parseFloat(item.totalPrice.N) : 0, // `totalPrice` 필드가 숫자일 경우
         attendeeCount: item.attendeeCount ? parseInt(item.attendeeCount.N, 10) : 0, // `attendeeCount`가 숫자로 저장됨
         productName: item.productName ? item.productName.S : '', // `productName` 문자열 필드

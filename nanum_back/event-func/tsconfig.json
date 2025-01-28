@@ -26,6 +26,11 @@
           "../event-func/service/auth/*", 
           "../event-func/dao/auth/*"
         ],
+        "@manage/*": [
+          "../event-func/control/manage/*", 
+          "../event-func/service/manage/*", 
+          "../event-func/dao/manage/*"
+        ],
         "@common/*": ["../event-func/common/*"],
     }
     },

@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 import { BaseHeader } from 'common/responseType';
 import { CoBuyingCreateReq } from '@interface/cobuying';
+import { DivideType } from '@domain/cobuying';
 
 const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
     if (!event.body) {
@@ -14,7 +15,7 @@ const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
 };
 
 export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    let input: CoBuyingCreateReq;
+    let input: CoBuyingCreateReq<DivideType>;
     try {
         validateCoBuyingReq(event);
         input = JSON.parse(event.body || '');
