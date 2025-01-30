@@ -62,12 +62,16 @@ Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prode
+      StageName: Stage
+      # Cors:
+      #   AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
+      #   AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token'"
+      #   AllowOrigin: "'*'"
+      #   MaxAge: "'200'"
       Cors:
-        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
-        AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token'"
-        AllowOrigin: "'*'" # 실제 로컬에서 사용하는 포트로 설정
-        MaxAge: "'200'"
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'content-type'"
+        AllowOrigin: "'*'"
         # AllowCredentials: true
 
   CreateCoBuyingFunction:
@@ -116,7 +120,7 @@ Resources:
         CreateCoBuying:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /auth
-            Path: /api/auth/{coBuyingId} # API Gateway 경로
+            Path: /api/co-buying/auth/{coBuyingId} # API Gateway 경로
             Method: post # HTTP 메서드
             RestApiId:
               Ref: ApiGatewayApi # API Gateway와 직접 연결
@@ -178,7 +182,7 @@ Resources:
         GetCoBuyingOne:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /co-buying
-            Path: /api/co-buying/detail # API Gateway 경로
+            Path: /api/co-buying/{coBuyingId} # API Gateway 경로
             Method: get # HTTP 메서드
             RestApiId:
               Ref: ApiGatewayApi # API Gateway와 직접 연결
@@ -186,8 +190,6 @@ Resources:
               - method.request.querystring.ownerName:
                   Required: true
               - method.request.querystring.createdAt:
-                  Required: true
-              - method.request.querystring.id:
                   Required: true
       Policies:
         - DynamoDBCrudPolicy:
@@ -201,43 +203,43 @@ Resources:
         EntryPoints:
           - queryCoBuyingDetailOneCTL.ts
 
-  GetCoBuyingByIdFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-    Description: 공구방 생성 함수
-    Properties:
-      CodeUri: event-func/control/cobuying
-      Handler: queryCoBuyingOneCTL.getCoBuyingByIdHandler
-      Runtime: nodejs20.x
-      MemorySize: 2048
-      Timeout: 20
-      Architectures:
-        - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-        GetCoBuyingOne:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties: # 엔드포인트: POST /co-buying
-            Path: /api/co-buying # API Gateway 경로
-            Method: get # HTTP 메서드
-            RestApiId:
-              Ref: ApiGatewayApi # API Gateway와 직접 연결
-            RequestParameters: # 쿼리 매개변수 정의
-              - method.request.querystring.ownerName:
-                  Required: true
-              - method.request.querystring.createdAt:
-                  Required: true
-              - method.request.querystring.id:
-                  Required: true
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref CoBuyingTableName
-    Metadata: # Manage esbuild properties
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: true
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints:
-          - queryCoBuyingOneCTL.ts
+  # GetCoBuyingByIdFunction:
+  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  #   Description: 공구방 생성 함수
+  #   Properties:
+  #     CodeUri: event-func/control/cobuying
+  #     Handler: queryCoBuyingOneCTL.getCoBuyingByIdHandler
+  #     Runtime: nodejs20.x
+  #     MemorySize: 2048
+  #     Timeout: 20
+  #     Architectures:
+  #       - x86_64
+  #     Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+  #       GetCoBuyingOne:
+  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+  #         Properties: # 엔드포인트: POST /co-buying
+  #           Path: /api/co-buying # API Gateway 경로
+  #           Method: get # HTTP 메서드
+  #           RestApiId:
+  #             Ref: ApiGatewayApi # API Gateway와 직접 연결
+  #           RequestParameters: # 쿼리 매개변수 정의
+  #             - method.request.querystring.ownerName:
+  #                 Required: true
+  #             - method.request.querystring.createdAt:
+  #                 Required: true
+  #             - method.request.querystring.id:
+  #                 Required: true
+  #     Policies:
+  #       - DynamoDBCrudPolicy:
+  #           TableName: !Ref CoBuyingTableName
+  #   Metadata: # Manage esbuild properties
+  #     BuildMethod: esbuild
+  #     BuildProperties:
+  #       Minify: true
+  #       Target: "es2020"
+  #       Sourcemap: true
+  #       EntryPoints:
+  #         - queryCoBuyingOneCTL.ts
 
   GetCoBuyingListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -262,6 +264,8 @@ Resources:
               - method.request.querystring.id:
                   Required: false
               - method.request.querystring.createdAt:
+                  Required: false
+              - method.request.querystring.ownerName:
                   Required: false
       Policies:
         - DynamoDBCrudPolicy:

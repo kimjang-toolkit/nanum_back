@@ -9,9 +9,14 @@ export const authenticateOwnerAuthSRV = async (auth: CoBuyingOwnerAuth): Promise
     //      만약 존재하지 않는 공구글에 대한 값은 "정확한 공구글 정보를 알려주세요." 에러 메시지 전달. 404 에러
     let owner: CoBuyingOwnerAuth;
     try {
-        owner = await queryCoBuyingOwnerById(auth.coBuyingId, auth.ownerName);
+        owner = await queryCoBuyingOwnerById(auth.ownerName, auth.coBuyingId);
+        // console.log('owner : ', owner);
     } catch (error) {
-        throw new APIERROR(404, '정확한 공구글 정보를 알려주세요.');
+        if (error instanceof APIERROR) {
+            console.error(error);
+            throw new APIERROR(error.statusCode, error.message);
+        }
+        throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
 
     // 가져온 password 해시와 auth의 password를 비교
@@ -22,6 +27,7 @@ export const authenticateOwnerAuthSRV = async (auth: CoBuyingOwnerAuth): Promise
     } else {
         // 인증되면, JWT를 생성해서 리턴.
         const token = generateToken(owner);
+        console.log('token : ', token);
         return token;
     }
 };

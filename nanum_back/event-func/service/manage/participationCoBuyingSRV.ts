@@ -9,18 +9,25 @@ import { APIERROR } from 'common/responseType';
 export const participationCoBuyingSRV = async (participation: Participation) => {
     // 공구글에 참석자 이름 리스트 만들기
     //    만약 이미 참석자 이름을 사용 중이면 다른 이름을 사용해야 함
+    try {
+        const attendeeList: Attendee[] = await getAttendeeListDAO(participation.ownerName, participation.coBuyingId);
+        // console.log('attendeeList', attendeeList);
+        if (attendeeList.find((attendee) => attendee.attendeeName === participation.attendeeName)) {
+            throw new APIERROR(400, '이미 사용 중인 이름입니다. 다른 이름을 사용해주세요.');
+        }
 
-    const attendeeList: Attendee[] = await getAttendeeListDAO(participation.ownerName, participation.coBuyingId);
-    console.log('attendeeList', attendeeList);
-    if (attendeeList.find((attendee) => attendee.attendeeName === participation.attendeeName)) {
-        throw new APIERROR(400, '이미 사용 중인 이름입니다. 다른 이름을 사용해주세요.');
+        // 공구글에 참여자 추가
+        //    실패하면, 500, 공구를 신청하지 못했어요. 다시 시도해주세요.
+        const updateCommand = getUpdateCommand(participation);
+
+        await participationCoBuyingDAO(updateCommand);
+    } catch (error) {
+        if (error instanceof APIERROR) {
+            console.error(error);
+            throw new APIERROR(error.statusCode, error.message);
+        }
+        throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
-
-    // 공구글에 참여자 추가
-    //    실패하면, 500, 공구를 신청하지 못했어요. 다시 시도해주세요.
-    const updateCommand = getUpdateCommand(participation);
-
-    const result = await participationCoBuyingDAO(updateCommand);
 };
 
 function getUpdateCommand(participation: Participation): ParticipationQuery {
@@ -74,6 +81,6 @@ function getUpdateCommand(participation: Participation): ParticipationQuery {
         ConditionExpression: conditionExpression,
         ReturnValues: ReturnValue.ALL_NEW,
     } as ParticipationQuery;
-    console.log('query param', param);
+    // console.log('query param', param);
     return param;
 }

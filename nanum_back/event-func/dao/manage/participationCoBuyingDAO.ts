@@ -10,6 +10,10 @@ export const participationCoBuyingDAO = async (updateCommand: ParticipationQuery
     try {
         const result = await ddbDocClient.send(command);
         console.log('result', result);
+        if (result.$metadata && result.$metadata.httpStatusCode && result.$metadata.httpStatusCode !== 200) {
+            // 메시지가 없으면 디폴트 메시지 출력
+            throw new APIERROR(result.$metadata.httpStatusCode, '신청 할 수 없어요. 다시 시도해주세요.');
+        }
     } catch (error) {
         console.log('error', error);
         if ((error as Error).name === 'ConditionalCheckFailedException') {

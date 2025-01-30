@@ -47,11 +47,13 @@ export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promi
         const params = event.queryStringParameters ?? {};
         const id = params.id || '';
         const createdAt = params.createdAt || '';
+        const ownerName = params.ownerName || '';
         if (id && createdAt) {
             const key: CreatedAtKey = {
                 id: id,
                 key: 'createdAt',
                 createdAt: createdAt,
+                ownerName: ownerName,
             };
             input['lastEvaluatedKey'] = key;
         }
@@ -61,13 +63,14 @@ export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promi
             sortingOrder: 'desc',
         };
 
-        input['size'] = 20;
+        input['size'] = 5;
 
-        console.log(input);
+        // console.log(input);
     } catch (error) {
         console.error(error);
         return {
             statusCode: 500,
+            headers: BaseHeader,
             body: JSON.stringify({
                 message: (error as Error).message,
             }),
@@ -86,7 +89,11 @@ export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promi
         console.log(error);
         return {
             statusCode: 500,
-            headers: BaseHeader,
+            headers: {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Origin': '*', // Allow from anywhere
+                'Access-Control-Allow-Methods': 'GET', // Allow only GET request
+            },
             body: JSON.stringify({
                 message: (error as Error).message,
             }),

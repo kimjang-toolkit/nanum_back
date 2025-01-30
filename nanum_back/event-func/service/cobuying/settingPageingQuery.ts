@@ -1,8 +1,8 @@
-import { CreatedAtKey, DeadlineKey } from '@interface/cobuying';
+import { CreatedAtKey } from '@interface/cobuying';
 import { CoBuyingQueryParams, PageingQuery } from '@interface/cobuyingList';
 
 export const settingPageingQuery = (input: CoBuyingQueryParams, query: PageingQuery): void => {
-    setLastEvaluatedKey(input, query);
+    // setLastEvaluatedKey(input, query);
     setExclusiveStartKey(input, query);
     setIndexName(input, query);
     // setKeyConditionExpression(input, query);
@@ -10,25 +10,28 @@ export const settingPageingQuery = (input: CoBuyingQueryParams, query: PageingQu
         setExpressionValues(input, query);
     }
 
-    setSortOrder(input, query);
+    // setSortOrder(input, query);
 };
 
 // 다음 조회를 위한 이전 키 값 추가
 export const setLastEvaluatedKey = (input: CoBuyingQueryParams, query: PageingQuery): void => {
     if (input.lastEvaluatedKey) {
-        if (input.lastEvaluatedKey?.key === 'deadline') {
-            const lastEvaluatedKey: DeadlineKey = input.lastEvaluatedKey;
-            query.ExclusiveStartKey = {
-                deadline: lastEvaluatedKey.deadline,
-                id: lastEvaluatedKey.id,
-            };
-        } else if (input.lastEvaluatedKey?.key === 'createdAt') {
+        if (input.lastEvaluatedKey?.key === 'createdAt') {
             const lastEvaluatedKey: CreatedAtKey = input.lastEvaluatedKey;
             query.ExclusiveStartKey = {
                 createdAt: lastEvaluatedKey.createdAt,
                 id: lastEvaluatedKey.id,
+                ownerName: lastEvaluatedKey.ownerName,
             };
         }
+        // else {
+        //     const lastEvaluatedKey: DeadlineKey = input.lastEvaluatedKey;
+        //     query.ExclusiveStartKey = {
+        //         deadline: lastEvaluatedKey.deadline,
+        //         id: lastEvaluatedKey.id,
+        //         ownerName: lastEvaluatedKey.ownerName,
+        //     };
+        // }
     }
 };
 
@@ -171,24 +174,27 @@ function setKeyConditionExpression(input: CoBuyingQueryParams, query: PageingQue
     }
 }
 function setIndexName(input: CoBuyingQueryParams, query: PageingQuery) {
-    if (input.sort && input.sort.sortCriteria) {
-        if (input.sort.sortCriteria === 'createdAt') {
-            query.IndexName = 'CreatedAtIndex';
-        } else if (input.sort.sortCriteria === 'deadline') {
-            query.IndexName = 'DeadlineIndex';
-        }
+    if (input.sort && input.sort.sortCriteria === 'deadline') {
+        query.IndexName = 'DeadlineIndex';
+    } else {
+        // 기본 인덱스를 생성일자 기준 인덱스로 설정
+        query.IndexName = 'CreatedAtIndex';
     }
 }
 
 function setExclusiveStartKey(input: CoBuyingQueryParams, query: PageingQuery) {
     if (input.lastEvaluatedKey) {
         query.ExclusiveStartKey = {};
+
         if (input.lastEvaluatedKey.key === 'createdAt') {
             query.ExclusiveStartKey['createdAt'] = { S: input.lastEvaluatedKey.createdAt };
             query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
-        } else if (input.lastEvaluatedKey.key === 'deadline') {
-            query.ExclusiveStartKey['deadline'] = { S: input.lastEvaluatedKey.deadline };
-            query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
+            query.ExclusiveStartKey['ownerName'] = { S: input.lastEvaluatedKey.ownerName };
         }
     }
+    // } else {
+    //     query.ExclusiveStartKey['deadline'] = { S: input.lastEvaluatedKey.deadline };
+    //     query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
+    //     query.ExclusiveStartKey['ownerName'] = { S: input.lastEvaluatedKey.ownerName };
+    // }
 }

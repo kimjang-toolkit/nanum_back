@@ -23,7 +23,12 @@ export interface ApiResponse {
 }
 
 export const BaseHeader = {
-    'Access-Control-Allow-Headers': "'POST, GET, PUT, DELETE, OPTIONS'",
-    'Access-Control-Allow-Origin': "'*'", // Allow from anywhere
-    'Access-Control-Allow-Methods': "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token'", // Allow only POST request
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token',
+    'Access-Control-Allow-Origin': '*', // Allow from anywhere
+    'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE, OPTIONS', // Allow only GET request
+};
+
+export const AuthSuccessHeader = {
+    ...BaseHeader,
+    'Access-Control-Allow-Credentials': 'true',
 };

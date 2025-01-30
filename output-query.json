@@ -1,0 +1,173 @@
+{
+    "Items": [
+        {
+            "createdAt": {
+                "S": "2025-01-28"
+            },
+            "ownerName": {
+                "S": "오찬솔"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "75caf96a-629f-422c-b60b-6edaac5f2d70"
+            },
+            "deadline": {
+                "S": "2025-01-08"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "productName": {
+                "S": "싱싱한 바나나 공구!"
+            }
+        },
+        {
+            "createdAt": {
+                "S": "2025-01-28"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "80a4f174-4764-4d06-bd8a-a09ace1b7f24"
+            },
+            "deadline": {
+                "S": "2025-02-17"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "productName": {
+                "S": "대나무 같은 참외 공구!"
+            }
+        },
+        {
+            "createdAt": {
+                "S": "2025-01-28"
+            },
+            "ownerName": {
+                "S": "오찬솔"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "ed5b51f9-4d63-4687-8e04-4b8be16ac254"
+            },
+            "deadline": {
+                "S": "2025-01-08"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "productName": {
+                "S": "싱싱한 바나나 공구!"
+            }
+        },
+        {
+            "createdAt": {
+                "S": "2025-01-29"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "1176a37e-2d04-4846-a68d-33849577700a"
+            },
+            "deadline": {
+                "S": "2025-02-17"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "productName": {
+                "S": "대나무 같은 참외 공구!"
+            }
+        },
+        {
+            "createdAt": {
+                "S": "2025-01-29"
+            },
+            "ownerName": {
+                "S": "오찬솔"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "1588472f-2764-4059-8350-be1708b419ec"
+            },
+            "deadline": {
+                "S": "2025-01-08"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "productName": {
+                "S": "싱싱한 생선 공구!"
+            }
+        },
+        {
+            "createdAt": {
+                "S": "2025-01-29"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "totalPrice": {
+                "N": "15000"
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "55684293-eb9f-4cb6-83f7-5c9001226e5f"
+            },
+            "deadline": {
+                "S": "2025-02-17"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "productName": {
+                "S": "대나무 같은 참외 공구!"
+            }
+        }
+    ],
+    "Count": 6,
+    "ScannedCount": 6,
+    "LastEvaluatedKey": {
+        "ownerName": {
+            "S": "김철수"
+        },
+        "createdAt": {
+            "S": "2025-01-29"
+        },
+        "id": {
+            "S": "55684293-eb9f-4cb6-83f7-5c9001226e5f"
+        }
+    }
+}

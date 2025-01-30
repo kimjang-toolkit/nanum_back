@@ -6,9 +6,14 @@ export const queryCoBuyingListSRV = async (input: CoBuyingQueryParams): Promise<
     const query: PageingQuery = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         Limit: input.size || 20, // 최대 개수 (기본값 20)
+
         // CoBuyingSimple을 출력하게 기본 속성 정의. 정렬이나 필터링할 때 기준 속성 추가
+        ScanIndexForward: false,
         ProjectionExpression:
-            'id, coBuyingStatus, totalPrice, attendeeCount, productName, ownerName, deadline, createdAt',
+            'id, coBuyingStatus, totalPrice, attendeeCount, productName, ownerName, deadline, createdAt, #t',
+        ExpressionAttributeNames: {
+            '#t': 'type',
+        },
     };
 
     settingPageingQuery(input, query);

@@ -1,17 +1,17 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { APIERROR, BaseHeader } from 'common/responseType';
+import { APIERROR, AuthSuccessHeader, BaseHeader } from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-import { CoBuyingOwnerAuth } from '@interface/auth';
+import { CoBuyingOwnerAuth, CookieOptions } from '@interface/auth';
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
-    const id = event.pathParameters?.id;
+    const coBuyingId = event.pathParameters?.coBuyingId;
     const { ownerName, ownerPassword } = JSON.parse(event.body || '');
-    if (!ownerName || !ownerPassword || !id) {
+    if (!ownerName || !ownerPassword || !coBuyingId) {
         throw Error('정확한 인증 정보를 전달해주세요.');
     }
     return {
         ownerName: ownerName,
         ownerPassword: ownerPassword,
-        coBuyingId: id,
+        coBuyingId: coBuyingId,
     } as CoBuyingOwnerAuth;
 };
 
@@ -32,11 +32,28 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         };
     }
     try {
-        console.log(' coBuyingId : ', auth.coBuyingId, ' ownerName : ', auth.ownerName);
+        // console.log(' coBuyingId : ', auth.coBuyingId, ' ownerName : ', auth.ownerName);
+        console.log('auth : ', auth);
         const jwt = await authenticateOwnerAuthSRV(auth);
+
+        // httpOnly로 refreshToken을 쿠키에 setting
+        const refreshToken = jwt.refreshToken;
+        const cookieOptions: CookieOptions = {
+            SameSite: 'None',
+            'Max-Age': jwt.refreshTokenExpiresIn,
+            Domain: 'localhost:3000',
+            Path: '/',
+        };
+        const headers = {
+            ...AuthSuccessHeader,
+            'Set-Cookie': `GongGong99RefreshToken=${refreshToken}; HttpOnly; Secure; ${Object.entries(cookieOptions)
+                .map(([key, value]) => `${key}=${value}`)
+                .join('; ')}`,
+        };
+        console.log('headers : ', headers);
         return {
             statusCode: 200,
-            headers: BaseHeader,
+            headers: headers,
             body: JSON.stringify(jwt),
         };
     } catch (error) {
