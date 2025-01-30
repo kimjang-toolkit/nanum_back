@@ -30,14 +30,14 @@ export function verifyPassword(inputPassword: string, storedHash: string): boole
 }
 
 export function generateToken(owner: CoBuyingOwnerAuth): AuthToken {
-    const refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7;
+    const refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7; // 7일
 
     const tokenOwner = {
         ownerName: owner.ownerName,
         coBuyingId: owner.coBuyingId,
     } as UserAuth;
 
-    const accessTokenExpiresIn = 1000 * 60 * 60;
+    const accessTokenExpiresIn = 1000 * 60 * 60; // 1시간
 
     const accessToken = createToken(tokenOwner, accessTokenExpiresIn);
 

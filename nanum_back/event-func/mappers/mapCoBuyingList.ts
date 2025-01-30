@@ -56,15 +56,12 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
 
 export function mapToCoBuyingEvaluatedKey(req: any): CoBuyingKey {
     console.log('req : ', req);
-    if (req.createdAt) {
-        // createdAt이 존재하면 CreatedAtKey로 매핑
-        return {
-            id: req.id.S,
-            key: 'createdAt',
-            createdAt: req.createdAt.S,
-            ownerName: req.ownerName.S,
-        };
-    }
+    return {
+        id: req.id.S,
+        deletedYN: req.deletedYN.S,
+        createdAtId: req.createdAtId.S,
+        ownerName: req.ownerName.S,
+    } as CoBuyingKey;
     // else if (req.deadline) {
     //     // createdAt이 없고 deadline이 존재하면 DeadlineKey로 매핑
     //     return {
@@ -74,8 +71,4 @@ export function mapToCoBuyingEvaluatedKey(req: any): CoBuyingKey {
     //         ownerName: req.ownerName.S,
     //     };
     // }
-    else {
-        // 두 필드가 모두 없으면 오류 처리 혹은 적절한 기본값 설정
-        throw new Error('Invalid LastEvaluatedKey: Missing createdAt or deadline');
-    }
 }
