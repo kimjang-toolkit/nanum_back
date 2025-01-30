@@ -21,7 +21,7 @@ stack_name = "nanum-back"
 s3_prefix = "nanum-back"
 region = "ap-northeast-2"
 image_repositories = []
-parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" AUTHSECRETKEY=\"diofdshodhwohejknfQweewoicho392u90j9029cconlald%qji&whaf34#\""
+parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\""
 disable_rollback = true
 
 [default.package.parameters]

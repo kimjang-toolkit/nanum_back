@@ -292,6 +292,10 @@ Resources:
           AttributeType: S # ID
         - AttributeName: ownerName
           AttributeType: S # 공구장 이름
+        - AttributeName: createdAtId
+          AttributeType: S # 생성일자와 id
+        - AttributeName: deletedYN
+          AttributeType: S # 삭제 여부
       KeySchema:
         - AttributeName: ownerName
           KeyType: HASH # 파티션 키는 ownerName
@@ -318,6 +322,17 @@ Resources:
               KeyType: HASH # 파티션 키는 deadline
             - AttributeName: id
               KeyType: RANGE # 정렬 키는 id
+          Projection:
+            ProjectionType: ALL # 인덱스에 모든 속성 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        - IndexName: PagenationIndex
+          KeySchema:
+            - AttributeName: deletedYN
+              KeyType: HASH # 파티션 키는 deletedYN
+            - AttributeName: createdAtId
+              KeyType: RANGE # 정렬 키는 createdAtId
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:

@@ -1,4 +1,4 @@
-import { ScanCommand } from '@aws-sdk/client-dynamodb';
+import { QueryCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingSummary } from '@interface/cobuying';
 import { CoBuyingPageingRes, PageingQuery } from '@interface/cobuyingList';
 import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSummary } from 'mappers/mapCoBuyingList';
@@ -8,39 +8,13 @@ const ddbDocClient = createDynamoDBDocClient();
 
 export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<CoBuyingPageingRes> => {
     try {
-        // const query: any = {
-        //     TableName: process.env.CoBuyingTableName || '', // 테이블 이름
-        //     IndexName: '',
-        //     Limit: input.size || 20,
-        //     FilterExpression: '',
-        //     ExpressionAttributeValues: {},
-        //     ExclusiveStartKey: {},
-        //     ScanIndexForward: true,
-        // }; 추후에 GetCommand로 최적화 하기
-        // const query: PageingQuery = {
-        //     TableName: 'CoBuyingTable',
-        //     IndexName: 'DeadlineIndex',
-        //     KeyConditionExpression: 'deadline BETWEEN :fromDeadline AND :toDeadline',
-        //     FilterExpression: 'createdAt >= :fromCreatedAt AND createdAt <= :toCreatedAt AND ownerName = :ownerName',
-        //     ExpressionAttributeValues: {
-        //         ':fromDeadline': { S: '2025-01-01' },
-        //         ':toDeadline': { S: '2025-12-31' },
-        //         ':fromCreatedAt': { S: '2024-01-21' },
-        //         ':toCreatedAt': { S: '2025-12-31' },
-        //         ':ownerName': { S: '김철수' },
-        //     },
-        //     ProjectionExpression:
-        //         'id, coBuyingStatus, totalPrice, attendeeCount, productName, ownerName, deadline, createdAt',
-        //     Limit: 5,
-        //     ScanIndexForward: false,
-        // };
-        const command = new ScanCommand(query);
+        const command = new QueryCommand(query);
         const coBuyingList: CoBuyingSummary[] = [];
         let response;
         let lastEvaluatedKey;
         while (coBuyingList.length < query.Limit) {
             response = await ddbDocClient.send(command);
-            console.log('items : ', response.Items);
+            // console.log('items : ', response.Items);
             console.log('lastEvaluatedKey : ', response.LastEvaluatedKey);
 
             if (response.LastEvaluatedKey) {

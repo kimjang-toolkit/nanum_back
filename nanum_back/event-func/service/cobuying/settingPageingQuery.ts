@@ -4,7 +4,7 @@ import { CoBuyingQueryParams, PageingQuery } from '@interface/cobuyingList';
 export const settingPageingQuery = (input: CoBuyingQueryParams, query: PageingQuery): void => {
     // setLastEvaluatedKey(input, query);
     setExclusiveStartKey(input, query);
-    setIndexName(input, query);
+    // setIndexName(input, query);
     // setKeyConditionExpression(input, query);
     if (input.filters) {
         setExpressionValues(input, query);
@@ -176,9 +176,11 @@ function setKeyConditionExpression(input: CoBuyingQueryParams, query: PageingQue
 function setIndexName(input: CoBuyingQueryParams, query: PageingQuery) {
     if (input.sort && input.sort.sortCriteria === 'deadline') {
         query.IndexName = 'DeadlineIndex';
-    } else {
+    } else if (input.sort && input.sort.sortCriteria === 'createdAt') {
         // 기본 인덱스를 생성일자 기준 인덱스로 설정
         query.IndexName = 'CreatedAtIndex';
+    } else {
+        query.IndexName = 'PagenationIndex';
     }
 }
 

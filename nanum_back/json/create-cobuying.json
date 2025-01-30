@@ -16,6 +16,14 @@
     {
       "AttributeName": "deadline",
       "AttributeType": "S"
+    },
+    {
+      "AttributeName": "createdAtId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "deletedYN",
+      "AttributeType": "S"
     }
   ],
   "KeySchema": [
@@ -62,6 +70,26 @@
         },
         {
           "AttributeName": "id",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      },
+      "ProvisionedThroughput": {
+        "ReadCapacityUnits": 5,
+        "WriteCapacityUnits": 5
+      }
+    },
+    {
+      "IndexName": "PagenationIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "deletedYN",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "createdAtId",
           "KeyType": "RANGE"
         }
       ],
