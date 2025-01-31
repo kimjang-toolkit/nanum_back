@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  nanum_back - Stage Environment
+
+  모든 자취생을 위한 나눔장 프로젝트! (스테이지 환경)
+
+Parameters:
+  CoBuyingTableName:
+    Type: String
+    Description: 공구방 테이블을 위한 테이블
+    Default: "CoBuyingTable-Stage"
+    
+  // ... existing code ...
+
+Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Stage
+      // ... existing code ...
+
+  CoBuyingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CoBuyingTable-Stage
+      // ... existing code ... 

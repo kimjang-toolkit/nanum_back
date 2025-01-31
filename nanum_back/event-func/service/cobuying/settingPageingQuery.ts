@@ -14,26 +14,26 @@ export const settingPageingQuery = (input: CoBuyingQueryParams, query: PageingQu
 };
 
 // 다음 조회를 위한 이전 키 값 추가
-export const setLastEvaluatedKey = (input: CoBuyingQueryParams, query: PageingQuery): void => {
-    if (input.lastEvaluatedKey) {
-        if (input.lastEvaluatedKey?.key === 'createdAt') {
-            const lastEvaluatedKey: CreatedAtKey = input.lastEvaluatedKey;
-            query.ExclusiveStartKey = {
-                createdAt: lastEvaluatedKey.createdAt,
-                id: lastEvaluatedKey.id,
-                ownerName: lastEvaluatedKey.ownerName,
-            };
-        }
-        // else {
-        //     const lastEvaluatedKey: DeadlineKey = input.lastEvaluatedKey;
-        //     query.ExclusiveStartKey = {
-        //         deadline: lastEvaluatedKey.deadline,
-        //         id: lastEvaluatedKey.id,
-        //         ownerName: lastEvaluatedKey.ownerName,
-        //     };
-        // }
-    }
-};
+// export const setLastEvaluatedKey = (input: CoBuyingQueryParams, query: PageingQuery): void => {
+//     if (input.lastEvaluatedKey) {
+//         if (input.lastEvaluatedKey?.key === 'createdAt') {
+//             const lastEvaluatedKey: CreatedAtKey = input.lastEvaluatedKey;
+//             query.ExclusiveStartKey = {
+//                 createdAt: lastEvaluatedKey.createdAt,
+//                 id: lastEvaluatedKey.id,
+//                 ownerName: lastEvaluatedKey.ownerName,
+//             };
+//         }
+//         // else {
+//         //     const lastEvaluatedKey: DeadlineKey = input.lastEvaluatedKey;
+//         //     query.ExclusiveStartKey = {
+//         //         deadline: lastEvaluatedKey.deadline,
+//         //         id: lastEvaluatedKey.id,
+//         //         ownerName: lastEvaluatedKey.ownerName,
+//         //     };
+//         // }
+//     }
+// };
 
 export const setExpressionValues = (input: CoBuyingQueryParams, query: PageingQuery): void => {
     if (input.filters) {
@@ -188,15 +188,9 @@ function setExclusiveStartKey(input: CoBuyingQueryParams, query: PageingQuery) {
     if (input.lastEvaluatedKey) {
         query.ExclusiveStartKey = {};
 
-        if (input.lastEvaluatedKey.key === 'createdAt') {
-            query.ExclusiveStartKey['createdAt'] = { S: input.lastEvaluatedKey.createdAt };
-            query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
-            query.ExclusiveStartKey['ownerName'] = { S: input.lastEvaluatedKey.ownerName };
-        }
+        query.ExclusiveStartKey['createdAtId'] = { S: input.lastEvaluatedKey.createdAtId };
+        query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
+        query.ExclusiveStartKey['ownerName'] = { S: input.lastEvaluatedKey.ownerName };
+        query.ExclusiveStartKey['deletedYN'] = { S: input.lastEvaluatedKey.deletedYN };
     }
-    // } else {
-    //     query.ExclusiveStartKey['deadline'] = { S: input.lastEvaluatedKey.deadline };
-    //     query.ExclusiveStartKey['id'] = { S: input.lastEvaluatedKey.id };
-    //     query.ExclusiveStartKey['ownerName'] = { S: input.lastEvaluatedKey.ownerName };
-    // }
 }

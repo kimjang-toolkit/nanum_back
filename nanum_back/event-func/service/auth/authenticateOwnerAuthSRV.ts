@@ -27,7 +27,7 @@ export const authenticateOwnerAuthSRV = async (auth: CoBuyingOwnerAuth): Promise
     } else {
         // 인증되면, JWT를 생성해서 리턴.
         const token = generateToken(owner);
-        console.log('token : ', token);
+        // console.log('token : ', token);
         return token;
     }
 };

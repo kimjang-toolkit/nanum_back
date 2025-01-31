@@ -28,3 +28,19 @@ stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도�
 ### 로컬에서 sam api 서버 실행
 
 `sam local start-api --env-vars ./config/env-local.json`
+
+### 콘솔에서 API Gateway와 Route 53 연동
+
+- ACM 인증서 생성
+- API Gateway 사용자 지정 도메인 생성
+- API 맵핑 생성
+- Route 53 A 레코드 생성
+  - 트래픽 라우팅 대상을 API Gateway로 설정
+
+# 스테이지 별 배포 방법
+
+### 스테이지 환경 배포
+sam deploy --template-file template-stage.yaml --stack-name nanum-back-stage
+
+### 프로덕션 환경 배포
+sam deploy --template-file template-prod.yaml --stack-name nanum-back-prod

@@ -13,22 +13,9 @@ function validateParticipation(event: APIGatewayProxyEvent): Participation {
         body.attendeeName === undefined ||
         body.attendeePrice === undefined ||
         body.coBuyingId === undefined ||
-        body.ownerName === undefined ||
-        body.type === undefined
+        body.ownerName === undefined
     ) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
-    }
-
-    // 수량 나눔인 경우,
-    if (body.type === DivideType.quantity) {
-        if (body.attendeeQuantity === undefined) {
-            throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
-        }
-    }
-
-    // 인원 나눔인 경우,
-    if (body.type === DivideType.attendee) {
-        body.attendeeQuantity = 1; // 인원 기준 공구는 1개만 신청 가능
     }
 
     return {
@@ -37,7 +24,6 @@ function validateParticipation(event: APIGatewayProxyEvent): Participation {
         attendeeQuantity: body.attendeeQuantity,
         coBuyingId: body.coBuyingId,
         ownerName: body.ownerName,
-        type: body.type,
     } as Participation;
 }
 

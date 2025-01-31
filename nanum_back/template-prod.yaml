@@ -1,10 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  nanum_back
+  nanum_back - Production Environment
 
-  모든 자취생을 위한 나눔장 프로젝트!
-  항상 안전하게 테스트하기!
+  모든 자취생을 위한 나눔장 프로젝트! (프로덕션 환경)
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -25,7 +24,7 @@ Parameters:
   CoBuyingTableName:
     Type: String
     Description: 공구방 테이블을 위한 테이블
-    Default: "CoBuyingTable"
+    Default: "CoBuyingTable-Prod"
 
   REGIONNAME:
     Type: String
@@ -53,37 +52,76 @@ Parameters:
     Type: String
     Description: DynamoDB 연결 프로토콜
     Default: "http:"
-  # AUTHSECRETKEY:
-  #   Type: String
-  #   Description: 비밀번호 암호화를 위한 키
-  #   Default: 'abcd1234~~!!'
 
 Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: GongGong99Stage
+      StageName: GongGong99Prod
       Cors:
         AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
         AllowHeaders: "'content-type, GongGong99-AccessToken, GongGong99-RefreshToken'"
         AllowOrigin: "'*'"
-      # Domain:
-      #   DomainName: gonggong99.store
-      #   CertificateArn: arn:aws:acm:ap-northeast-2:471112633394:certificate/bd06d2bd-8313-4e46-a6e7-7ca181a42875
-      #   EndpointConfiguration: REGIONAL
-      #   Route53:
-      #     HostedZoneId: Z01403231VQZJXPO5YXTM
 
-  # 2. Route 53 A Record
-  # Route53Record:
-  #   Type: AWS::Route53::RecordSet
-  #   Properties:
-  #     HostedZoneId: Z01403231VQZJXPO5YXTM # 호스팅 영역 ID
-  #     Name: gonggong99.store
-  #     Type: A
-  #     AliasTarget:
-  #       DNSName: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/co-buying/"
-  #       HostedZoneId: Z20JF4UZKIW1U8 # API Gateway 배포 호스트 영역 ID
+  CoBuyingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CoBuyingTable-Prod
+      AttributeDefinitions:
+        - AttributeName: createdAt # 공구글 생성일로 파티셔닝
+          AttributeType: S
+        - AttributeName: deadline
+          AttributeType: S # 마감일 기준 정렬
+        - AttributeName: id
+          AttributeType: S # ID
+        - AttributeName: ownerName
+          AttributeType: S # 공구장 이름
+        - AttributeName: createdAtId
+          AttributeType: S # 생성일자와 id
+        - AttributeName: deletedYN
+          AttributeType: S # 삭제 여부
+      KeySchema:
+        - AttributeName: ownerName
+          KeyType: HASH # 파티션 키는 ownerName
+        - AttributeName: id
+          KeyType: RANGE # 정렬 키는 createdAt#id
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      GlobalSecondaryIndexes:
+        - IndexName: CreatedAtIndex
+          KeySchema:
+            - AttributeName: createdAt
+              KeyType: HASH # 파티션 키는 createdAt
+            - AttributeName: id
+              KeyType: RANGE # 정렬 키는 id
+          Projection:
+            ProjectionType: ALL # 인덱스에 모든 속성 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        - IndexName: DeadlineIndex
+          KeySchema:
+            - AttributeName: deadline
+              KeyType: HASH # 파티션 키는 deadline
+            - AttributeName: id
+              KeyType: RANGE # 정렬 키는 id
+          Projection:
+            ProjectionType: ALL # 인덱스에 모든 속성 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
+        - IndexName: PagenationIndex
+          KeySchema:
+            - AttributeName: deletedYN
+              KeyType: HASH # 파티션 키는 deletedYN
+            - AttributeName: createdAtId
+              KeyType: RANGE # 정렬 키는 createdAtId
+          Projection:
+            ProjectionType: ALL # 인덱스에 모든 속성 포함
+          ProvisionedThroughput:
+            ReadCapacityUnits: 5
+            WriteCapacityUnits: 5
 
   CreateCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -214,44 +252,6 @@ Resources:
         EntryPoints:
           - queryCoBuyingDetailOneCTL.ts
 
-  # GetCoBuyingByIdFunction:
-  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-  #   Description: 공구방 생성 함수
-  #   Properties:
-  #     CodeUri: event-func/control/cobuying
-  #     Handler: queryCoBuyingOneCTL.getCoBuyingByIdHandler
-  #     Runtime: nodejs20.x
-  #     MemorySize: 2048
-  #     Timeout: 20
-  #     Architectures:
-  #       - x86_64
-  #     Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-  #       GetCoBuyingOne:
-  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-  #         Properties: # 엔드포인트: POST /co-buying
-  #           Path: /api/co-buying # API Gateway 경로
-  #           Method: get # HTTP 메서드
-  #           RestApiId:
-  #             Ref: ApiGatewayApi # API Gateway와 직접 연결
-  #           RequestParameters: # 쿼리 매개변수 정의
-  #             - method.request.querystring.ownerName:
-  #                 Required: true
-  #             - method.request.querystring.createdAt:
-  #                 Required: true
-  #             - method.request.querystring.id:
-  #                 Required: true
-  #     Policies:
-  #       - DynamoDBCrudPolicy:
-  #           TableName: !Ref CoBuyingTableName
-  #   Metadata: # Manage esbuild properties
-  #     BuildMethod: esbuild
-  #     BuildProperties:
-  #       Minify: true
-  #       Target: "es2020"
-  #       Sourcemap: true
-  #       EntryPoints:
-  #         - queryCoBuyingOneCTL.ts
-
   GetCoBuyingListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 생성 함수
@@ -289,66 +289,6 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - queryCoBuyingListCTL.ts
-
-  CoBuyingTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: CoBuyingTable
-      AttributeDefinitions:
-        - AttributeName: createdAt # 공구글 생성일로 파티셔닝
-          AttributeType: S
-        - AttributeName: deadline
-          AttributeType: S # 마감일 기준 정렬
-        - AttributeName: id
-          AttributeType: S # ID
-        - AttributeName: ownerName
-          AttributeType: S # 공구장 이름
-        - AttributeName: createdAtId
-          AttributeType: S # 생성일자와 id
-        - AttributeName: deletedYN
-          AttributeType: S # 삭제 여부
-      KeySchema:
-        - AttributeName: ownerName
-          KeyType: HASH # 파티션 키는 ownerName
-        - AttributeName: id
-          KeyType: RANGE # 정렬 키는 createdAt#id
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      GlobalSecondaryIndexes:
-        - IndexName: CreatedAtIndex
-          KeySchema:
-            - AttributeName: createdAt
-              KeyType: HASH # 파티션 키는 createdAt
-            - AttributeName: id
-              KeyType: RANGE # 정렬 키는 id
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
-        - IndexName: DeadlineIndex
-          KeySchema:
-            - AttributeName: deadline
-              KeyType: HASH # 파티션 키는 deadline
-            - AttributeName: id
-              KeyType: RANGE # 정렬 키는 id
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
-        - IndexName: PagenationIndex
-          KeySchema:
-            - AttributeName: deletedYN
-              KeyType: HASH # 파티션 키는 deletedYN
-            - AttributeName: createdAtId
-              KeyType: RANGE # 정렬 키는 createdAtId
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
-          ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

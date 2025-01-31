@@ -28,7 +28,7 @@ export const queryCoBuyingOwnerById = async (ownerName: string, coBuyingId: stri
         // 단건 조회를 위한 GetCommand 실행
         const command = new QueryCommand(params);
         result = await ddbDocClient.send(command);
-        console.log('result : ', result);
+        // console.log('result : ', result);
         if (result.Items && result.Items.length > 0) {
             return mapToCoBuyingOwnerAuth(result.Items[0]);
         } else {

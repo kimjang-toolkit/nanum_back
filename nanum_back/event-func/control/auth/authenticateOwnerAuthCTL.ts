@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, AuthSuccessHeader, BaseHeader } from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-import { CoBuyingOwnerAuth, CookieOptions } from '@interface/auth';
+import { CoBuyingOwnerAuth, CookieOptions, TokenName, UserAuth } from '@interface/auth';
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
     const { ownerName, ownerPassword } = JSON.parse(event.body || '');
@@ -37,24 +37,39 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         const jwt = await authenticateOwnerAuthSRV(auth);
 
         // httpOnly로 refreshToken을 쿠키에 setting
-        const refreshToken = jwt.refreshToken;
-        const cookieOptions: CookieOptions = {
+        const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',
-            'Max-Age': jwt.refreshTokenExpiresIn,
-            Domain: 'localhost:3000',
+            'Max-Age': jwt.refreshTokenExpiresIn || 1000 * 60 * 60 * 24 * 7,
+            Domain: TokenName.domainName,
             Path: '/',
         };
-        const headers = {
-            ...AuthSuccessHeader,
-            'Set-Cookie': `GongGong99RefreshToken=${refreshToken}; HttpOnly; Secure; ${Object.entries(cookieOptions)
+        const accessCookieOptions: CookieOptions = {
+            SameSite: 'None',
+            'Max-Age': jwt.accessTokenExpiresIn || 1000 * 60 * 60,
+            Domain: TokenName.domainName,
+            Path: '/',
+        };
+        const setCookies = [
+            `${TokenName.refreshToken}=${jwt.refreshToken}; HttpOnly; Secure; ${Object.entries(refreshCookieOptions)
                 .map(([key, value]) => `${key}=${value}`)
                 .join('; ')}`,
+            `${TokenName.accessToken}=${jwt.accessToken}; HttpOnly; Secure; ${Object.entries(accessCookieOptions)
+                .map(([key, value]) => `${key}=${value}`)
+                .join('; ')}`,
+        ];
+
+        const headers = {
+            ...AuthSuccessHeader,
+            'Set-Cookie': setCookies.join(', '),
         };
         console.log('headers : ', headers);
         return {
             statusCode: 200,
             headers: headers,
-            body: JSON.stringify(jwt),
+            body: JSON.stringify({
+                ownerName: auth.ownerName,
+                coBuyingId: auth.coBuyingId,
+            } as UserAuth),
         };
     } catch (error) {
         if (error instanceof APIERROR) {

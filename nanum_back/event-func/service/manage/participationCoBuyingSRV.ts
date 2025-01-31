@@ -1,6 +1,7 @@
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { Participation, ParticipationQuery } from '@interface/manage';
+import { CoBuyingParticipation, Participation } from '@interface/manage';
+import { ParticipationQuery } from '@query-interface/manage';
 import { participationCoBuyingDAO } from '@manage/participationCoBuyingDAO';
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
 import { getAttendeeListDAO } from '@manage/getAttendeeListDAO';
@@ -10,15 +11,20 @@ export const participationCoBuyingSRV = async (participation: Participation) => 
     // 공구글에 참석자 이름 리스트 만들기
     //    만약 이미 참석자 이름을 사용 중이면 다른 이름을 사용해야 함
     try {
-        const attendeeList: Attendee[] = await getAttendeeListDAO(participation.ownerName, participation.coBuyingId);
+        const coBuyingParticipation: CoBuyingParticipation = await getAttendeeListDAO(
+            participation.ownerName,
+            participation.coBuyingId,
+        );
         // console.log('attendeeList', attendeeList);
-        if (attendeeList.find((attendee) => attendee.attendeeName === participation.attendeeName)) {
+        if (
+            coBuyingParticipation.attendeeList.find((attendee) => attendee.attendeeName === participation.attendeeName)
+        ) {
             throw new APIERROR(400, '이미 사용 중인 이름입니다. 다른 이름을 사용해주세요.');
         }
 
         // 공구글에 참여자 추가
         //    실패하면, 500, 공구를 신청하지 못했어요. 다시 시도해주세요.
-        const updateCommand = getUpdateCommand(participation);
+        const updateCommand = getUpdateCommand(participation, coBuyingParticipation.coBuyingType);
 
         await participationCoBuyingDAO(updateCommand);
     } catch (error) {
@@ -30,7 +36,7 @@ export const participationCoBuyingSRV = async (participation: Participation) => 
     }
 };
 
-function getUpdateCommand(participation: Participation): ParticipationQuery {
+function getUpdateCommand(participation: Participation, coBuyingType: DivideType): ParticipationQuery {
     let updateExpression = 'SET ';
     let conditionExpression = '';
     const expressionAttributeValues: Record<string, any> = {};
@@ -57,7 +63,7 @@ function getUpdateCommand(participation: Participation): ParticipationQuery {
     expressionAttributeValues[':newAppliedQuantity'] = participation.attendeeQuantity;
 
     // 수량 나눔에 대한 update 문 작성
-    if (participation.type === DivideType.quantity) {
+    if (coBuyingType === DivideType.quantity) {
         updateExpression += ', #totalAttendeePrice = #totalAttendeePrice + :newAttendeePrice';
         updateExpression += ', #totalAttendeeQuantity = #totalAttendeeQuantity + :newAttendeeQuantity'; // 참여자 수량 증가
         expressionAttributeNames['#totalAttendeePrice'] = 'totalAttendeePrice';

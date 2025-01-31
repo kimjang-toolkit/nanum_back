@@ -1,23 +1,24 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { AuthToken } from '@interface/auth';
+import { AuthToken, TokenName } from '@interface/auth';
 import { APIERROR, BaseHeader } from 'common/responseType';
 import { refreshAuthenticate } from '@auth/refreshAuthenticateSRV';
 
 function validateInput(event: APIGatewayProxyEvent): AuthToken {
-    let token: AuthToken;
+    let refreshToken: string;
+    let accessToken: string;
     try {
-        token = JSON.parse(event.body || '');
+        // event에서 headers를 추출하여 토큰 검증
+        const headers = event.headers;
+        refreshToken = headers[TokenName.refreshToken] || '';
+        accessToken = headers[TokenName.accessToken] || '';
     } catch (error) {
         throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
     }
-    if (token.refreshToken === undefined || token.refreshTokenExpiresIn === undefined) {
-        throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
-    }
-    if (token.user) {
-        throw new APIERROR(401, '유저 정보가 옳바르지 않습니다. 다시 로그인해주세요.');
+    if (refreshToken === '' || accessToken === '') {
+        throw new APIERROR(403, '정확한 인증 정보를 전달해주세요.');
     }
 
-    return token;
+    return { accessToken: accessToken, refreshToken: refreshToken } as AuthToken;
 }
 
 export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
