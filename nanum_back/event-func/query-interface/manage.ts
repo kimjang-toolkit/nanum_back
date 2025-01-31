@@ -1,6 +1,6 @@
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
 
-export interface ParticipationQuery {
+export interface ApplicationQuery {
     TableName: string;
     Key: Record<string, string>;
     UpdateExpression?: string;

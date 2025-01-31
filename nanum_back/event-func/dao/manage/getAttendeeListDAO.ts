@@ -2,14 +2,14 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import { CoBuyingDetail } from '@interface/cobuying';
-import { CoBuyingParticipation } from '@interface/manage';
+import { CoBuyingApplication } from '@interface/manage';
 import { APIERROR } from 'common/responseType';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 import { mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const getAttendeeListDAO = async (ownerName: string, id: string): Promise<CoBuyingParticipation> => {
+export const getAttendeeListDAO = async (ownerName: string, id: string): Promise<CoBuyingApplication> => {
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         KeyConditionExpression: 'ownerName = :ownerName AND id = :id', // 쿼리 조건
@@ -32,7 +32,7 @@ export const getAttendeeListDAO = async (ownerName: string, id: string): Promise
             return {
                 attendeeList,
                 coBuyingType,
-            } as CoBuyingParticipation;
+            } as CoBuyingApplication;
             // 필요한 추가 로직
         } else {
             throw new APIERROR(404, '찾으시는 공구글이 존재하지 않아요');

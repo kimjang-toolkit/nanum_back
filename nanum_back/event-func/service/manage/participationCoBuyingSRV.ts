@@ -1,30 +1,32 @@
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { CoBuyingParticipation, Participation } from '@interface/manage';
-import { ParticipationQuery } from '@query-interface/manage';
+import { Application, CoBuyingApplication } from '@interface/manage';
+import { ApplicationQuery } from '@query-interface/manage';
 import { participationCoBuyingDAO } from '@manage/participationCoBuyingDAO';
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
 import { getAttendeeListDAO } from '@manage/getAttendeeListDAO';
 import { APIERROR } from 'common/responseType';
 
-export const participationCoBuyingSRV = async (participation: Participation) => {
+export const participationCoBuyingSRV = async (application: Application) => {
     // 공구글에 참석자 이름 리스트 만들기
     //    만약 이미 참석자 이름을 사용 중이면 다른 이름을 사용해야 함
     try {
-        const coBuyingParticipation: CoBuyingParticipation = await getAttendeeListDAO(
-            participation.ownerName,
-            participation.coBuyingId,
+        const coBuyingApplication: CoBuyingApplication = await getAttendeeListDAO(
+            application.ownerName,
+            application.coBuyingId,
         );
         // console.log('attendeeList', attendeeList);
         if (
-            coBuyingParticipation.attendeeList.find((attendee) => attendee.attendeeName === participation.attendeeName)
+            coBuyingApplication.attendeeList.find(
+                (attendee: Attendee) => attendee.attendeeName === application.attendeeName,
+            )
         ) {
             throw new APIERROR(400, '이미 사용 중인 이름입니다. 다른 이름을 사용해주세요.');
         }
 
         // 공구글에 참여자 추가
         //    실패하면, 500, 공구를 신청하지 못했어요. 다시 시도해주세요.
-        const updateCommand = getUpdateCommand(participation, coBuyingParticipation.coBuyingType);
+        const updateCommand = getUpdateCommand(application, coBuyingApplication.coBuyingType);
 
         await participationCoBuyingDAO(updateCommand);
     } catch (error) {
@@ -36,7 +38,7 @@ export const participationCoBuyingSRV = async (participation: Participation) => 
     }
 };
 
-function getUpdateCommand(participation: Participation, coBuyingType: DivideType): ParticipationQuery {
+function getUpdateCommand(participation: Application, coBuyingType: DivideType): ApplicationQuery {
     let updateExpression = 'SET ';
     let conditionExpression = '';
     const expressionAttributeValues: Record<string, any> = {};
@@ -86,7 +88,7 @@ function getUpdateCommand(participation: Participation, coBuyingType: DivideType
         ExpressionAttributeValues: expressionAttributeValues,
         ConditionExpression: conditionExpression,
         ReturnValues: ReturnValue.ALL_NEW,
-    } as ParticipationQuery;
+    } as ApplicationQuery;
     // console.log('query param', param);
     return param;
 }

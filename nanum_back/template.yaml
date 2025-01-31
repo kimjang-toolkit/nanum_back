@@ -162,7 +162,7 @@ Resources:
         ParticipateInCoBuying:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /manage/participation
-            Path: /api/co-buying/participation # API Gateway 경로
+            Path: /api/co-buying/applications # API Gateway 경로
             Method: post # HTTP 메서드
             RestApiId:
               Ref: ApiGatewayApi # API Gateway와 직접 연결

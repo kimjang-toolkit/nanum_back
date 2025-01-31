@@ -52,10 +52,13 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
     }
 
     // 공구장의 수량 결정
-    const ownerPrice: number = calculatOwnerQuantityPrice(item);
+    // const ownerPrice: number = calculatOwnerQuantityPrice(item);
 
     // 공구글 단위 가격 계산
     const unitPrice: number = calculatUnitPrice(item);
+
+    // 공구장의 부담액 계산 = 총 가격 - 상품 개당 가격 * 총 수량 + 공구장 할당량 * 상품 개당 가격
+    const ownerPrice: number = item.totalPrice - unitPrice * (item.totalQuantity - item.ownerQuantity);
 
     const hostAttende: Attendee = {
         attendeeName: item.ownerName,
@@ -99,10 +102,13 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
     // 인당 가격 계산
     const perAttendeePrice: number = calculatAttendeePrice(item);
 
+    // 공구장의 부담액 계산
+    const ownerPrice: number = item.totalPrice - perAttendeePrice * (item.targetAttendeeCount - 1);
+
     const hostAttendee: Attendee = {
         attendeeName: item.ownerName,
         appliedQuantity: item.ownerQuantity || 1,
-        attendeePrice: perAttendeePrice, // 일단 단순 계산, 공구가 마감될 때 totalPrice - totalAttendeeCount*perAttendeePrice 로 업데이트
+        attendeePrice: ownerPrice, // 일단 단순 계산, 공구가 마감될 때 totalPrice - totalAttendeeCount*perAttendeePrice 로 업데이트
     };
 
     const attendeeCoBuying: AttendeeCoBuying = {
@@ -119,16 +125,27 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
     return attendeeCoBuying;
 }
 
-function calculatOwnerQuantityPrice(input: CoBuyingCreateReq<DivideType.quantity>): number {
-    return (input.ownerQuantity * input.totalPrice) / input.totalQuantity;
-}
-
+/**
+ * 조승효B 요구 사항 : 소수점 이하 절삭
+ * @param input
+ * @returns
+ */
 function calculatAttendeePrice(input: CoBuyingCreateReq<DivideType.attendee>): number {
-    return input.totalPrice / input.targetAttendeeCount;
+    // 소수점 이하 절삭
+    const attendeePrice = input.totalPrice / input.targetAttendeeCount;
+    return Math.floor(attendeePrice);
 }
 
+/**
+ * 조승효B 요구 사항 : 소수점 이하의 값을 절삭
+ * 상품 개당 가격 계산
+ * @param input
+ * @returns
+ */
 function calculatUnitPrice(input: CoBuyingCreateReq<DivideType>): number {
-    return input.totalPrice / input.totalQuantity;
+    // 소수점 이하 절삭
+    const unitPrice = input.totalPrice / input.totalQuantity;
+    return Math.floor(unitPrice);
 }
 
 // export const queryCoBuyingPage = async (input: CoBuyingQueryParams): Promise<CoBuyingSimple> => {

@@ -1,9 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, BaseHeader } from '@common/responseType';
-import { Participation } from '@interface/manage';
+import { Application } from '@interface/manage';
 import { participationCoBuyingSRV } from '@manage/participationCoBuyingSRV';
-import { DivideType } from '@domain/cobuying';
-function validateParticipation(event: APIGatewayProxyEvent): Participation {
+
+function validateParticipation(event: APIGatewayProxyEvent): Application {
     if (event.body === null) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
     }
@@ -24,11 +24,11 @@ function validateParticipation(event: APIGatewayProxyEvent): Participation {
         attendeeQuantity: body.attendeeQuantity,
         coBuyingId: body.coBuyingId,
         ownerName: body.ownerName,
-    } as Participation;
+    } as Application;
 }
 
 export const participateInCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    let participation: Participation;
+    let participation: Application;
     try {
         participation = validateParticipation(event);
     } catch (error) {
