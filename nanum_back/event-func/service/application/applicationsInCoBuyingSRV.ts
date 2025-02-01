@@ -1,13 +1,13 @@
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { Application, CoBuyingApplication } from '@interface/manage';
-import { ApplicationQuery } from '@query-interface/manage';
-import { participationCoBuyingDAO } from '@manage/participationCoBuyingDAO';
+import { ApplicationReq, CoBuyingApplication } from '@interface/application';
+import { ApplicationQuery } from '@query-interface/application';
+import { applicationCoBuyingDAO } from '@application/applicationCoBuyingDAO';
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
-import { getAttendeeListDAO } from '@manage/getAttendeeListDAO';
+import { getAttendeeListDAO } from '@application/getAttendeeListDAO';
 import { APIERROR } from 'common/responseType';
 
-export const participationCoBuyingSRV = async (application: Application) => {
+export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => {
     // 공구글에 참석자 이름 리스트 만들기
     //    만약 이미 참석자 이름을 사용 중이면 다른 이름을 사용해야 함
     try {
@@ -28,7 +28,7 @@ export const participationCoBuyingSRV = async (application: Application) => {
         //    실패하면, 500, 공구를 신청하지 못했어요. 다시 시도해주세요.
         const updateCommand = getUpdateCommand(application, coBuyingApplication.coBuyingType);
 
-        await participationCoBuyingDAO(updateCommand);
+        await applicationCoBuyingDAO(updateCommand);
     } catch (error) {
         if (error instanceof APIERROR) {
             console.error(error);
@@ -38,7 +38,7 @@ export const participationCoBuyingSRV = async (application: Application) => {
     }
 };
 
-function getUpdateCommand(participation: Application, coBuyingType: DivideType): ApplicationQuery {
+function getUpdateCommand(participation: ApplicationReq, coBuyingType: DivideType): ApplicationQuery {
     let updateExpression = 'SET ';
     let conditionExpression = '';
     const expressionAttributeValues: Record<string, any> = {};

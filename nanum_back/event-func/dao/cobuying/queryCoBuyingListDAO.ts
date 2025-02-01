@@ -1,4 +1,4 @@
-import { QueryCommand, ScanCommand } from '@aws-sdk/client-dynamodb';
+import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingSummary } from '@interface/cobuying';
 import { CoBuyingPageingRes, PageingQuery } from '@interface/cobuyingList';
 import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSummary } from 'mappers/mapCoBuyingList';
@@ -9,12 +9,12 @@ const ddbDocClient = createDynamoDBDocClient();
 export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<CoBuyingPageingRes> => {
     try {
         const command = new QueryCommand(query);
-        const coBuyingList: CoBuyingSummary[] = [];
+        let coBuyingList: CoBuyingSummary[] = [];
         let response;
         let lastEvaluatedKey;
         while (coBuyingList.length < query.Limit) {
             response = await ddbDocClient.send(command);
-            // console.log('items : ', response.Items);
+            console.log('items : ', response.Items);
             console.log('lastEvaluatedKey : ', response.LastEvaluatedKey);
 
             if (response.LastEvaluatedKey) {
@@ -28,16 +28,24 @@ export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<CoBuyin
                 // 현재 조회된 Items에서 부족한 개수만큼 추가
                 const remainingSpace = query.Limit - coBuyingList.length;
                 const itemsToAdd = response.Items.slice(0, remainingSpace); // 부족한 개수만큼 추출
-                coBuyingList.push(...mapToCoBuyingSummary(itemsToAdd)); // 매핑 후 리스트에 추가
+                coBuyingList = coBuyingList.concat(mapToCoBuyingSummary(itemsToAdd)); // 매핑 후 리스트에 추가
                 console.log('필요한 만큼 조회했습니다.');
+
+                // 추가 조회를 수행하여 실제로 더 많은 항목이 있는지 확인
+                const hasMoreItems = await checkHasMoreItems(query);
+                if (!hasMoreItems) {
+                    lastEvaluatedKey = undefined;
+                }
                 break;
             } else if (response.LastEvaluatedKey && response.Items) {
-                // list에 item을 다 넣기
-                coBuyingList.push(...mapToCoBuyingSummary(response.Items)); // 매핑 후 리스트에 추가
+                // 현재 아이템을 다 조회했는데 아직 부족한 경우
+                // 다음 조회할 아이템이 있는 경우,
+                coBuyingList = coBuyingList.concat(mapToCoBuyingSummary(response.Items)); // 매핑 후 리스트에 추가
                 console.log(`아직 부족해서 다음 조회하겠습니다. 현재 ${coBuyingList.length}개 조회`);
             } else {
                 // 다음 조회가 없는 경우,
-                coBuyingList.push(...mapToCoBuyingSummary(response.Items)); // 매핑 후 리스트에 추가
+                lastEvaluatedKey = undefined;
+                coBuyingList = coBuyingList.concat(mapToCoBuyingSummary(response.Items)); // 매핑 후 리스트에 추가
                 console.log(`더 이상 조회할 아이템이 없습니다! 현재 ${coBuyingList.length}개 조회`);
                 break;
             }
@@ -59,4 +67,13 @@ export const queryCoBuyingListDAO = async (query: PageingQuery): Promise<CoBuyin
         }
         throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
+};
+
+const checkHasMoreItems = async (query: PageingQuery): Promise<boolean> => {
+    const command = new QueryCommand(query);
+    const nextResponse = await ddbDocClient.send(command);
+    if (!nextResponse.Items || nextResponse.Items.length === 0) {
+        return false;
+    }
+    return true;
 };

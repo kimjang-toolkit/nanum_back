@@ -147,19 +147,19 @@ Resources:
         EntryPoints:
           - authenticateOwnerAuthCTL.ts
 
-  ParticipateInCoBuyingFunction:
+  ApplicationsInCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 참여 함수
     Properties:
-      CodeUri: event-func/control/manage
-      Handler: participateInCoBuyingCTL.participateInCoBuyingHandler
+      CodeUri: event-func/control/application
+      Handler: applicationsInCoBuyingCTL.applicationsInCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-        ParticipateInCoBuying:
+        ApplicationsInCoBuying:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties: # 엔드포인트: POST /manage/participation
             Path: /api/co-buying/applications # API Gateway 경로
@@ -176,7 +176,7 @@ Resources:
         Target: "es2020"
         Sourcemap: true
         EntryPoints:
-          - participateInCoBuyingCTL.ts
+          - applicationsInCoBuyingCTL.ts
 
   GetCoBuyingDetailFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction

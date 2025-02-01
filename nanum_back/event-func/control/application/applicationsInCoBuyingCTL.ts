@@ -1,9 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, BaseHeader } from '@common/responseType';
-import { Application } from '@interface/manage';
-import { participationCoBuyingSRV } from '@manage/participationCoBuyingSRV';
+import { ApplicationReq } from '@interface/application';
+import { applicationsInCoBuyingSRV } from '@application/applicationsInCoBuyingSRV';
 
-function validateParticipation(event: APIGatewayProxyEvent): Application {
+function validateApplication(event: APIGatewayProxyEvent): ApplicationReq {
     if (event.body === null) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
     }
@@ -24,13 +24,13 @@ function validateParticipation(event: APIGatewayProxyEvent): Application {
         attendeeQuantity: body.attendeeQuantity,
         coBuyingId: body.coBuyingId,
         ownerName: body.ownerName,
-    } as Application;
+    } as ApplicationReq;
 }
 
-export const participateInCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    let participation: Application;
+export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    let application: ApplicationReq;
     try {
-        participation = validateParticipation(event);
+        application = validateApplication(event);
     } catch (error) {
         if (error instanceof APIERROR) {
             return {
@@ -46,13 +46,13 @@ export const participateInCoBuyingHandler = async (event: APIGatewayProxyEvent):
         };
     }
 
-    console.log('participation : ', participation);
+    console.log('application : ', application);
     try {
-        await participationCoBuyingSRV(participation);
+        await applicationsInCoBuyingSRV(application);
         return {
             statusCode: 200,
             headers: BaseHeader,
-            body: JSON.stringify(participation.attendeeName + '님! 공구 신청 감사합니다!'),
+            body: JSON.stringify(application.attendeeName + '님! 공구 신청 감사합니다!'),
         };
     } catch (error) {
         console.error('error : ', error);

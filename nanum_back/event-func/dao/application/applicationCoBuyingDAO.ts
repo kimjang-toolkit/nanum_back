@@ -1,11 +1,11 @@
 import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
-import { ApplicationQuery } from '@query-interface/manage';
+import { ApplicationQuery } from '@query-interface/application';
 import { APIERROR } from 'common/responseType';
 import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const participationCoBuyingDAO = async (updateCommand: ApplicationQuery) => {
+export const applicationCoBuyingDAO = async (updateCommand: ApplicationQuery) => {
     const command = new UpdateCommand(updateCommand);
     try {
         const result = await ddbDocClient.send(command);

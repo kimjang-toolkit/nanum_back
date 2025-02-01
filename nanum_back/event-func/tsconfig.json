@@ -26,10 +26,10 @@
           "../event-func/service/auth/*", 
           "../event-func/dao/auth/*"
         ],
-        "@manage/*": [
-          "../event-func/control/manage/*", 
-          "../event-func/service/manage/*", 
-          "../event-func/dao/manage/*"
+        "@application/*": [
+          "../event-func/control/application/*", 
+          "../event-func/service/application/*", 
+          "../event-func/dao/application/*",
         ],
         "@common/*": ["../event-func/common/*"],
         "@query-interface/*": ["../event-func/query-interface/*"]
