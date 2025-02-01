@@ -1,6 +1,6 @@
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { ApplicationReq, CoBuyingApplication } from '@interface/application';
+import { ApplicationDTO, ApplicationReq, CoBuyingApplication } from '@interface/application';
 import { ApplicationQuery } from '@query-interface/application';
 import { applicationCoBuyingDAO } from '@application/applicationCoBuyingDAO';
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
@@ -28,7 +28,8 @@ export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => 
         //    실패하면, 500, 공구를 신청하지 못했어요. 다시 시도해주세요.
         const updateCommand = getUpdateCommand(application, coBuyingApplication.coBuyingType);
 
-        await applicationCoBuyingDAO(updateCommand);
+        const message: ApplicationDTO = await applicationCoBuyingDAO(updateCommand);
+        return message;
     } catch (error) {
         if (error instanceof APIERROR) {
             console.error(error);

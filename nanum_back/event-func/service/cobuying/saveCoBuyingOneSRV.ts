@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CoBuyingStatus, QuantityCoBuying, AttendeeCoBuying, CoBuyingPost, DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { getKoreaDay } from 'common/time';
+import { getFormattedKoreaTime, getKoreaDay } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
@@ -35,6 +35,7 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
 };
 
 function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): QuantityCoBuying {
+    const createdAt = getFormattedKoreaTime();
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
@@ -42,7 +43,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         id: id,
         createdAt: createdAtDateOnly,
         coBuyingStatus: CoBuyingStatus.APPLYING,
-        createdAtId: createdAtDateOnly + '#' + id,
+        createdAtId: createdAt + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
@@ -83,6 +84,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
 }
 
 function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): AttendeeCoBuying {
+    const createdAt = getFormattedKoreaTime();
     const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
@@ -90,7 +92,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         id: id,
         createdAt: createdAtDateOnly,
         coBuyingStatus: CoBuyingStatus.APPLYING,
-        createdAtId: createdAtDateOnly + '#' + id,
+        createdAtId: createdAt + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',

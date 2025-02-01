@@ -1,3 +1,4 @@
+import { ApplicationDTO } from './../../../api-interface/src/interface/application';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, BaseHeader } from '@common/responseType';
 import { ApplicationReq } from '@interface/application';
@@ -12,8 +13,13 @@ function validateApplication(event: APIGatewayProxyEvent): ApplicationReq {
     if (
         body.attendeeName === undefined ||
         body.attendeePrice === undefined ||
+        body.attendeePrice <= 0 ||
+        body.attendeeQuantity === undefined ||
+        body.attendeeQuantity <= 0 ||
         body.coBuyingId === undefined ||
-        body.ownerName === undefined
+        body.ownerName === undefined ||
+        body.attendeePrice > Number.MAX_SAFE_INTEGER ||
+        body.attendeeQuantity > Number.MAX_SAFE_INTEGER
     ) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
     }
@@ -48,11 +54,11 @@ export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEvent)
 
     console.log('application : ', application);
     try {
-        await applicationsInCoBuyingSRV(application);
+        const message: ApplicationDTO = await applicationsInCoBuyingSRV(application);
         return {
             statusCode: 200,
             headers: BaseHeader,
-            body: JSON.stringify(application.attendeeName + '님! 공구 신청 감사합니다!'),
+            body: JSON.stringify(application.attendeeName + `님! ${message.message} 공구 신청 감사합니다!`),
         };
     } catch (error) {
         console.error('error : ', error);
