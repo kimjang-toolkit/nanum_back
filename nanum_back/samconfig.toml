@@ -18,7 +18,6 @@ lint = true
 [default.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
-resolve_s3 = true
 stack_name = "nanum-back"
 s3_prefix = "nanum-back"
 region = "ap-northeast-2"
@@ -55,7 +54,6 @@ lint = true
 [Stg.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
-resolve_s3 = true
 stack_name = "nanum-back-stg"
 s3_prefix = "nanum-back-stg"
 region = "ap-northeast-2"
@@ -77,7 +75,6 @@ lint = true
 [Prod.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
-resolve_s3 = true
 stack_name = "nanum-back-prod"
 s3_prefix = "nanum-back-prod"
 region = "ap-northeast-2"
