@@ -1,5 +1,13 @@
 # nanum_back
 
+## CICD 구성
+
+Feature branch에서 작업 후 Stg 브랜치에 병합 시 Stg-nanum-back 스택 배포
+
+Prod 브랜치에 Stg 브랜치 병합 시 Prod-nanum-back 스택 배포
+
+Prod는 Stg 브랜치만 병합 가능
+
 ### DynamoDB local에서 실행하기
 
 `docker run -d -p 3300:8000 amazon/dynamodb-local` 로 도커 컨테이너 실행하기 `http://127.0.0.1:3300`로 접근 가능!
