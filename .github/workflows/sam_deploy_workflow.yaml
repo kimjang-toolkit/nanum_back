@@ -28,14 +28,17 @@ jobs:
           aws-region: ap-northeast-2
 
       - name: SAM Build
-        run: sam build
+        run: sam build --template ./nanum_back/template.yaml
 
-      - name: SAM Validate
-        run: sam validate
+      - name:
+          SAM Validate
+          # 프로젝트 root 위치에서 빌드하는게 아닌 ./nanum_back/template.yaml을 빌드
+        run: sam validate --template ./nanum_back/template.yaml
 
       - name: Deploy
         run: | # changeset 생성 및 자동 승인하여 배포
           sam deploy \
+            --template ./nanum_back/template.yaml \
             --config-env ${{ github.ref_name }} \
             --stack-name ${{ github.ref_name }}-nanum-back
             --no-confirm-changeset \
