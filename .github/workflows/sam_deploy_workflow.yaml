@@ -27,6 +27,7 @@ jobs:
         run: |
           npm install
           npm install -g esbuild  # esbuild 전역 설치
+          npm install uuid @aws-sdk/lib-dynamodb @aws-sdk/client-dynamodb  # AWS SDK와 uuid 설치
 
       - name: Set AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
