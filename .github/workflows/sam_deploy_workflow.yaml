@@ -49,7 +49,7 @@ jobs:
           sam deploy \
             --template ./nanum_back/template.yaml \
             --config-env ${{ github.ref_name }} \
-            --stack-name ${{ github.ref_name }}-nanum-back
+            --stack-name ${{ github.ref_name }}-nanum-back \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
             --capabilities CAPABILITY_IAM \
