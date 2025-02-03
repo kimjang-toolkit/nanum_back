@@ -14,11 +14,19 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
       - name: Setup SAM CLI
         uses: aws-actions/setup-sam@v2
 
-      - name: Install Node.js dependencies # npm install
-        run: npm install
+      - name: Install dependencies
+        run: |
+          npm install
+          npm install -g esbuild  # esbuild 전역 설치
 
       - name: Set AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
