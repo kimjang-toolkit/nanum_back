@@ -48,8 +48,8 @@ jobs:
         run: | # changeset 생성 및 자동 승인하여 배포
           sam deploy \
             --template ./nanum_back/template.yaml \
-            --config-env ${{ github.ref_name }} \
-            --stack-name ${{ github.ref_name }}-nanum-back \
+            --config-env ${{ github.base_ref }} \
+            --stack-name ${{ github.base_ref }}-nanum-back \
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
             --capabilities CAPABILITY_IAM \
@@ -59,6 +59,6 @@ jobs:
         run: |
           # 스택 outputs 출력
           aws cloudformation describe-stacks \
-            --stack-name ${{ github.ref_name }}-nanum-back \
+            --stack-name ${{ github.base_ref }}-nanum-back \
             --query 'Stacks[0].Outputs' \
             --output table
