@@ -40,7 +40,13 @@ stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도�
 # 스테이지 별 배포 방법
 
 ### 스테이지 환경 배포
-sam deploy --template-file template-stage.yaml --stack-name nanum-back-stage
+  `sam deploy --config-env stg --stack-name Stg-nanum-back`
 
 ### 프로덕션 환경 배포
-sam deploy --template-file template-prod.yaml --stack-name nanum-back-prod
+  `sam deploy --config-env prod --stack-name Prod-nanum-back`
+
+### 리소스 수정 시 주의할 점
+
+- 한 리소스는 하나의 변경사항만 적용.
+- 여러 리소스를 동시에 수정은 가능하지만, **꼭 리소스 당 하나의 변경사항**만 적용.
+- 인덱스 삭제 후 새로운 인덱스 생성 시 기존 인덱스 삭제 후 새로운 인덱스 생성 필요

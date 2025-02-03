@@ -41,18 +41,18 @@ warm_containers = "EAGER"
 
 # 스테이지 환경
 
-[stg]
-[stg.global.parameters]
+[Stg]
+[Stg.global.parameters]
 stack_name = "nanum-back-stg"
 
-[stg.build.parameters]
+[Stg.build.parameters]
 cached = true
 parallel = true
 
-[stg.validate.parameters]
+[Stg.validate.parameters]
 lint = true
 
-[stg.deploy.parameters]
+[Stg.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
@@ -63,18 +63,18 @@ image_repositories = []
 parameter_overrides = "CoBuyingTableName=\"Stg-CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS\" DEVENVNAME=\"Linux\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DOMAINNAME=\"gonggong99.store\" DEPLOYSTAGE=\"Stg\""
 disable_rollback = false
 
-[prod]
-[prod.global.parameters]
+[Prod]
+[Prod.global.parameters]
 stack_name = "nanum-back-prod"
 
-[prod.build.parameters]
+[Prod.build.parameters]
 cached = true
 parallel = true
 
-[prod.validate.parameters]
+[Prod.validate.parameters]
 lint = true
 
-[prod.deploy.parameters]
+[Prod.deploy.parameters]
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
