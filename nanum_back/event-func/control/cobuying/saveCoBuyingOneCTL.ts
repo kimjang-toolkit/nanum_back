@@ -3,6 +3,7 @@ import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 import { BaseHeader } from 'common/responseType';
 import { CoBuyingCreateReq } from '@interface/cobuying';
 import { DivideType } from '@domain/cobuying';
+import { parseProductInfo } from '@product/parseProductInfoSVC';
 
 const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
     if (!event.body) {
@@ -26,9 +27,10 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
             body: JSON.stringify({ message: (error as Error).message }),
         };
     }
-    try {
-        const item = await saveCoBuying(input);
 
+    try {
+        const productParseInfo: Promise<any> = parseProductInfo(input.productLink);
+        const item = await saveCoBuying(input);
         return {
             statusCode: 201,
             headers: BaseHeader,

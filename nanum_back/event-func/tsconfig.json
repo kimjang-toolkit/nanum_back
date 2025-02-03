@@ -32,7 +32,7 @@
           "../event-func/dao/application/*",
         ],
         "@common/*": ["../event-func/common/*"],
-        "@query-interface/*": ["../event-func/query-interface/*"]
+        "@query-interface/*": ["../event-func/query-interface/*"],
     }
     },
     // "exclude": ["node_modules", "**/*.test.ts"]
