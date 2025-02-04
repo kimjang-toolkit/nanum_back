@@ -62,6 +62,10 @@ Parameters:
     Type: String
     Description: 도메인 이름
     Default: "gonggong99.store"
+  CodeUri:
+    Type: String
+    Description: 코드 위치
+    Default: ""
   # AUTHSECRETKEY:
   #   Type: String
   #   Description: 비밀번호 암호화를 위한 키
@@ -99,7 +103,7 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-CreateCoBuyingFunction"
-      CodeUri: event-func/control/cobuying
+      CodeUri: !Sub "${CodeUri}event-func/control/cobuying"
       Handler: saveCoBuyingOneCTL.createCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
@@ -131,7 +135,7 @@ Resources:
     Description: 공구장 인증 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-AuthenticateOwnerAuthFunction"
-      CodeUri: event-func/control/auth
+      CodeUri: !Sub "${CodeUri}event-func/control/auth"
       Handler: authenticateOwnerAuthCTL.authenticateOwnerAuth
       Runtime: nodejs20.x
       MemorySize: 2048
@@ -163,7 +167,7 @@ Resources:
     Description: 공구방 참여 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-ApplicationsInCoBuyingFunction"
-      CodeUri: event-func/control/application
+      CodeUri: !Sub "${CodeUri}event-func/control/application"
       Handler: applicationsInCoBuyingCTL.applicationsInCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
@@ -195,7 +199,7 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-GetCoBuyingDetailFunction"
-      CodeUri: event-func/control/cobuying
+      CodeUri: !Sub "${CodeUri}event-func/control/cobuying"
       Handler: queryCoBuyingDetailOneCTL.getCoBuyingDetailHandler
       Runtime: nodejs20.x
       MemorySize: 2048
@@ -270,7 +274,7 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-GetCoBuyingListFunction"
-      CodeUri: event-func/control/cobuying
+      CodeUri: !Sub "${CodeUri}event-func/control/cobuying"
       Handler: queryCoBuyingListCTL.getCoBuyingListHandler
       Runtime: nodejs20.x
       MemorySize: 2048
