@@ -21,6 +21,7 @@ Globals:
         DYNAMODBPORT: !Ref DYNAMODBPORT
         DBPROTOCAL: !Ref DBPROTOCAL
         DEPLOYSTAGE: !Ref DEPLOYSTAGE
+        DOMAINNAME: !Ref DOMAINNAME
 Parameters:
   CoBuyingTableName:
     Type: String
@@ -57,6 +58,10 @@ Parameters:
     Type: String
     Description: 배포 스테이지
     Default: "Stg"
+  DOMAINNAME:
+    Type: String
+    Description: 도메인 이름
+    Default: "gonggong99.store"
   # AUTHSECRETKEY:
   #   Type: String
   #   Description: 비밀번호 암호화를 위한 키
@@ -70,7 +75,7 @@ Resources:
       Cors:
         AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
         AllowHeaders: "'content-type, GongGong99-AccessToken, GongGong99-RefreshToken'"
-        AllowOrigin: "'*'"
+        AllowOrigin: !Sub "'${DOMAINNAME}'"
       # Domain:
       #   DomainName: gonggong99.store
       #   CertificateArn: arn:aws:acm:ap-northeast-2:471112633394:certificate/bd06d2bd-8313-4e46-a6e7-7ca181a42875
