@@ -36,6 +36,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
 
+          # 빌드 작업 위치를 ./nanum_back 으로 변경
+      - name: Set Build Directory
+        run: cd nanum_back
       - name: SAM Build
         run: sam build --template ./nanum_back/template.yaml
 
