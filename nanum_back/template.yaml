@@ -65,7 +65,7 @@ Parameters:
   CodeUri:
     Type: String
     Description: 코드 위치
-    Default: "./"
+    Default: "nanum_back/"
   # AUTHSECRETKEY:
   #   Type: String
   #   Description: 비밀번호 암호화를 위한 키
