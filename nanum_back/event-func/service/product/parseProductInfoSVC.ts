@@ -1,8 +1,8 @@
 import { ProductInformation } from '@interface/product';
-import RSSParser from 'rss-parser';
+// import RSSParser from 'rss-parser';
 import { JSDOM } from 'jsdom';
 
-const parser = new RSSParser();
+// const parser = new RSSParser();
 
 export const parseProductInfo = async (productLink: string): Promise<ProductInformation> => {
     productLink =

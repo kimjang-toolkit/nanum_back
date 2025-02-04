@@ -8,6 +8,7 @@
     "aws-lambda": "^1.0.7",
     "aws-sdk": "^2.1692.0",
     "dynamodb-data-types": "^4.0.1",
+    "jsdom": "^26.0.0",
     "rss-parser": "^3.13.0"
   },
   "devDependencies": {

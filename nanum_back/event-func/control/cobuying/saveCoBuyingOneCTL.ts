@@ -4,6 +4,7 @@ import { BaseHeader } from 'common/responseType';
 import { CoBuyingCreateReq } from '@interface/cobuying';
 import { DivideType } from '@domain/cobuying';
 import { parseProductInfo } from '@product/parseProductInfoSVC';
+import { ProductInformation } from '@interface/product';
 
 const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
     if (!event.body) {
@@ -20,6 +21,7 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
     try {
         validateCoBuyingReq(event);
         input = JSON.parse(event.body || '');
+        console.log('input 검증 완료');
     } catch (error) {
         return {
             statusCode: 400,
@@ -29,7 +31,10 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
     }
 
     try {
-        const productParseInfo: Promise<any> = parseProductInfo(input.productLink);
+        if (input.productLink) {
+            console.log('productLink 있음 ', input.productLink);
+            // const productParseInfo: ProductInformation = await parseProductInfo(input.productLink);
+        }
         const item = await saveCoBuying(input);
         return {
             statusCode: 201,
