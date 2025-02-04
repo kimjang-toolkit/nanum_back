@@ -48,10 +48,10 @@ stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도�
 # 스테이지 별 배포 방법
 
 ### 스테이지 환경 배포
-  `sam deploy --config-env stg --stack-name Stg-nanum-back`
+  `sam deploy --config-env Stg --stack-name Stg-nanum-back`
 
 ### 프로덕션 환경 배포
-  `sam deploy --config-env prod --stack-name Prod-nanum-back`
+  `sam deploy --config-env Prod --stack-name Prod-nanum-back`
 
 ### 리소스 수정 시 주의할 점
 
