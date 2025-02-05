@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, AuthSuccessHeader, BaseHeader } from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-import { CoBuyingOwnerAuth, CookieOptions, TokenName, UserAuth } from '@interface/auth';
+import { CoBuyingOwnerAuth, CookieOptions, TokenName, UserAuthDto } from '@interface/auth';
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
     const { ownerName, ownerPassword } = JSON.parse(event.body || '');
@@ -69,7 +69,7 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
             body: JSON.stringify({
                 ownerName: auth.ownerName,
                 coBuyingId: auth.coBuyingId,
-            } as UserAuth),
+            } as UserAuthDto),
         };
     } catch (error) {
         if (error instanceof APIERROR) {
