@@ -16,13 +16,14 @@ parallel = true
 lint = true
 
 [default.deploy.parameters]
+resolve_s3 = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 stack_name = "nanum-back"
 s3_prefix = "nanum-back"
 region = "ap-northeast-2"
 image_repositories = []
-parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DOMAINNAME=\"gonggong99.store\" DEPLOYSTAGE=\"Dev\""
+parameter_overrides = "CoBuyingTableName=\"Dev-CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DEPLOYSTAGE=\"Dev\" DOMAINNAME=\"https://gonggong99.store\""
 disable_rollback = true
 
 [default.package.parameters]
@@ -33,7 +34,7 @@ watch = true
 
 [default.local_start_api.parameters]
 warm_containers = "EAGER"
-parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"http://host.docker.internal:3300\" DYNAMODBHOST=\"host.docker.internal:3300\" DYNAMODBPORT=\"3300\" DBPROTOCAL=\"http:\" AUTHSECRETKEY=\"1234\" DOMAINNAME=\"gonggong99.store\" DEPLOYSTAGE=\"Local\""
+parameter_overrides = "CoBuyingTableName=\"CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS_SAM_LOCAL\" DEVENVNAME=\"OSX\" DYNAMODBURL=\"http://host.docker.internal:3300\" DYNAMODBHOST=\"host.docker.internal:3300\" DYNAMODBPORT=\"3300\" DBPROTOCAL=\"http:\" AUTHSECRETKEY=\"1234\"  DEPLOYSTAGE=\"Local\" DOMAINNAME=\"http://localhost:5173\""
 
 [default.local_start_lambda.parameters]
 warm_containers = "EAGER"
@@ -58,7 +59,7 @@ stack_name = "nanum-back-stg"
 s3_prefix = "nanum-back-stg"
 region = "ap-northeast-2"
 image_repositories = []
-parameter_overrides = "CoBuyingTableName=\"Stg-CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS\" DEVENVNAME=\"Linux\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DOMAINNAME=\"gonggong99.store\" DEPLOYSTAGE=\"Stg\""
+parameter_overrides = "CoBuyingTableName=\"Stg-CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS\" DEVENVNAME=\"Linux\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DEPLOYSTAGE=\"Stg\" DOMAINNAME=\"http://localhost:5173\""
 disable_rollback = false
 
 [Prod]
@@ -79,6 +80,6 @@ stack_name = "nanum-back-prod"
 s3_prefix = "nanum-back-prod"
 region = "ap-northeast-2"
 image_repositories = []
-parameter_overrides = "CoBuyingTableName=\"Prod-CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS\" DEVENVNAME=\"Linux\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DOMAINNAME=\"gonggong99.store\" DEPLOYSTAGE=\"Prod\""
+parameter_overrides = "CoBuyingTableName=\"Prod-CoBuyingTable\" REGIONNAME=\"ap-northeast-2\" AWSENVNAME=\"AWS\" DEVENVNAME=\"Linux\" DYNAMODBURL=\"https://dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBHOST=\"dynamodb.ap-northeast-2.amazonaws.com\" DYNAMODBPORT=\"\" DBPROTOCAL=\"https:\" DEPLOYSTAGE=\"Prod\" DOMAINNAME=\"https://gonggong99.store\""
 disable_rollback = false
 

@@ -40,27 +40,27 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',
             'Max-Age': jwt.refreshTokenExpiresIn || 1000 * 60 * 60 * 24 * 7,
-            Domain: TokenName.domainName || 'https://gonggong99.store',
+            Domain: process.env.DOMAINNAME || 'https://gonggong99.store',
             Path: '/',
         };
         const accessCookieOptions: CookieOptions = {
             SameSite: 'None',
             'Max-Age': jwt.accessTokenExpiresIn || 1000 * 60 * 60,
-            Domain: TokenName.domainName || 'https://gonggong99.store',
+            Domain: process.env.DOMAINNAME || 'https://gonggong99.store',
             Path: '/',
         };
         const setCookies = [
             `${TokenName.refreshToken}=${jwt.refreshToken}; HttpOnly; Secure; ${Object.entries(refreshCookieOptions)
                 .map(([key, value]) => `${key}=${value}`)
                 .join('; ')}`,
-            `${TokenName.accessToken}=${jwt.accessToken}; HttpOnly; Secure; ${Object.entries(accessCookieOptions)
-                .map(([key, value]) => `${key}=${value}`)
-                .join('; ')}`,
         ];
+
+        console.log(AuthSuccessHeader);
 
         const headers = {
             ...AuthSuccessHeader,
             'Set-Cookie': setCookies.join(', '),
+            Authorization: `Bearer ${jwt.accessToken}`,
         };
         console.log('headers : ', headers);
         return {

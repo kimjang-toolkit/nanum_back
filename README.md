@@ -47,11 +47,16 @@ stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도�
 
 # 스테이지 별 배포 방법
 
+### 개발 환경 배포
+
+`sam deploy --no-confirm-changeset` 일단 기본 api.gonggong99.store 도메인으로 배포...
+Stg, Prod 배포가 안정화되면 그때 도메인 변경 및 배포 추가
+
 ### 스테이지 환경 배포
-  `sam deploy --config-env stg --stack-name Stg-nanum-back`
+  `sam deploy --config-env Stg --stack-name Stg-nanum-back`
 
 ### 프로덕션 환경 배포
-  `sam deploy --config-env prod --stack-name Prod-nanum-back`
+  `sam deploy --config-env Prod --stack-name Prod-nanum-back`
 
 ### 리소스 수정 시 주의할 점
 
