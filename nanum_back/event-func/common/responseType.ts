@@ -25,7 +25,7 @@ export interface ApiResponse {
 export const BaseHeader = {
     'Access-Control-Allow-Headers':
         'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken',
-    'Access-Control-Allow-Origin': process.env.DOMAINNAME || 'gonggong99.store', // Allow from anywhere
+    'Access-Control-Allow-Origin': process.env.DOMAINNAME || 'https://gonggong99.store', // Allow from anywhere
     'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE, OPTIONS', // Allow only GET request
 };
 
