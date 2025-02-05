@@ -75,7 +75,7 @@ Resources:
       Cors:
         AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
         AllowHeaders: "'content-type, GongGong99-AccessToken, GongGong99-RefreshToken'"
-        AllowOrigin: !Sub "'${DOMAINNAME} http://localhost:5173'"
+        AllowOrigin: "'http://localhost:5173'" #!Sub "'${DOMAINNAME} http://localhost:5173'"
       # Domain:
       #   DomainName: gonggong99.store
       #   CertificateArn: arn:aws:acm:ap-northeast-2:471112633394:certificate/bd06d2bd-8313-4e46-a6e7-7ca181a42875
