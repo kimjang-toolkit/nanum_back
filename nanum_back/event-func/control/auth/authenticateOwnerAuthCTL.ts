@@ -40,13 +40,13 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',
             'Max-Age': jwt.refreshTokenExpiresIn || 1000 * 60 * 60 * 24 * 7,
-            Domain: TokenName.domainName,
+            Domain: TokenName.domainName || 'https://gonggong99.store',
             Path: '/',
         };
         const accessCookieOptions: CookieOptions = {
             SameSite: 'None',
             'Max-Age': jwt.accessTokenExpiresIn || 1000 * 60 * 60,
-            Domain: TokenName.domainName,
+            Domain: TokenName.domainName || 'https://gonggong99.store',
             Path: '/',
         };
         const setCookies = [
