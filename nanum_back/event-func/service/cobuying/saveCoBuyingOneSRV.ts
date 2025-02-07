@@ -6,6 +6,9 @@ import { getFormattedKoreaTime, getKoreaDay } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
+import { scrapProductInformationSRV } from '@product/scrapProductInformationSRV';
+import { saveProductInformationSRV } from '@product/saveProductInformationSRV';
+import { ProductInformation } from '@interface/product.js';
 
 /**
  * DB에 공구글 데이터 생성
@@ -16,6 +19,18 @@ import { hashPassword } from '@auth/authEncrptorSRV';
  */
 export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promise<CoBuyingSummary> => {
     // DB 엔드포임트 확인
+
+    try {
+        if (input.productLink) {
+            const productInformation : ProductInformation = await scrapProductInformationSRV("https://www.coupang.com/vp/products/7581844823");
+            console.log('productInformation : ', productInformation);
+            if(productInformation.productId !== undefined){
+                await saveProductInformationSRV(productInformation);
+            }
+        }
+    } catch (error) {
+        console.error(error);
+    }
 
     let cobuying: CoBuyingPost;
     input.ownerPassword = await hashPassword(input.ownerPassword);
