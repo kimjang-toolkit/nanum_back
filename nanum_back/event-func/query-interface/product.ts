@@ -8,6 +8,11 @@ export const header = {
     Referer: 'https://www.coupang.com/',
     'Sec-Ch-Ua': 'Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"',
     'Accept-Encoding': 'gzip, deflate, br, zstd',
+    'Host': 'www.coupang.com',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Pragma': 'no-cache',
+    'Cache-Control': 'no-cache'
 };
 
 export const cookies = [

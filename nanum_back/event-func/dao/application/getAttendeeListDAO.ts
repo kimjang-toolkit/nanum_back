@@ -2,9 +2,9 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import { CoBuyingDetail } from '@interface/cobuying';
-import { CoBuyingApplication } from '@interface/manage';
+import { CoBuyingApplication } from '@interface/application';
 import { APIERROR } from 'common/responseType';
-import { createDynamoDBDocClient } from 'dao/createDDbDocClient';
+import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
 import { mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
 
 const ddbDocClient = createDynamoDBDocClient();
