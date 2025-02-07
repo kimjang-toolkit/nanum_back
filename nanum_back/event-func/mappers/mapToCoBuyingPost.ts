@@ -16,6 +16,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
 
     // 공구 타입에 따라 매핑할 인터페이스를 구분합니다.
     const baseCoBuying: CoBuyingDB = {
+        deletedYN: item.deletedYN.S,
         createdAtId: item.createdAtId.S,
         deadlineId: item.deadlineId.S,
         ownerNameId: item.ownerNameId.S,
@@ -55,6 +56,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
             type: DivideType.attendee,
             targetAttendeeCount: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
             perAttendeePrice: Number(item.perAttendeePrice.N), // 예시로 단가를 사용
+            remainAttendeeCount: Number(item.remainAttendeeCount.N),
         };
 
         return attendeeCoBuying;

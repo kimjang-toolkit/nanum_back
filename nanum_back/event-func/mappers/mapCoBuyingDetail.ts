@@ -49,7 +49,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
         return {
             ...baseDetail,
             type: DivideType.attendee,
-            remainQuantity: Number(res.remainQuantity.N),
+            remainAttendeeCount: Number(res.remainAttendeeCount.N),
             targetAttendeeCount: Number(res.targetAttendeeCount.N),
             perAttendeePrice: Number(res.perAttendeePrice.N),
         } as AttendeeCoBuyingDetail;
