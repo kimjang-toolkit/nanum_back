@@ -4,7 +4,6 @@
     "@aws-sdk/client-s3": "^3.744.0",
     "@aws-sdk/lib-dynamodb": "^3.726.1",
     "@aws-sdk/lib-storage": "^3.744.0",
-    "@sparticuz/chromium": "^109.0.5",
     "@types/aws-sdk": "^2.7.4",
     "@types/cheerio": "^0.22.35",
     "@types/crypto-js": "^4.2.2",
@@ -16,9 +15,7 @@
     "aws-sdk": "^2.1692.0",
     "cheerio": "^1.0.0",
     "dynamodb-data-types": "^4.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.147",
