@@ -1,21 +1,53 @@
 import { load } from 'cheerio';
 import { ProductInformation } from '@interface/product';
 import { writeFileSync } from 'fs';
+import chromium from '@sparticuz/chromium';
+import puppeteer from 'puppeteer-core';
+/**
+ * 
+ * @param productUrl module.exports.handler = async (event, context) => {
+
+  const browser = await puppeteer.launch({
+    executablePath: await puppeteer.executablePath,
+    args: puppeteer.args,
+    defaultViewport: puppeteer.defaultViewport,
+    headless: puppeteer.headless,
+  });
+
+  const page = await browser.newPage();
+
+  await browser.close();
+  //// setTimeout(() => chrome.instance.kill(), 0);
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: "Hello World!"
+    })
+  }
+
+}
+ * @returns 
+ */
 
 export const scrapProductInformation = async (productUrl: string): Promise<ProductInformation> => {
     // const product = await getProduct(productId);
     // const productInformation = await scrapProductInformation(product);
     // return productInformation;
+    const browser = await puppeteer.launch({
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath(),
+        headless: chromium.headless,
+    });
 
+    const page = await browser.newPage();
     const productLink =
         'https://www.coupang.com/vp/products/8449280153?itemId=24443734907&vendorItemId=91457687104&q=%EB%AA%A8%EB%8B%88%ED%84%B0&itemsCount=36&searchId=33f9873b3176239&rank=1&searchRank=1&isAddedCart=';
     console.log(productLink);
     console.log('요청 시작!');
-    // const response = await fetch(productLink, {
-    //     method: 'GET',
-    //     headers: header,
-    // });
-
+    await page.goto(productUrl);
+    await browser.close();
+    const htmlData = await page.content();
     console.log('요청 완료!');
     const ogTags = await extractOpenGraphTags(htmlData);
     console.log('태그 추출 완료!', ogTags);
