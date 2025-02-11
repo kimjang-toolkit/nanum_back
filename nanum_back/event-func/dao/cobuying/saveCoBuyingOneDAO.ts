@@ -1,6 +1,6 @@
 import { PutCommand, PutCommandInput } from '@aws-sdk/lib-dynamodb';
-import { CoBuyingPost } from '@domain/cobuying';
-import { CoBuyingSummary } from '@interface/cobuying';
+import { CoBuyingPost, DivideType } from '@domain/cobuying';
+import { AttendeeCoBuyingSummary, CoBuyingSummary, QuantityCoBuyingSummary } from '@interface/cobuying';
 import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
@@ -22,19 +22,43 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSu
         const command = new PutCommand(params);
         const result = await ddbDocClient.send(command);
         console.log(result);
-        if (result.$metadata.httpStatusCode == 200)
-            return {
-                id: cobuying.id,
-                productName: cobuying.productName,
-                ownerName: cobuying.ownerName,
-                totalPrice: cobuying.totalPrice,
-                attendeeCount: cobuying.attendeeCount,
-                deadline: cobuying.deadline,
-                coBuyingStatus: cobuying.coBuyingStatus,
-                createdAt: cobuying.createdAt,
-                type: cobuying.type,
-            } as CoBuyingSummary;
-        else {
+        if (result.$metadata.httpStatusCode == 200){
+            if(cobuying.type === DivideType.attendee){
+                return {
+                    id: cobuying.id,
+                    productName: cobuying.productName,
+                    ownerName: cobuying.ownerName,
+                    totalPrice: cobuying.totalPrice,
+                    totalQuantity: cobuying.totalQuantity,
+                    attendeeCount: cobuying.attendeeCount,
+                    deadline: cobuying.deadline,
+                    coBuyingStatus: cobuying.coBuyingStatus,
+                    targetAttendeeCount: cobuying.targetAttendeeCount,
+                    perAttendeePrice: cobuying.perAttendeePrice,
+                    remainAttendeeCount: cobuying.remainAttendeeCount,
+                    createdAt: cobuying.createdAt,
+                    imageUrl: cobuying.imageUrl,
+                    type: cobuying.type,
+                    } as AttendeeCoBuyingSummary;
+            } else {
+                return {
+                    id: cobuying.id,
+                    attendeeCount: cobuying.attendeeCount,
+                    type: cobuying.type,
+                    ownerName: cobuying.ownerName,
+                    deadline: cobuying.deadline,
+                    createdAt: cobuying.createdAt,
+                    imageUrl: cobuying.imageUrl,
+                    productName: cobuying.productName,
+                    totalPrice: cobuying.totalPrice,
+                    totalQuantity: cobuying.totalQuantity,
+                    totalAttendeeQuantity: cobuying.totalAttendeeQuantity,
+                    unitPrice: cobuying.unitPrice,
+                    remainQuantity: cobuying.remainQuantity,
+                    coBuyingStatus: cobuying.coBuyingStatus,
+                } as QuantityCoBuyingSummary;
+            }
+        } else {
             const errorMessage = `DynamoDB 삽입 오류: 상태 코드 ${
                 result.$metadata.httpStatusCode
             }, 요청 결과: ${JSON.stringify(result)}`;
