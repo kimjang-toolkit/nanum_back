@@ -16,16 +16,18 @@ export const saveProductInformationSRV = async (productInformation: ProductInfor
   const upload = new Upload({
     client: s3Client,
     params: {
-      Bucket: "gonggong99-back-sam",
+      Bucket: "jang-nanugi-front",
       Key: "productImages/cupang/" + productInformation.productId + '.jpg',
       Body: file,
     },
   });
-
-  console.log("Uploading file to S3...");
+  // S3 오브젝트 url을 반환
   try {
-    await upload.done();
-    console.log("File uploaded successfully.");
+    const url = await upload.done()
+    console.log("Uploading file to S3...", url);
+    if(url.Location !== undefined){
+      return "https://gonggong99.store/productImages/cupang/"+productInformation.productId+".jpg";
+    }
   } catch (error) {
     console.error("Error uploading file:", error);
   }
