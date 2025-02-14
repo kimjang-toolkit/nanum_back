@@ -19,8 +19,12 @@ export const saveProductInformationSRV = async (productInformation: ProductInfor
       Bucket: "jang-nanugi-front",
       Key: "productImages/cupang/" + productInformation.productId + '.jpg',
       Body: file,
+      ContentDisposition: 'inline',
+      ContentType: 'image/jpeg',
     },
   });
+  // S3 오브젝트 
+  console.log("Uploading file to S3...", upload);
   // S3 오브젝트 url을 반환
   try {
     const url = await upload.done()

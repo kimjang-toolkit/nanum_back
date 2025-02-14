@@ -9,7 +9,7 @@ import { mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const getAttendeeListDAO = async (ownerName: string, id: string): Promise<CoBuyingApplication> => {
+export const getAttendeeListDAO = async (ownerName: string, id: string): Promise<CoBuyingDetail> => {
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         KeyConditionExpression: 'ownerName = :ownerName AND id = :id', // 쿼리 조건
@@ -26,13 +26,9 @@ export const getAttendeeListDAO = async (ownerName: string, id: string): Promise
         if (result.Items && result.Items.length > 0) {
             console.log(result.Items[0]);
             const cobuying: CoBuyingDetail = mapToCoBuyingDetail(result.Items[0]);
-            const attendeeList: Attendee[] = cobuying.attendeeList || [];
-            const coBuyingType: DivideType = cobuying.type;
+
             // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
-            return {
-                attendeeList,
-                coBuyingType,
-            } as CoBuyingApplication;
+            return cobuying;
             // 필요한 추가 로직
         } else {
             throw new APIERROR(404, '찾으시는 공구글이 존재하지 않아요');

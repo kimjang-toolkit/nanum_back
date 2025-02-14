@@ -132,6 +132,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
     const attendeeCoBuying: AttendeeCoBuying = {
         ...item,
         type: DivideType.attendee,
+        totalAttendeePrice: ownerPrice,
         remainAttendeeCount: item.targetAttendeeCount - 1, // 공구장 신청자 수 1명 빼기
         targetAttendeeCount: item.targetAttendeeCount,
         perAttendeePrice: perAttendeePrice,

@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 import { BaseHeader } from 'common/responseType';
-import { CoBuyingCreateReq } from '@interface/cobuying';
+import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { DivideType } from '@domain/cobuying';
 
 const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
@@ -28,7 +28,7 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
     }
 
     try {
-        const item = await saveCoBuying(input);
+        const item : CoBuyingSummary = await saveCoBuying(input);
 
         return {
             statusCode: 201,

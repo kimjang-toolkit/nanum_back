@@ -32,4 +32,8 @@ export const BaseHeader = {
 export const AuthSuccessHeader = {
     ...BaseHeader,
     'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Headers':
+        'Content-Type, x-amzn-Remapped-Authorization, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie',
+    'Access-Control-Expose-Headers':
+        'Content-Type, x-amzn-Remapped-Authorization, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie',
 };
