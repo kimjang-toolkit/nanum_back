@@ -32,25 +32,23 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         };
     }
     try {
-        // console.log(' coBuyingId : ', auth.coBuyingId, ' ownerName : ', auth.ownerName);
-        console.log('auth : ', auth);
+        // console.log('auth : ', auth);
         const jwt = await authenticateOwnerAuthSRV(auth);
 
         // httpOnly로 refreshToken을 쿠키에 setting
         const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',
             'Max-Age': jwt.refreshTokenExpiresIn || 1000 * 60 * 60 * 24 * 7,
-            Domain: process.env.DOMAINNAME || 'https://gonggong99.store',
+            Domain: 'gonggong99.store',
             Path: '/',
         };
-        const accessCookieOptions: CookieOptions = {
-            SameSite: 'None',
-            'Max-Age': jwt.accessTokenExpiresIn || 1000 * 60 * 60,
-            Domain: process.env.DOMAINNAME || 'https://gonggong99.store',
-            Path: '/',
-        };
+
+        /**
+         * 쿠키 설정
+         * httpOnly로 설정하면 JS에서 쿠키를 접근할 수 없다?
+         */
         const setCookies = [
-            `${TokenName.refreshToken}=${jwt.refreshToken}; HttpOnly; Secure; ${Object.entries(refreshCookieOptions)
+            `${TokenName.refreshToken}=${jwt.refreshToken}; Secure; ${Object.entries(refreshCookieOptions)
                 .map(([key, value]) => `${key}=${value}`)
                 .join('; ')}`,
         ];

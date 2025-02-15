@@ -1,22 +1,15 @@
 import { extractPayload } from '@auth/authEncrptorSRV';
-import { AuthToken, UserAuth } from '@interface/auth';
+import { AuthToken } from '@interface/auth';
 import { APIERROR } from 'common/responseType';
 import { JwtPayload } from 'jsonwebtoken';
 
-export const validateUserAuthJWT = (token: AuthToken, tokenType: string): void => {
-    const userAuth: UserAuth = token.user;
+export const validateAccessTokenSRV = (token: string, tokenType: string): void => {
+    // let userAuth: UserAuth;
 
     let jwt: string;
-    if (tokenType === 'access') {
-        jwt = token.accessToken;
-    } else if (tokenType === 'refresh') {
-        jwt = token.refreshToken;
-    } else {
-        throw new APIERROR(500, '토큰 선택에 문제가 있습니다.');
-    }
 
     // token 유효성 검증
-    const tokenValide: JwtPayload = extractPayload(jwt);
+    const tokenValide: JwtPayload = extractPayload(token);
     if (!tokenValide) {
         throw new APIERROR(401, '옳바르지 않은 인증 정보입니다. 다시 로그인해주세요.');
     }

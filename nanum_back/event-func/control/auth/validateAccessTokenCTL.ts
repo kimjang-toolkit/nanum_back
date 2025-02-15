@@ -1,27 +1,26 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { AuthToken } from '@interface/auth';
 import { APIERROR, BaseHeader } from 'common/responseType';
-import { validateUserAuthJWT } from 'service/auth/validateUserAuthJWTSRV';
+import { validateAccessTokenSRV } from '@auth/validateAccessTokenSRV';
 
-function validateInput(event: APIGatewayProxyEvent): AuthToken {
-    let token: AuthToken;
+function validateInput(event: APIGatewayProxyEvent): string {
+    let token;
     try {
-        token = JSON.parse(event.body || '');
+        const bearerAuthorization = event.headers["Authorization"] || event.headers["x-amzn-Remapped-Authorization"];
+        if (!bearerAuthorization) {
+            throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
+        }
+        const token = bearerAuthorization.split(' ')[1];
+        if (!token) {
+            throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
+        }
+        return token;
     } catch (error) {
         throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
     }
-    if (token.refreshToken === undefined || token.refreshTokenExpiresIn === undefined) {
-        throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
-    }
-    if (token.user) {
-        throw new APIERROR(401, '유저 정보가 옳바르지 않습니다. 다시 로그인해주세요.');
-    }
-
-    return token;
 }
 
-export const validateUserAuthJWTCTL = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    let token: AuthToken;
+export const validateAccessTokenCTL = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+    let token: string;
     try {
         token = validateInput(event);
     } catch (error) {
@@ -30,7 +29,7 @@ export const validateUserAuthJWTCTL = async (event: APIGatewayProxyEvent): Promi
 
     try {
         // 토큰 기반 사용자 인증
-        const authToken = validateUserAuthJWT(token, 'access');
+        const authToken = validateAccessTokenSRV(token, 'access');
         return {
             statusCode: 200,
             headers: BaseHeader,
