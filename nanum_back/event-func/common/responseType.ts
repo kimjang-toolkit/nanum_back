@@ -24,14 +24,14 @@ export interface ApiResponse {
 
 export const BaseHeader = {
     'Access-Control-Allow-Headers':
-        'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken',
-    'Access-Control-Allow-Origin': process.env.DOMAINNAME || 'https://gonggong99.store', // Allow from anywhere
+        'Content-Type, Set-Cookie, x-amzn-Remapped-Authorization, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken',
+    'Access-Control-Allow-Origin': 'https://gonggong99.store', // Allow from anywhere
     'Access-Control-Allow-Methods': 'POST, GET, PUT, DELETE, OPTIONS', // Allow only GET request
+    'Access-Control-Allow-Credentials': 'true',
 };
 
 export const AuthSuccessHeader = {
     ...BaseHeader,
-    'Access-Control-Allow-Credentials': 'true',
     'Access-Control-Allow-Headers':
         'Content-Type, x-amzn-Remapped-Authorization, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie',
     'Access-Control-Expose-Headers':
