@@ -37,9 +37,9 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
 
         // httpOnly로 refreshToken을 쿠키에 setting
         const refreshCookieOptions: CookieOptions = {
-            SameSite: 'Lax',
-            'Max-Age': jwt.refreshTokenExpiresIn || 1000 * 60 * 60 * 24 * 7,
-            Domain: 'gonggong99.store',
+            SameSite: 'None',
+            'Max-Age': 604800,
+            // Domain: 'gonggong99.store',
             Path: '/',
         };
 
