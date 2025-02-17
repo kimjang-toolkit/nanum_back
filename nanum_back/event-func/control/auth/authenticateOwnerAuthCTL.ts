@@ -1,7 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, AuthSuccessHeader, BaseHeader } from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-import { CoBuyingOwnerAuth, CookieOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
     const { ownerName, ownerPassword } = JSON.parse(event.body || '');
@@ -22,14 +23,16 @@ const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
  */
 export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     let auth: CoBuyingOwnerAuth;
+    console.log('event : ', event);
     try {
         auth = validateInput(event);
     } catch (error) {
-        return {
-            statusCode: 400,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        // return {
+        //     statusCode: 400,
+        //     headers: BaseHeader,
+        //     body: JSON.stringify({ message: (error as Error).message }),
+        // };
+        return new LambdaReturnDto(400, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
     try {
         // console.log('auth : ', auth);
@@ -39,8 +42,10 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',
             'Max-Age': 604800,
-            // Domain: 'gonggong99.store',
             Path: '/',
+            cookies : {
+                [TokenName.refreshToken] : jwt.refreshToken
+            }
         };
 
         /**
@@ -49,26 +54,28 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
          */
         const setCookies = [
             `${TokenName.refreshToken}=${jwt.refreshToken}; HttpOnly; Secure; ${Object.entries(refreshCookieOptions)
+                .filter(([key, value]) => key !== 'cookies') // cookies 제외 쿠키 옵션 쿠가
                 .map(([key, value]) => `${key}=${value}`)
                 .join('; ')}`,
         ];
-
-        console.log(AuthSuccessHeader);
 
         const headers = {
             ...AuthSuccessHeader,
             'Set-Cookie': setCookies.join(', '),
             Authorization: `Bearer ${jwt.accessToken}`,
         };
-        console.log('headers : ', headers);
-        return {
-            statusCode: 200,
-            headers: headers,
-            body: JSON.stringify({
-                ownerName: auth.ownerName,
-                coBuyingId: auth.coBuyingId,
-            } as UserAuthDto),
+        console.log('asis headers : ', headers);
+        const headerOptions: HeaderOptions = {
+            Authorization: `Bearer ${jwt.accessToken}`,
         };
+        const lamdbdaReturnDto = new LambdaReturnDto(200, {
+            ownerName: auth.ownerName,
+            coBuyingId: auth.coBuyingId,
+        }, event, headerOptions,refreshCookieOptions);
+
+        console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
+    
+        return lamdbdaReturnDto.getLambdaReturnDto();
     } catch (error) {
         if (error instanceof APIERROR) {
             return {

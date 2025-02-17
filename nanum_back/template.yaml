@@ -273,8 +273,8 @@ Resources:
         - AttributeName: id
           KeyType: RANGE # 정렬 키는 createdAt#id
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
       GlobalSecondaryIndexes:
         - IndexName: CreatedAtIndex
           KeySchema:
@@ -285,8 +285,8 @@ Resources:
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
         - IndexName: DeadlineIndex
           KeySchema:
             - AttributeName: deletedYN
@@ -296,8 +296,8 @@ Resources:
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
         - IndexName: PagenationIndex
           KeySchema:
             - AttributeName: deletedYN
@@ -307,8 +307,8 @@ Resources:
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

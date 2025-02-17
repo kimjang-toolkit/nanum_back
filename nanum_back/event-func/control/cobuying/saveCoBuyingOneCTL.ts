@@ -3,6 +3,7 @@ import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 import { BaseHeader } from 'common/responseType';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { DivideType } from '@domain/cobuying';
+import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
 const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
     if (!event.body) {
@@ -20,29 +21,32 @@ export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promis
         validateCoBuyingReq(event);
         input = JSON.parse(event.body || '');
     } catch (error) {
-        return {
-            statusCode: 400,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        // return {
+        //     statusCode: 400,
+        //     headers: BaseHeader,
+        //     body: JSON.stringify({ message: (error as Error).message }),
+        // };
+        return new LambdaReturnDto(400, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 
     try {
         const item : CoBuyingSummary = await saveCoBuying(input);
 
-        return {
-            statusCode: 201,
-            headers: BaseHeader,
-            body: JSON.stringify(item),
-        };
+        // return {
+        //     statusCode: 201,
+        //     headers: BaseHeader,
+        //     body: JSON.stringify(item),
+        // };
+        return new LambdaReturnDto(201, item, event).getLambdaReturnDto();
     } catch (err) {
         console.error(err);
-        return {
-            statusCode: 500,
-            headers: BaseHeader,
-            body: JSON.stringify({
-                message: (err as Error).message,
-            }),
-        };
+        // return {
+        //     statusCode: 500,
+        //     headers: BaseHeader,
+        //     body: JSON.stringify({
+        //         message: (err as Error).message,
+        //     }),
+        // };
+        return new LambdaReturnDto(500, { message: (err as Error).message }, event).getLambdaReturnDto();
     }
 };
