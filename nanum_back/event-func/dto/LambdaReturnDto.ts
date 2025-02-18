@@ -67,9 +67,9 @@ export class LambdaReturnDto {
   // 이니셜라이저 추가
   constructor(statusCode: number, body: any, event?: APIGatewayProxyEvent, headerOptions?: HeaderOptions, cookieOptions?: CookieOptions) {
     this.statusCode = statusCode;
-    if(event?.headers?.origin) { // 람다를 요청한 도메인을 CORS 헤더에 추가
+    if(event?.headers?.Origin) { // 람다를 요청한 도메인을 CORS 헤더에 추가
       // Construct full domain
-      const fullDomain = event.headers.origin;
+      const fullDomain = event.headers.Origin;
       console.log('Full Domain:', fullDomain);
       this.headers = new HeaderDto(fullDomain, headerOptions);
 

@@ -32,19 +32,8 @@ export const getCoBuyingDetailHandler = async (event: APIGatewayProxyEvent): Pro
     try {
         console.log(' ownerName : ' + ownerName + '\n coBuyingId : ' + coBuyingId);
         const cobuying: CoBuyingDetail = await queryCoBuyingDetail(ownerName, coBuyingId);
-
-        // return {
-        //     statusCode: 200,
-        //     headers: BaseHeader,
-        //     body: JSON.stringify(cobuying),
-        // };
         return new LambdaReturnDto(200, cobuying, event).getLambdaReturnDto();
     } catch (error) {
-        // return {
-        //     statusCode: 500,
-        //     headers: BaseHeader,
-        //     body: JSON.stringify({ message: (error as Error).message }),
-        // };
         return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 };

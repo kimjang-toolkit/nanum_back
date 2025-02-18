@@ -48,23 +48,6 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
             }
         };
 
-        /**
-         * 쿠키 설정
-         * httpOnly로 설정하면 JS에서 쿠키를 접근할 수 없다? 
-         */
-        const setCookies = [
-            `${TokenName.refreshToken}=${jwt.refreshToken}; HttpOnly; Secure; ${Object.entries(refreshCookieOptions)
-                .filter(([key, value]) => key !== 'cookies') // cookies 제외 쿠키 옵션 쿠가
-                .map(([key, value]) => `${key}=${value}`)
-                .join('; ')}`,
-        ];
-
-        const headers = {
-            ...AuthSuccessHeader,
-            'Set-Cookie': setCookies.join(', '),
-            Authorization: `Bearer ${jwt.accessToken}`,
-        };
-        console.log('asis headers : ', headers);
         const headerOptions: HeaderOptions = {
             Authorization: `Bearer ${jwt.accessToken}`,
         };
@@ -73,21 +56,13 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
             coBuyingId: auth.coBuyingId,
         }, event, headerOptions,refreshCookieOptions);
 
-        console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
+        // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
     
         return lamdbdaReturnDto.getLambdaReturnDto();
     } catch (error) {
         if (error instanceof APIERROR) {
-            return {
-                statusCode: error.statusCode,
-                headers: BaseHeader,
-                body: JSON.stringify({ message: error.message }),
-            };
+            return new LambdaReturnDto(error.statusCode, { message: error.message }, event).getLambdaReturnDto();
         }
-        return {
-            statusCode: 500,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 };

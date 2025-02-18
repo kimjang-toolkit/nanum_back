@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, BaseHeader } from '@common/responseType';
 import { ApplicationReq } from '@interface/application';
 import { applicationsInCoBuyingSRV } from '@application/applicationsInCoBuyingSRV';
+import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
 function validateApplication(event: APIGatewayProxyEvent): ApplicationReq {
     if (event.body === null) {
@@ -39,40 +40,20 @@ export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEvent)
         application = validateApplication(event);
     } catch (error) {
         if (error instanceof APIERROR) {
-            return {
-                statusCode: error.statusCode,
-                headers: BaseHeader,
-                body: JSON.stringify({ message: error.message }),
-            };
+            return new LambdaReturnDto(error.statusCode, { message: error.message }, event).getLambdaReturnDto();
         }
-        return {
-            statusCode: 500,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 
     console.log('application : ', application);
     try {
         const message: ApplicationDTO = await applicationsInCoBuyingSRV(application);
-        return {
-            statusCode: 200,
-            headers: BaseHeader,
-            body: JSON.stringify(application.attendeeName + `님! ${message.message} 공구 신청 감사합니다!`),
-        };
+        return new LambdaReturnDto(200, { message: application.attendeeName + `님! ${message.message} 공구 신청 감사합니다!` }, event).getLambdaReturnDto();
     } catch (error) {
         console.error('error : ', error);
         if (error instanceof APIERROR) {
-            return {
-                statusCode: error.statusCode,
-                headers: BaseHeader,
-                body: JSON.stringify({ message: error.message }),
-            };
+            return new LambdaReturnDto(error.statusCode, { message: error.message }, event).getLambdaReturnDto();
         }
-        return {
-            statusCode: 500,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 };
