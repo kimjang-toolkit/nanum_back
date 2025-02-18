@@ -26,12 +26,14 @@ export const queryCoBuyingOwnerById = async (ownerName: string, coBuyingId: stri
     try {
         // DynamoDB에서 해당 id에 해당하는 공구글을 조회
         // 단건 조회를 위한 GetCommand 실행
+        // console.log('params : ', params);
         const command = new QueryCommand(params);
         result = await ddbDocClient.send(command);
         // console.log('result : ', result);
         if (result.Items && result.Items.length > 0) {
             return mapToCoBuyingOwnerAuth(result.Items[0]);
         } else {
+            console.log('조회된 공구글이 없습니다.');
             throw new APIERROR(404, '조회된 공구글이 없습니다.');
         }
     } catch (error) {
@@ -39,6 +41,7 @@ export const queryCoBuyingOwnerById = async (ownerName: string, coBuyingId: stri
             console.error(error);
             throw new Error(error.message);
         }
+        console.error('DB 조회 중 문제가 발생했습니다. ',error);
         throw new Error('DB 조회 중 문제가 발생했습니다. ');
     }
 

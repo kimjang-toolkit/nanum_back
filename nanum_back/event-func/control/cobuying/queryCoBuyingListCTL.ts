@@ -2,6 +2,7 @@ import { CreatedAtKey } from '@interface/cobuying';
 import { CoBuyingQueryParams } from '@interface/cobuyingList';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { BaseHeader } from 'common/responseType';
+import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 import { queryCoBuyingListSRV } from 'service/cobuying/queryCoBuyingListSRV';
 
 /**
@@ -16,6 +17,7 @@ import { queryCoBuyingListSRV } from 'service/cobuying/queryCoBuyingListSRV';
  */
 export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     const input: CoBuyingQueryParams = {};
+    console.log('event : ', event);
     try {
         // validInput(event);
         // input = JSON.parse(event.body || '');
@@ -45,35 +47,13 @@ export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promi
         console.log('input : ', input);
     } catch (error) {
         console.error(error);
-        return {
-            statusCode: 500,
-            headers: BaseHeader,
-            body: JSON.stringify({
-                message: (error as Error).message,
-            }),
-        };
+        return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
-
     try {
         const res = await queryCoBuyingListSRV(input);
-
-        return {
-            statusCode: 200,
-            headers: BaseHeader,
-            body: JSON.stringify(res),
-        };
+        return new LambdaReturnDto(200, res, event).getLambdaReturnDto();
     } catch (error) {
         console.log(error);
-        return {
-            statusCode: 500,
-            headers: {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': '*', // Allow from anywhere
-                'Access-Control-Allow-Methods': 'GET', // Allow only GET request
-            },
-            body: JSON.stringify({
-                message: (error as Error).message,
-            }),
-        };
+        return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 };

@@ -9,9 +9,13 @@ export const authenticateOwnerAuthSRV = async (auth: CoBuyingOwnerAuth): Promise
     //      만약 존재하지 않는 공구글에 대한 값은 "정확한 공구글 정보를 알려주세요." 에러 메시지 전달. 404 에러
     let owner: CoBuyingOwnerAuth;
     try {
+        // console.log('auth : ', auth);
         owner = await queryCoBuyingOwnerById(auth.ownerName, auth.coBuyingId);
         // console.log('owner : ', owner);
     } catch (error) {
+        console.error("DB 조회 중 문제가 발생했습니다. [authenticateOwnerAuthSRV]");
+        console.error("error : ", error);
+        console.error("auth : ", auth);
         if (error instanceof APIERROR) {
             console.error(error);
             throw new APIERROR(error.statusCode, error.message);

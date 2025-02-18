@@ -22,7 +22,7 @@ Globals:
         DBPROTOCAL: !Ref DBPROTOCAL
         DEPLOYSTAGE: !Ref DEPLOYSTAGE
         DOMAINNAME: !Ref DOMAINNAME
-        S3BUCKETNAME: !Ref S3BucketName
+        S3BUCKETNAME: !Ref S3BUCKETNAME
 Parameters:
   CoBuyingTableName:
     Type: String
@@ -67,37 +67,31 @@ Parameters:
     Type: String
     Description: S3 버킷 이름
     Default: "jang-nanugi-front"
-  # AUTHSECRETKEY:
-  #   Type: String
-  #   Description: 비밀번호 암호화를 위한 키
-  #   Default: 'abcd1234~~!!'
 
 Resources:
   ApiGatewayApi:
-    Type: AWS::Serverless::Api
+    Type: AWS::Serverless::HttpApi
     Properties:
-      StageName: GongGong99Stage
-      Cors:
-        AllowMethods: "'GET,POST,PUT,DELETE,OPTIONS'"
-        AllowHeaders: "'content-type, GongGong99-AccessToken, GongGong99-RefreshToken'"
-        AllowOrigin: "'https://gonggong99.store'" #!Sub "'${DOMAINNAME} http://localhost:5173'"
-      # Domain:
-      #   DomainName: gonggong99.store
-      #   CertificateArn: arn:aws:acm:ap-northeast-2:471112633394:certificate/bd06d2bd-8313-4e46-a6e7-7ca181a42875
-      #   EndpointConfiguration: REGIONAL
-      #   Route53:
-      #     HostedZoneId: Z01403231VQZJXPO5YXTM
+      CorsConfiguration:
+        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
+        AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie'"
+        AllowOrigins: "'https://gonggong99.store', 'http://localhost:5173'"
+        ExposeHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie'"
+        AllowCredentials: true
 
-  # 2. Route 53 A Record
-  # Route53Record:
-  #   Type: AWS::Route53::RecordSet
-  #   Properties:
-  #     HostedZoneId: Z01403231VQZJXPO5YXTM # 호스팅 영역 ID
-  #     Name: gonggong99.store
-  #     Type: A
-  #     AliasTarget:
-  #       DNSName: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Stage/co-buying/"
-  #       HostedZoneId: Z20JF4UZKIW1U8 # API Gateway 배포 호스트 영역 ID
+  ApiGatewayProdStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref ApiGatewayApi
+      StageName: GongGong99Prod
+      AutoDeploy: true
+
+  ApiGatewayStgStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref ApiGatewayApi
+      StageName: GongGong99Stg
+      AutoDeploy: true
 
   CreateCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -113,17 +107,16 @@ Resources:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
         CreateCoBuying:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties: # 엔드포인트: POST /co-buying
-            Path: /api/co-buying # API Gateway 경로
-            Method: post # HTTP 메서드
-            RestApiId:
-              Ref: ApiGatewayApi # API Gateway와 직접 연결
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying
+            Method: post
+            ApiId: !Ref ApiGatewayApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
         - S3CrudPolicy:
-            BucketName: !Ref S3BucketName
+            BucketName: !Ref S3BUCKETNAME
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
@@ -146,13 +139,12 @@ Resources:
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-        CreateCoBuying:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties: # 엔드포인트: POST /auth
-            Path: /api/co-buying/auth/{coBuyingId} # API Gateway 경로
-            Method: post # HTTP 메서드
-            RestApiId:
-              Ref: ApiGatewayApi # API Gateway와 직접 연결
+        AuthenticateOwnerAuth:
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying/auth/{coBuyingId}
+            Method: post
+            ApiId: !Ref ApiGatewayApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
@@ -179,12 +171,11 @@ Resources:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
         ApplicationsInCoBuying:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties: # 엔드포인트: POST /manage/participation
-            Path: /api/co-buying/applications # API Gateway 경로
-            Method: post # HTTP 메서드
-            RestApiId:
-              Ref: ApiGatewayApi # API Gateway와 직접 연결
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying/applications
+            Method: post
+            ApiId: !Ref ApiGatewayApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
@@ -210,18 +201,12 @@ Resources:
       Architectures:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-        GetCoBuyingOne:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties: # 엔드포인트: POST /co-buying
-            Path: /api/co-buying/{coBuyingId} # API Gateway 경로
-            Method: get # HTTP 메서드
-            RestApiId:
-              Ref: ApiGatewayApi # API Gateway와 직접 연결
-            RequestParameters: # 쿼리 매개변수 정의
-              - method.request.querystring.ownerName:
-                  Required: true
-              - method.request.querystring.createdAt:
-                  Required: true
+        GetCoBuyingDetail:
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying/{coBuyingId}
+            Method: get
+            ApiId: !Ref ApiGatewayApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
@@ -233,44 +218,6 @@ Resources:
         Sourcemap: true
         EntryPoints:
           - queryCoBuyingDetailOneCTL.ts
-
-  # GetCoBuyingByIdFunction:
-  #   Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-  #   Description: 공구방 생성 함수
-  #   Properties:
-  #     CodeUri: event-func/control/cobuying
-  #     Handler: queryCoBuyingOneCTL.getCoBuyingByIdHandler
-  #     Runtime: nodejs20.x
-  #     MemorySize: 2048
-  #     Timeout: 20
-  #     Architectures:
-  #       - x86_64
-  #     Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
-  #       GetCoBuyingOne:
-  #         Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-  #         Properties: # 엔드포인트: POST /co-buying
-  #           Path: /api/co-buying # API Gateway 경로
-  #           Method: get # HTTP 메서드
-  #           RestApiId:
-  #             Ref: ApiGatewayApi # API Gateway와 직접 연결
-  #           RequestParameters: # 쿼리 매개변수 정의
-  #             - method.request.querystring.ownerName:
-  #                 Required: true
-  #             - method.request.querystring.createdAt:
-  #                 Required: true
-  #             - method.request.querystring.id:
-  #                 Required: true
-  #     Policies:
-  #       - DynamoDBCrudPolicy:
-  #           TableName: !Ref CoBuyingTableName
-  #   Metadata: # Manage esbuild properties
-  #     BuildMethod: esbuild
-  #     BuildProperties:
-  #       Minify: true
-  #       Target: "es2020"
-  #       Sourcemap: true
-  #       EntryPoints:
-  #         - queryCoBuyingOneCTL.ts
 
   GetCoBuyingListFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -286,19 +233,11 @@ Resources:
         - x86_64
       Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
         GetCoBuyingList:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties: # 엔드포인트: POST /co-buying
-            Path: /api/co-buying/page # API Gateway 경로
-            Method: get # HTTP 메서드
-            RestApiId:
-              Ref: ApiGatewayApi # API Gateway와 직접 연결
-            RequestParameters: # 쿼리 매개변수 정의
-              - method.request.querystring.id:
-                  Required: false
-              - method.request.querystring.createdAt:
-                  Required: false
-              - method.request.querystring.ownerName:
-                  Required: false
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying/page
+            Method: get
+            ApiId: !Ref ApiGatewayApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
@@ -318,8 +257,6 @@ Resources:
       AttributeDefinitions:
         - AttributeName: createdAt # 공구글 생성일로 파티셔닝
           AttributeType: S
-        # - AttributeName: deadline
-        #   AttributeType: S # 마감일 기준 정렬
         - AttributeName: id
           AttributeType: S # ID
         - AttributeName: ownerName
@@ -336,8 +273,8 @@ Resources:
         - AttributeName: id
           KeyType: RANGE # 정렬 키는 createdAt#id
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
       GlobalSecondaryIndexes:
         - IndexName: CreatedAtIndex
           KeySchema:
@@ -348,19 +285,8 @@ Resources:
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
-        # - IndexName: DeadlineIndex # 기존 인덱스 삭제 후 새로운 인덱스 작성
-        #   KeySchema:
-        #     - AttributeName: deadline
-        #       KeyType: HASH # 파티션 키는 deadline
-        #     - AttributeName: id
-        #       KeyType: RANGE # 정렬 키는 id
-        #   Projection:
-        #     ProjectionType: ALL # 인덱스에 모든 속성 포함
-        #   ProvisionedThroughput:
-        #     ReadCapacityUnits: 5
-        #     WriteCapacityUnits: 5
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
         - IndexName: DeadlineIndex
           KeySchema:
             - AttributeName: deletedYN
@@ -370,8 +296,8 @@ Resources:
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
         - IndexName: PagenationIndex
           KeySchema:
             - AttributeName: deletedYN
@@ -381,19 +307,22 @@ Resources:
           Projection:
             ProjectionType: ALL # 인덱스에 모든 속성 포함
           ProvisionedThroughput:
-            ReadCapacityUnits: 5
-            WriteCapacityUnits: 5
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  CreateCoBuyingApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/co-buying/"
+  ApiGatewayApiUrlProd:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/GongGong99Prod/"
+  ApiGatewayApiUrlStg:
+    Description: "API Gateway endpoint URL for Stg stage"
+    Value: !Sub "https://${ApiGatewayApi}.execute-api.${AWS::Region}.amazonaws.com/GongGong99Stg/"
   CreateCoBuyingFunction:
-    Description: "Hello World Lambda Function ARN"
-    Value: !GetAtt CreateCoBuyingFunction.Arn # 템플릿에 작성된 함수의 논리적 식별자 사용
+    Description: "Create CoBuying Lambda Function ARN"
+    Value: !GetAtt CreateCoBuyingFunction.Arn
   CreateCoBuyingFunctionIamRole:
-    Description: "Implicit IAM Role created for Hello World function"
+    Description: "Implicit IAM Role created for Create CoBuying function"
     Value: !GetAtt CreateCoBuyingFunctionRole.Arn
