@@ -7,11 +7,8 @@ import { queryCoBuyingListSRV } from 'service/cobuying/queryCoBuyingListSRV';
 
 /**
  *
- * Post ->
- * 정렬 기준 : 생성일자순[내림차순] | 마감순[오름차순]
- * 정렬 순서 : 오름차순, 내림차순
- * 필터 조건 : 공구상태, 공구장이름, 생성일자, 마감일자
- *
+ * {domain}/api/co-buying/page?createdAtId={createdAtId}&ownerName={ownerName}
+ * 
  * @param event
  * @returns
  */

@@ -157,6 +157,37 @@ Resources:
         EntryPoints:
           - authenticateOwnerAuthCTL.ts
 
+  ValidateRefreshTokenFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 리프레시 토큰 검증 함수
+    Properties:
+      FunctionName: !Sub "${DEPLOYSTAGE}-ValidateRefreshTokenFunction"
+      CodeUri: event-func/control/auth
+      Handler: validateRefreshTokenCTL.validateRefreshTokenCTL
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        ValidateRefreshToken:
+          Type: HttpApi
+          Properties:
+            Path: /api/refresh
+            Method: get
+            ApiId: !Ref ApiGatewayApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - validateRefreshTokenCTL.ts
+
   ApplicationsInCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 참여 함수

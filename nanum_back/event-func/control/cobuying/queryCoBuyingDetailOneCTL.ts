@@ -14,6 +14,10 @@ const validateInput = (event: APIGatewayProxyEvent): void => {
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회
+ * 
+ * Get
+ * {domain}/api/co-buying/detail?ownerName={ownerName}&coBuyingId={cobuyingId}
+ * 
  * @param event
  * @returns
  */

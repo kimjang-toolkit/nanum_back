@@ -2,6 +2,7 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingDetail } from '@interface/cobuying';
 import { mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
 import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
+import { APIERROR } from '@common/responseType';
 
 const ddbDocClient = createDynamoDBDocClient();
 
@@ -35,15 +36,15 @@ export const queryCoBuyingDetail = async (ownerName: string, id: string): Promis
             return cobuying;
             // 필요한 추가 로직
         } else {
-            throw new Error('찾으시는 공구글이 존재하지 않아요');
+            throw new APIERROR(404, '찾으시는 공구글이 존재하지 않아요. name : '+ownerName+' id : '+id);
         }
         // 조회된 공구글 사용
         // console.log('조회된 공구글:', cobuying);
     } catch (error) {
         if (error instanceof Error) {
             console.error(error);
-            throw new Error(error.message);
+            throw new APIERROR(500, 'DB 조회 중 문제가 발생했습니다. '+error.message);
         }
-        throw new Error('DB 조회 중 문제가 발생했습니다. ');
+        throw new APIERROR(500, 'DB 조회 중 문제가 발생했습니다. ');
     }
 };

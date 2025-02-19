@@ -1,7 +1,7 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { APIERROR, AuthSuccessHeader, BaseHeader } from 'common/responseType';
+import { APIERROR} from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-import { CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { AuthToken, CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
@@ -18,6 +18,10 @@ const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회
+ * 
+ * Post
+ * {domain}/api/co-buying/auth/{cobuyingId}
+ * 
  * @param event
  * @returns
  */
@@ -36,7 +40,7 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
     }
     try {
         // console.log('auth : ', auth);
-        const jwt = await authenticateOwnerAuthSRV(auth);
+        const jwt: AuthToken = await authenticateOwnerAuthSRV(auth);
 
         // httpOnly로 refreshToken을 쿠키에 setting
         const refreshCookieOptions: CookieOptions = {
@@ -54,7 +58,7 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promis
         const lamdbdaReturnDto = new LambdaReturnDto(200, {
             ownerName: auth.ownerName,
             coBuyingId: auth.coBuyingId,
-        }, event, headerOptions,refreshCookieOptions);
+        } as UserAuthDto, event, headerOptions,refreshCookieOptions);
 
         // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
     

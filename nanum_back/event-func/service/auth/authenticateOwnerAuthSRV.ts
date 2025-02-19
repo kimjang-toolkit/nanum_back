@@ -30,7 +30,7 @@ export const authenticateOwnerAuthSRV = async (auth: CoBuyingOwnerAuth): Promise
         throw new APIERROR(401, '정확한 비밀번호를 입력해주세요.');
     } else {
         // 인증되면, JWT를 생성해서 리턴.
-        const token = generateToken(owner);
+        const token: AuthToken = generateToken(owner);
         // console.log('token : ', token);
         return token;
     }
