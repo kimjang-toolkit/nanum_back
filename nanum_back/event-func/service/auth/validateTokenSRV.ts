@@ -29,7 +29,7 @@ export const validateTokenSRV = async (token: string): Promise<AuthToken> => {
         }
         throw new APIERROR(401, '옳바르지 않은 인증 정보입니다. 다시 로그인해주세요.');
     }
-    console.log('cobuying 조회 성공!  name: ', cobuying.ownerName, ' id: ', cobuying.id);
+    // console.log('cobuying 조회 성공!  name: ', cobuying.ownerName, ' id: ', cobuying.id);
     if(cobuying.ownerName !== decodedOwnerName || cobuying.id !== decodedCoBuyingId){
         throw new APIERROR(401, '옳바르지 않은 인증 정보입니다. 다시 로그인해주세요.');
     }

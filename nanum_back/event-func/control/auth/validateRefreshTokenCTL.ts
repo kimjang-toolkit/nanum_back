@@ -1,4 +1,3 @@
-import { refreshAuthenticate } from './../../service/auth/refreshAuthenticateSRV';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR } from 'common/responseType';
 import { validateTokenSRV } from '@auth/validateTokenSRV';
