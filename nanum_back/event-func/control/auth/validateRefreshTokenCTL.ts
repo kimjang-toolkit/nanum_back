@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR } from 'common/responseType';
 import { validateTokenSRV } from '@auth/validateTokenSRV';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
@@ -14,7 +14,7 @@ import { AuthToken, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from 
  * @param event 
  * @returns 
  */
-export const validateRefreshTokenCTL = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const validateRefreshTokenCTL = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let token: string;
     try {
         token = validateInput(event);
@@ -60,32 +60,27 @@ export const validateRefreshTokenCTL = async (event: APIGatewayProxyEvent): Prom
 };
 
 
-function extractLatestRefreshToken(event: APIGatewayProxyEvent): string | null {
+function extractLatestRefreshToken(event: APIGatewayProxyEventV2): string | null {
     let refreshToken: string | null = null;
-    // console.log('event.headers.Cookie : ', event.headers.Cookie);
+    console.log('event.cookies : ', event.cookies);
     // 1️⃣ `cookies` 배열에서 최신 `GongGong99-RefreshToken` 찾기
-    if (event.headers.Cookie) {
-        // console.log('event 검사 시작!')
-        const cookies: string[] = event.headers.Cookie.split(';');
-        // console.log('cookies : ', cookies);
-        // console.log('TokenName.refreshToken : ', TokenName.refreshToken);
-        const refreshToken = cookies.find(cookie => cookie.trim().startsWith(`${TokenName.refreshToken}=`));
-        // console.log('refreshToken : ', refreshToken);
-        return refreshToken ? refreshToken.split('=')[1] : null;        
+    if (event.cookies) {
+        const refreshTokenCookie = event.cookies.find(cookie => cookie.trim().startsWith(`${TokenName.refreshToken}=`));
+        return refreshTokenCookie ? refreshTokenCookie.split('=')[1] : null;        
     }
 
     return refreshToken;
 }
 
 
-function validateInput(event: APIGatewayProxyEvent): string {
+function validateInput(event: APIGatewayProxyEventV2): string {
     try {
-        // console.log('event : ', event);
+        console.log('event : ', event);
         const refreshAuthenticate = extractLatestRefreshToken(event);
         if (!refreshAuthenticate) {
             throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
         }
-        // console.log('refresh token 추출 성공!');
+        console.log('refresh token 추출 성공!');
         return refreshAuthenticate;
     } catch (error) {
         throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');

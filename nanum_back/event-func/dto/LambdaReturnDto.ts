@@ -1,7 +1,7 @@
 // class 형식으로 반환하는 타입
 
 import { CookieOptions, HeaderOptions } from "@interface/auth";
-import { APIGatewayProxyEvent } from "aws-lambda";
+import { APIGatewayProxyEventV2 } from "aws-lambda";
 
 export class HeaderDto {
   // domain: string;
@@ -65,7 +65,7 @@ export class LambdaReturnDto {
     body: string;
 
   // 이니셜라이저 추가
-  constructor(statusCode: number, body: any, event?: APIGatewayProxyEvent, headerOptions?: HeaderOptions, cookieOptions?: CookieOptions) {
+  constructor(statusCode: number, body: any, event?: APIGatewayProxyEventV2, headerOptions?: HeaderOptions, cookieOptions?: CookieOptions) {
     this.statusCode = statusCode;
     if(event?.headers?.Origin) { // 람다를 요청한 도메인을 CORS 헤더에 추가
       // Construct full domain

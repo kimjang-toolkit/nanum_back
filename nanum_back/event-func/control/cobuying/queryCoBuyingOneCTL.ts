@@ -1,9 +1,9 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
 import { BaseHeader } from 'common/responseType';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
-const validateInput = (event: APIGatewayProxyEvent): void => {
+const validateInput = (event: APIGatewayProxyEventV2): void => {
     const { ownerName, id } = event.queryStringParameters ?? {};
     if (!ownerName || !id) {
         throw Error('공구글 조회를 위한 필수 입력값이 없어요.');
@@ -15,7 +15,7 @@ const validateInput = (event: APIGatewayProxyEvent): void => {
  * @param event
  * @returns
  */
-export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const getCoBuyingByIdHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let ownerName;
     let id;
 

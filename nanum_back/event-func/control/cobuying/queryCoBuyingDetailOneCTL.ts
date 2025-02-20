@@ -1,10 +1,9 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { BaseHeader } from 'common/responseType';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { CoBuyingDetail } from '@interface/cobuying';
 import { queryCoBuyingDetail } from '@cobuying/queryCoBuyingDetailDAO';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
-const validateInput = (event: APIGatewayProxyEvent): void => {
+const validateInput = (event: APIGatewayProxyEventV2): void => {
     const coBuyingId = event.pathParameters?.coBuyingId;
     const ownerName = event.queryStringParameters?.ownerName;
     if (!ownerName || !coBuyingId) {
@@ -21,7 +20,7 @@ const validateInput = (event: APIGatewayProxyEvent): void => {
  * @param event
  * @returns
  */
-export const getCoBuyingDetailHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const getCoBuyingDetailHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let ownerName;
     let coBuyingId;
 

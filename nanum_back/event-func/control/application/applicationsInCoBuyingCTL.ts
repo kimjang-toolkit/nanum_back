@@ -1,12 +1,12 @@
-import { ApplicationDTO } from './../../../api-interface/src/interface/application';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { ApplicationDTO } from '@interface/application';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR, BaseHeader } from '@common/responseType';
 import { ApplicationReq } from '@interface/application';
 import { applicationsInCoBuyingSRV } from '@application/applicationsInCoBuyingSRV';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
-function validateApplication(event: APIGatewayProxyEvent): ApplicationReq {
-    if (event.body === null) {
+function validateApplication(event: APIGatewayProxyEventV2): ApplicationReq {
+    if (!event.body) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
     }
     const body = JSON.parse(event.body);
@@ -34,7 +34,7 @@ function validateApplication(event: APIGatewayProxyEvent): ApplicationReq {
     } as ApplicationReq;
 }
 
-export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let application: ApplicationReq;
     try {
         application = validateApplication(event);

@@ -1,11 +1,11 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { saveCoBuying } from '@cobuying/saveCoBuyingOneSRV';
 import { BaseHeader } from 'common/responseType';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { DivideType } from '@domain/cobuying';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
-const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
+const validateCoBuyingReq = (event: APIGatewayProxyEventV2): void => {
     if (!event.body) {
         throw new Error('요청 본문이 비어있습니다.');
     }
@@ -15,7 +15,7 @@ const validateCoBuyingReq = (event: APIGatewayProxyEvent): void => {
     }
 };
 
-export const createCoBuyingHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const createCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let input: CoBuyingCreateReq<DivideType>;
     try {
         validateCoBuyingReq(event);

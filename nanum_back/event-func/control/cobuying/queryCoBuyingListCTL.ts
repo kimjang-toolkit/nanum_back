@@ -1,7 +1,6 @@
 import { CreatedAtKey } from '@interface/cobuying';
 import { CoBuyingQueryParams } from '@interface/cobuyingList';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { BaseHeader } from 'common/responseType';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 import { queryCoBuyingListSRV } from 'service/cobuying/queryCoBuyingListSRV';
 
@@ -12,7 +11,7 @@ import { queryCoBuyingListSRV } from 'service/cobuying/queryCoBuyingListSRV';
  * @param event
  * @returns
  */
-export const getCoBuyingListHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const getCoBuyingListHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     const input: CoBuyingQueryParams = {};
     console.log('event : ', event);
     try {

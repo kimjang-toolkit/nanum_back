@@ -1,9 +1,9 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR} from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
 import { AuthToken, CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
-const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
+const validateInput = (event: APIGatewayProxyEventV2): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
     const { ownerName, ownerPassword } = JSON.parse(event.body || '');
     if (!ownerName || !ownerPassword || !coBuyingId) {
@@ -25,7 +25,7 @@ const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
  * @param event
  * @returns
  */
-export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const authenticateOwnerAuth = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let auth: CoBuyingOwnerAuth;
     console.log('event : ', event);
     try {
