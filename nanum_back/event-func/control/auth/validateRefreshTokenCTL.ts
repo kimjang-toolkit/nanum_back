@@ -66,11 +66,12 @@ function extractLatestRefreshToken(event: APIGatewayProxyEvent): string | null {
     // console.log('event.headers.Cookie : ', event.headers.Cookie);
     // 1️⃣ `cookies` 배열에서 최신 `GongGong99-RefreshToken` 찾기
     if (event.headers.Cookie) {
-        console.log('event 검사 시작!')
+        // console.log('event 검사 시작!')
         const cookies: string[] = event.headers.Cookie.split(';');
-        console.log('cookies : ', cookies);
-        const refreshToken = cookies.find(cookie => cookie.startsWith(`${TokenName.refreshToken}=`));
-        console.log('refreshToken : ', refreshToken);
+        // console.log('cookies : ', cookies);
+        // console.log('TokenName.refreshToken : ', TokenName.refreshToken);
+        const refreshToken = cookies.find(cookie => cookie.trim().startsWith(`${TokenName.refreshToken}=`));
+        // console.log('refreshToken : ', refreshToken);
         return refreshToken ? refreshToken.split('=')[1] : null;        
     }
 
@@ -85,7 +86,7 @@ function validateInput(event: APIGatewayProxyEvent): string {
         if (!refreshAuthenticate) {
             throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
         }
-        console.log('refresh token 추출 성공!');
+        // console.log('refresh token 추출 성공!');
         return refreshAuthenticate;
     } catch (error) {
         throw new APIERROR(401, '정확한 인증 정보를 전달해주세요.');
