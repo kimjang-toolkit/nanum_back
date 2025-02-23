@@ -24,10 +24,10 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
         if (input.productLink) {
             const productInformation : ProductInformation = await scrapProductInformationSRV("https://www.coupang.com/vp/products/7581844823");
             console.log('productInformation : ', productInformation);
-            if(productInformation.productId !== undefined){
-                imageUrl = await saveProductInformationSRV(productInformation);
-                input.imageUrl = imageUrl;
-            }
+            // if(productInformation.productId !== undefined){
+            //     imageUrl = await saveProductInformationSRV(productInformation);
+            //     input.imageUrl = imageUrl;
+            // }
         }
     } catch (error) {
         console.error(error);

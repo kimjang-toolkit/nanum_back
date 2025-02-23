@@ -37,6 +37,11 @@
           "../event-func/service/application/*", 
           "../event-func/dao/application/*",
         ],
+        "@connect/*": [
+          "../event-func/control/connect/*", 
+          "../event-func/service/connect/*", 
+          "../event-func/dao/connect/*"
+        ],
         "@common/*": ["../event-func/common/*"],
         "@query-interface/*": ["../event-func/query-interface/*"]
     }
