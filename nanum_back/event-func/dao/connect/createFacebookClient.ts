@@ -1,17 +1,20 @@
 import { FacebookOGData } from '@interface/product';
 import axios from 'axios';
 
-const FACEBOOK_GRAPH_API_VERSION = 'v22.0';
-const ACCESS_TOKEN = 'Facebook_AccessToken'; // 실제 토큰 사용
-
 export const getFacebookOGData = async (targetUrl: string): Promise<FacebookOGData> => {
+  const FacebookGraphApiVersion = process.env.FacebookGraphApiVersion;
+  const FacebookAppId = process.env.FacebookAppId;
+  const FacebookAppSecret = process.env.FacebookAppSecret;
     try {
+        console.log('FacebookGraphApiVersion:', FacebookGraphApiVersion);
+        console.log('FacebookAppId:', FacebookAppId);
+        console.log('FacebookAppSecret:', FacebookAppSecret);
         // 🚀 1. Facebook Graph API 호출
-        const response = await axios.post(`https://graph.facebook.com/${FACEBOOK_GRAPH_API_VERSION}/`, null, {
+        const response = await axios.post(`https://graph.facebook.com/${FacebookGraphApiVersion}/`, null, {
             params: {
                 id: targetUrl,
                 scrape: true,
-                access_token: ACCESS_TOKEN
+                access_token: `${FacebookAppId}|${FacebookAppSecret}`
             },
         });
 
@@ -61,7 +64,7 @@ export const getFacebookOGData = async (targetUrl: string): Promise<FacebookOGDa
 const extractProductInfo = (url: string) : string | null => {
   const match = url.match(/products\/(\d+)\?vendorItemId=(\d+)/);
   if (match) {
-      return `${match[1]}?vendorItemId=${match[2]}`;
+      return `${match[1]}-${match[2]}`;
   }
   return null;
 };
