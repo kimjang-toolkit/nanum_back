@@ -6,8 +6,8 @@ import { getFormattedKoreaTime, getKoreaDay } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
-import { scrapProductInformationSRV } from '@product/scrapProductInformationSRV';
-import { saveProductInformationSRV } from '@product/saveProductInformationSRV';
+import { scrapCupangSiteSRV } from '@product/scrapCupangSiteSRV';
+import { saveImageToS3SRV } from '@product/saveImageToS3SRV';
 import { ProductInformation } from '@interface/product.js';
 
 /**
@@ -18,20 +18,9 @@ import { ProductInformation } from '@interface/product.js';
  * @returns 공구글 생성 출력 데이터
  */
 export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promise<CoBuyingSummary> => {
-    // DB 엔드포임트 확인
-    let imageUrl;
-    try {
-        if (input.productLink) {
-            const productInformation : ProductInformation = await scrapProductInformationSRV("https://www.coupang.com/vp/products/7581844823");
-            console.log('productInformation : ', productInformation);
-            if(productInformation.productId !== undefined){
-                imageUrl = await saveProductInformationSRV(productInformation);
-                input.imageUrl = imageUrl;
-            }
-        }
-    } catch (error) {
-        console.error(error);
-    }
+    
+    // 상품 정보 스크래핑
+    await retrieveProductInformation(input);
 
     let cobuying: CoBuyingPost;
     input.ownerPassword = await hashPassword(input.ownerPassword);
@@ -49,6 +38,29 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     const result: CoBuyingSummary = await insertCoBuying(cobuying);
     return result;
 };
+
+/**
+ * 상품 정보 스크래핑
+ * @param input 공구글 생성 입력 데이터
+ */
+async function retrieveProductInformation(input: CoBuyingCreateReq<DivideType>){
+    try {
+        if (input.productLink) {
+            const productInformation : ProductInformation = await scrapCupangSiteSRV(input.productLink);
+            console.log('productInformation : ', productInformation);
+            if(productInformation.imageUrl && productInformation.url && productInformation.productId){
+                input.imageUrl = productInformation.imageUrl;
+                input.productLink = productInformation.url;
+                const imageUrl = await saveImageToS3SRV(productInformation);
+                if(imageUrl){
+                    input.imageUrl = imageUrl;
+                }
+            }   
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): QuantityCoBuying {
     const createdAt = getFormattedKoreaTime();

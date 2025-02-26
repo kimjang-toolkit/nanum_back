@@ -23,6 +23,9 @@ Globals:
         DEPLOYSTAGE: !Ref DEPLOYSTAGE
         DOMAINNAME: !Ref DOMAINNAME
         S3BUCKETNAME: !Ref S3BUCKETNAME
+        FacebookGraphApiVersion: !Ref FacebookGraphApiVersion
+        FacebookAppId: !Ref FacebookAppId
+        FacebookAppSecret: !Ref FacebookAppSecret
 Parameters:
   CoBuyingTableName:
     Type: String
@@ -67,6 +70,18 @@ Parameters:
     Type: String
     Description: S3 버킷 이름
     Default: "jang-nanugi-front"
+  FacebookGraphApiVersion:
+    Type: String
+    Description: Facebook Graph API 버전
+    Default: "v20.0"
+  FacebookAppId:
+    Type: String
+    Description: Facebook App ID
+    Default: "appid"
+  FacebookAppSecret:
+    Type: String
+    Description: Facebook App Secret
+    Default: "appSecret"
 
 Resources:
   ApiGatewayApi:
