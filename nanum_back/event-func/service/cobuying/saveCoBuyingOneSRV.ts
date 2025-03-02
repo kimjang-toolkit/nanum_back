@@ -100,16 +100,16 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         attendeeName: item.ownerName, // 공구장 이름
         appliedQuantity: item.ownerQuantity, // 실제 공구장 구매 수량
         attendeePrice: ownerPrice, // 공구장 신청 부담액
-        estimatedSettlePrice: item.totalPrice, // 가정산 부담액
-        estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
+        // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
+        // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
     };
     // 수량나눔
     const quantityCoBuying: QuantityCoBuying = {
         ...item,
         type: DivideType.quantity,
         unitPrice: unitPrice,
-        ownerQuantity: item.ownerQuantity,
-        ownerPrice: ownerPrice,
+        ownerQuantity: item.totalQuantity, // 공구장이 구매할 가정산 수량
+        ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
         totalAttendeeQuantity: item.ownerQuantity,
         totalAttendeePrice: ownerPrice, // 아직 공구장 밖에 신청자가 없기 때문에 공구장 부담액이 전체 부담액.
         remainQuantity: item.totalQuantity - item.ownerQuantity,
@@ -152,8 +152,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         attendeeName: item.ownerName,
         appliedQuantity: item.ownerQuantity || 1, // 공구장 구매 신청 수량
         attendeePrice: perAttendeePrice, // 일단 단순 계산, 공구가 마감될 때 totalPrice - totalAttendeeCount*perAttendeePrice 로 업데이트
-        estimatedSettlePrice: item.totalPrice, // 가정산 부담액
-        estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
+        // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
+        // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
     };
 
     const attendeeCoBuying: AttendeeCoBuying = {
@@ -163,6 +163,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         remainAttendeeCount: item.targetAttendeeCount - 1, // 공구장 신청자 수 1명 빼기
         targetAttendeeCount: item.targetAttendeeCount,
         perAttendeePrice: perAttendeePrice,
+        ownerQuantity: item.targetAttendeeCount, // 공구장이 구매할 가정산 수량
+        ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
         attendeeCount: 1,
         attendeeList: [hostAttendee],
     };
@@ -179,7 +181,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
 function calculatAttendeePrice(input: CoBuyingCreateReq<DivideType.attendee>): number {
     // 소수점 이하 절삭
     const attendeePrice = input.totalPrice / input.targetAttendeeCount;
-    return Math.floor(attendeePrice);
+    return Math.ceil(attendeePrice);
 }
 
 /**

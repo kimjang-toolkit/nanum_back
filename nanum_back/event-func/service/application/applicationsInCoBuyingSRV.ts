@@ -7,6 +7,7 @@ import { ReturnValue } from '@aws-sdk/client-dynamodb';
 import { getAttendeeListDAO } from '@application/getAttendeeListDAO';
 import { APIERROR } from 'common/responseType';
 import { AttendeeCoBuyingDetail, CoBuyingDetail, QuantityCoBuyingDetail } from '@interface/cobuying';
+import { ApplicationCostProfiler } from 'aws-sdk';
 
 export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => {
     // 공구글에 참석자 이름 리스트 만들기
@@ -16,6 +17,14 @@ export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => 
             application.ownerName,
             application.coBuyingId,
         );
+
+
+        // 공구글 타입에 따라 신청자가 부담하는 금액 계산
+        if(coBuyingDetail.type === DivideType.quantity) {
+            application.attendeePrice = (coBuyingDetail as QuantityCoBuyingDetail).unitPrice * application.attendeeQuantity;
+        } else {
+            application.attendeePrice = (coBuyingDetail as AttendeeCoBuyingDetail).perAttendeePrice;
+        }
 
         const attendeeList: Attendee[] = coBuyingDetail.attendeeList || [];
         const coBuyingType: DivideType = coBuyingDetail.type;
@@ -52,7 +61,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
 
     const attendee: Attendee = {
         attendeeName: app.attendeeName,
-        attendeePrice: app.attendeePrice,
+        attendeePrice: app.attendeePrice || 0,
         appliedQuantity: app.attendeeQuantity,
     };
 
@@ -75,6 +84,12 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
     expressionAttributeNames['#totalAttendeePrice'] = 'totalAttendeePrice';
     expressionAttributeValues[':newAttendeePrice'] = app.attendeePrice;
 
+    // 공구장 가정산 금액 업데이트
+    // 신청자가 부담하는 만큼 공구장 부담액이 감소함
+    updateExpression += ', #ownerPrice = #ownerPrice - :newAttendeePrice';
+    expressionAttributeNames['#ownerPrice'] = 'ownerPrice';
+    expressionAttributeValues[':newAttendeePrice'] = app.attendeePrice;
+
     // 수량 나눔 공구글에 대한 추가 업데이트
     if (coBuyingDetail.type === DivideType.quantity) {
         updateExpression += ', #totalAttendeeQuantity = #totalAttendeeQuantity + :newAttendeeQuantity';
@@ -84,12 +99,24 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
         updateExpression += ', #remainQuantity = #remainQuantity - :newAttendeeQuantity';
         expressionAttributeNames['#remainQuantity'] = 'remainQuantity';
         expressionAttributeValues[':newAttendeeQuantity'] = app.attendeeQuantity;
+
+        // 공구장 가정산 수량 업데이트
+        // 신청자가 구매하는 만큼 공구장 가정산 수량이 감소함
+        updateExpression += ', #ownerQuantity = #ownerQuantity - :newAttendeeQuantity';
+        expressionAttributeNames['#ownerQuantity'] = 'ownerQuantity';
+        expressionAttributeValues[':newAttendeeQuantity'] = app.attendeeQuantity;
     } else {
         // 인원 나눔 공구글에 대한 추가 업데이트
         // 인원 나눔은 신청자 수 기준이기 때문에 수량은 따로 증가시키지 않음
         updateExpression += ', #remainAttendeeCount = #remainAttendeeCount - :newAttendeeCount';
         expressionAttributeNames['#remainAttendeeCount'] = 'remainAttendeeCount';
         expressionAttributeValues[':newAttendeeCount'] = 1;
+
+        // 공구장 가정산 수량 업데이트
+        // 신청자가 구매하는 만큼 공구장 가정산 수량이 감소함
+        updateExpression += ', #ownerQuantity = #ownerQuantity - :newAttendeeQuantity';
+        expressionAttributeNames['#ownerQuantity'] = 'ownerQuantity';
+        expressionAttributeValues[':newAttendeeQuantity'] = 1;
     }
 
     const param = {
@@ -111,9 +138,9 @@ function validateApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
         if (!app.attendeeQuantity) {
             throw new APIERROR(400, '수량을 입력해주세요.');
         }
-        if (Math.round(app.attendeePrice) !== Math.round((coBuyingDetail as QuantityCoBuyingDetail).unitPrice * app.attendeeQuantity)) {
-            throw new APIERROR(400, '신청 금액이 정확하지 않습니다. 단가와 수량을 확인해주세요.');
-        }
+        // if (Math.round(app.attendeePrice) !== Math.round((coBuyingDetail as QuantityCoBuyingDetail).unitPrice * app.attendeeQuantity)) {
+        //     throw new APIERROR(400, '신청 금액이 정확하지 않습니다. 단가와 수량을 확인해주세요.');
+        // }
         if (app.attendeeQuantity > (coBuyingDetail as QuantityCoBuyingDetail).remainQuantity) {
             throw new APIERROR(400, '남은 수량보다 많은 수량을 신청할 수 없습니다.');
         }
@@ -121,9 +148,9 @@ function validateApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
         if (app.attendeeQuantity !== 1) {
             throw new APIERROR(400, '인원 나눔은 1인당 1개만 신청 가능합니다.');
         }
-        if (Math.round(app.attendeePrice) !== Math.round((coBuyingDetail as AttendeeCoBuyingDetail).perAttendeePrice)) {
-            throw new APIERROR(400, '신청 금액이 1인당 금액과 일치하지 않습니다.');
-        }
+        // if (Math.round(app.attendeePrice) !== Math.round((coBuyingDetail as AttendeeCoBuyingDetail).perAttendeePrice)) {
+        //     throw new APIERROR(400, '신청 금액이 1인당 금액과 일치하지 않습니다.');
+        // }
         if (app.attendeeQuantity > (coBuyingDetail as AttendeeCoBuyingDetail).remainAttendeeCount) {
             throw new APIERROR(400, '더 이상 신청할 수 없습니다. 남은 인원이 없습니다.');
         }

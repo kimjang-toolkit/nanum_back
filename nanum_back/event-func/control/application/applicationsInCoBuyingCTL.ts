@@ -34,6 +34,20 @@ function validateApplication(event: APIGatewayProxyEventV2): ApplicationReq {
     } as ApplicationReq;
 }
 
+
+/**
+ * 공구 신청 처리 핸들러
+ * 
+ * 공구 신청 할 때 
+ *  공구장의 가정산 부담액과 가정산 부담 수량이 변경됨.
+ *  신청자의 가정산 부담액과 부담 수량이 신청 값과 다를 수 있음.
+ *  신청자 부담액은 기준 가격에 신청 정보로 계산
+ *      수량나눔: 기준가격 * 신청 수량
+ *      인원나눔: 기준가격 * 1
+ * 
+ * @param event 
+ * @returns 
+ */
 export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let application: ApplicationReq;
     try {
