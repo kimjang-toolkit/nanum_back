@@ -30,7 +30,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,
-        coBuyingStatus: CoBuyingStatus[res.coBuyingStatus.S as keyof typeof CoBuyingStatus],
+        coBuyingStatus: Number(res.coBuyingStatus.S) as CoBuyingStatus,
     };
 
     if (baseDetail.type === DivideType.quantity) {

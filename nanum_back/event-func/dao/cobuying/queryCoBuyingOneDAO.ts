@@ -32,7 +32,7 @@ export const queryCoBuyingById = async (ownerName: string, id: string): Promise<
 
         // 조회 결과가 없다면, 공구글을 찾을 수 없다는 에러를 던짐
         if (result.Items && result.Items.length > 0) {
-            console.log(result.Items[0]);
+            // console.log(result.Items[0]);
             const cobuying: CoBuyingSummary[] = mapToCoBuyingSummary(result.Items);
             // CoBuyingSimple 인터페이스에 맞게 데이터를 매핑하여 반환
             return cobuying[0];

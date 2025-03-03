@@ -4,13 +4,15 @@ import { ManageCoBuyingParams, ManageCoBuyingReq } from "@interface/manage";
 import { APIERROR } from "@common/responseType";
 import { manageCoBuyingSRV } from "@manage/manageCoBuyingSRV";
 import { CoBuyingStatus } from "@domain/cobuying";
+import { validateTokenFromHeader } from "@auth/validateTokenSRV";
+import { AuthToken, UserAuthDto } from "@interface/auth";
 
 export const manageCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
 
   let manageCoBuyingParams: ManageCoBuyingParams;
   
   try {
-    manageCoBuyingParams = validateManageCoBuying(event);
+    manageCoBuyingParams = await validateManageCoBuying(event);
   } catch (error) {
       if (error instanceof APIERROR) {
           return new LambdaReturnDto(error.statusCode, { message: error.message }, event).getLambdaReturnDto();
@@ -37,7 +39,7 @@ export const manageCoBuyingHandler = async (event: APIGatewayProxyEventV2): Prom
  * 
  * 하나 이상의 속성이 있어야 함
  */
-function validateManageCoBuying(event: APIGatewayProxyEventV2): ManageCoBuyingParams {
+async function validateManageCoBuying(event: APIGatewayProxyEventV2): Promise<ManageCoBuyingParams> {
   let manageCoBuyingReq: ManageCoBuyingReq;
   try {
     manageCoBuyingReq = JSON.parse(event.body || '{}');
@@ -51,8 +53,8 @@ function validateManageCoBuying(event: APIGatewayProxyEventV2): ManageCoBuyingPa
    */
   if (manageCoBuyingReq.coBuyingStatus !== undefined && manageCoBuyingReq.coBuyingStatus) {
     // Check if the status is a valid CoBuyingStatus
-    const isValidStatus = Object.values(CoBuyingStatus).includes(manageCoBuyingReq.coBuyingStatus);
-    
+    const isValidStatus = Object.values(CoBuyingStatus).includes(Number(manageCoBuyingReq.coBuyingStatus));
+    console.log('isValidStatus : ', isValidStatus);
     if (!isValidStatus) {
         throw new APIERROR(400, "유효하지 않은 공구 상태입니다.");
     }
@@ -65,11 +67,22 @@ function validateManageCoBuying(event: APIGatewayProxyEventV2): ManageCoBuyingPa
   if (Object.keys(manageCoBuyingReq).length === 0) {
     throw new APIERROR(400, "수정할 속성을 입력해주세요");
   }
+  
+
+  const userAuth : UserAuthDto = await validateTokenFromHeader(event);
+
   const coBuyingId = event.pathParameters?.coBuyingId;
   const ownerName = event.queryStringParameters?.ownerName;
 
   if (!coBuyingId || !ownerName) {
     throw new APIERROR(400, "공구 아이디와 공구장 이름을 입력해주세요");
+  }else{
+    if(userAuth.coBuyingId !== coBuyingId || userAuth.ownerName !== ownerName){
+      console.log('userAuth : ', userAuth);
+      console.log('coBuyingId : ', coBuyingId);
+      console.log('ownerName : ', ownerName);
+      throw new APIERROR(401, "공구장 인증 정보가 옳바르지 않아요.");
+    }
   }
 
   return {

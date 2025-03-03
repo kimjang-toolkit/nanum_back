@@ -57,7 +57,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
 }
 
 export function mapToCoBuyingEvaluatedKey(req: any): CoBuyingKey {
-    console.log('req : ', req);
+    // console.log('req : ', req);
     return {
         id: req.id.S,
         deletedYN: req.deletedYN.S,
