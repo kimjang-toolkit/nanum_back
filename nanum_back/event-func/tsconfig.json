@@ -37,6 +37,11 @@
           "../event-func/service/application/*", 
           "../event-func/dao/application/*",
         ],
+        "@manage/*": [
+          "../event-func/control/manage/*", 
+          "../event-func/service/manage/*", 
+          "../event-func/dao/manage/*",
+        ],
         "@connect/*": [
           "../event-func/control/connect/*", 
           "../event-func/service/connect/*", 
