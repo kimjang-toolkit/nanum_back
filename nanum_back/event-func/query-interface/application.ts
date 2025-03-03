@@ -1,6 +1,6 @@
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
 
-export interface ApplicationQuery {
+export interface UpdateDynamoQuery {
     TableName: string;
     Key: Record<string, string>;
     UpdateExpression?: string;

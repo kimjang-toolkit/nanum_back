@@ -9,7 +9,7 @@ import { mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const getAttendeeListDAO = async (ownerName: string, id: string): Promise<CoBuyingDetail> => {
+export const getCoBuyingDetailDAO = async (ownerName: string, id: string): Promise<CoBuyingDetail> => {
     const params = {
         TableName: process.env.CoBuyingTableName || '', // 테이블 이름
         KeyConditionExpression: 'ownerName = :ownerName AND id = :id', // 쿼리 조건
@@ -35,6 +35,6 @@ export const getAttendeeListDAO = async (ownerName: string, id: string): Promise
         }
     } catch (error) {
         console.log('error', error);
-        throw new Error('참석자 목록을 조회하는 중 오류가 발생했습니다.');
+        throw new APIERROR(500, '공구글을 조회하는 중 오류가 발생했습니다.');
     }
 };
