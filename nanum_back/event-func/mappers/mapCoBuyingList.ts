@@ -22,7 +22,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
             return {
                 // 참여자 기준
                 id: item.id.S,
-                coBuyingStatus: (item.coBuyingStatus ? item.coBuyingStatus.N : Number(CoBuyingStatus.APPLYING)) as CoBuyingStatus,
+                coBuyingStatus: (item.coBuyingStatus ? (item.coBuyingStatus.N || Number(item.coBuyingStatus.S)) : Number(CoBuyingStatus.APPLYING)) as CoBuyingStatus,
                 type: DivideType.attendee,
                 totalQuantity: item.totalQuantity ? parseInt(item.totalQuantity.N, 10) : 0,
                 totalPrice: item.totalPrice ? parseFloat(item.totalPrice.N) : 0,
@@ -39,7 +39,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
             // 수량 기준
             return {
                 id: item.id.S,
-                coBuyingStatus: (item.coBuyingStatus ? item.coBuyingStatus.N : Number(CoBuyingStatus.APPLYING)) as CoBuyingStatus,
+                coBuyingStatus: (item.coBuyingStatus ? (item.coBuyingStatus.N || Number(item.coBuyingStatus.S)) : Number(CoBuyingStatus.APPLYING)) as CoBuyingStatus,
                 type: DivideType.quantity,
                 totalQuantity: item.totalQuantity ? parseInt(item.totalQuantity.N, 10) : 0,
                 totalPrice: item.totalPrice ? parseInt(item.totalPrice.N) : 0,
