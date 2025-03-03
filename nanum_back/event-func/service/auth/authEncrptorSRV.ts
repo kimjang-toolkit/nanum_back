@@ -1,4 +1,4 @@
-import { CoBuyingOwnerAuth, UserAuth } from '@interface/auth';
+import { CoBuyingOwnerAuth, UserAuthDto } from '@interface/auth';
 import { AuthToken } from '@interface/auth';
 import { APIERROR } from 'common/responseType';
 import { getKoreaTime } from 'common/time';
@@ -35,7 +35,7 @@ export function generateToken(owner: CoBuyingOwnerAuth): AuthToken {
     const tokenOwner = {
         ownerName: owner.ownerName,
         coBuyingId: owner.coBuyingId,
-    } as UserAuth;
+    } as UserAuthDto;
 
     const accessTokenExpiresIn = 1000 * 60 * 60; // 1시간
 
@@ -57,9 +57,11 @@ export function generateToken(owner: CoBuyingOwnerAuth): AuthToken {
     return token;
 }
 
-export function regenerateToken(auth: UserAuth): AuthToken {
-    const accessTokenExpiresIn: number = 1000 * 60 * 60;
-    const refreshTokenExpiresIn: number = 1000 * 60 * 60 * 24 * 7;
+export function regenerateToken(auth: UserAuthDto): AuthToken {
+    const refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7; // 7일
+
+
+    const accessTokenExpiresIn = 1000 * 60 * 60; // 1시간
 
     const accessToken = createToken(auth, accessTokenExpiresIn);
 
@@ -84,7 +86,7 @@ function getAuthToken(
     refreshToken: string,
     accessTokenExpiresIn: number,
     refreshTokenExpiresIn: number,
-    tokenOwner: UserAuth,
+    tokenOwner: UserAuthDto,
     tokenType: string,
     scope: string,
 ): AuthToken {
@@ -102,7 +104,7 @@ function getAuthToken(
     return token;
 }
 
-function createToken(tokenOwner: UserAuth, expiresIn: number): string {
+function createToken(tokenOwner: UserAuthDto, expiresIn: number): string {
     const accessToken = jwt.sign(tokenOwner, SECRET_KEY, { expiresIn: expiresIn });
     return accessToken;
 }

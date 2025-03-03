@@ -1,5 +1,13 @@
 # nanum_back
 
+## CICD 구성
+
+Feature branch에서 작업 후 Stg 브랜치에 병합 시 Stg-nanum-back 스택 배포
+
+Prod 브랜치에 Stg 브랜치 병합 시 Prod-nanum-back 스택 배포
+
+Prod는 Stg 브랜치만 병합 가능
+
 ### DynamoDB local에서 실행하기
 
 `docker run -d -p 3300:8000 amazon/dynamodb-local` 로 도커 컨테이너 실행하기 `http://127.0.0.1:3300`로 접근 가능!
@@ -39,11 +47,16 @@ stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도�
 
 # 스테이지 별 배포 방법
 
+### 개발 환경 배포
+
+`sam deploy --no-confirm-changeset` 일단 기본 api.gonggong99.store 도메인으로 배포...
+Stg, Prod 배포가 안정화되면 그때 도메인 변경 및 배포 추가
+
 ### 스테이지 환경 배포
-  `sam deploy --config-env stg --stack-name Stg-nanum-back`
+  `sam deploy --config-env Stg --stack-name Stg-nanum-back`
 
 ### 프로덕션 환경 배포
-  `sam deploy --config-env prod --stack-name Prod-nanum-back`
+  `sam deploy --config-env Prod --stack-name Prod-nanum-back`
 
 ### 리소스 수정 시 주의할 점
 

@@ -49,8 +49,11 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
         return {
             ...baseDetail,
             type: DivideType.attendee,
-            remainQuantity: Number(res.remainQuantity.N),
+            remainAttendeeCount: Number(res.remainAttendeeCount.N),
+            totalAttendeePrice: Number(res.totalAttendeePrice.N),
             targetAttendeeCount: Number(res.targetAttendeeCount.N),
+            ownerQuantity: Number(res.ownerQuantity.N || 0), // 공구장이 구매할 가정산 수량
+            ownerPrice: Number(res.ownerPrice.N || 0), // 공구장이 부담할 가정산 금액
             perAttendeePrice: Number(res.perAttendeePrice.N),
         } as AttendeeCoBuyingDetail;
     } else {

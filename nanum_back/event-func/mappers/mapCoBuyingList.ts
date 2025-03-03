@@ -32,6 +32,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 deadline: item.deadline ? item.deadline.S : '',
                 createdAt: item.createdAt.S,
                 targetAttendeeCount: item.targetAttendeeCount ? parseInt(item.targetAttendeeCount.N, 10) : 0,
+                remainAttendeeCount: item.remainAttendeeCount ? parseInt(item.remainAttendeeCount.N, 10) : 0,
                 perAttendeePrice: item.perAttendeePrice ? parseFloat(item.perAttendeePrice.N) : 0,
             } as AttendeeCoBuyingSummary;
         } else {
@@ -48,6 +49,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 deadline: item.deadline ? item.deadline.S : '',
                 createdAt: item.createdAt.S,
                 totalAttendeeQuantity: item.totalAttendeeQuantity ? parseInt(item.totalAttendeeQuantity.N, 10) : 0,
+                remainQuantity: item.remainQuantity ? parseInt(item.remainQuantity.N, 10) : 0,
                 unitPrice: item.unitPrice ? parseInt(item.unitPrice.N, 10) : 0,
             } as QuantityCoBuyingSummary;
         }

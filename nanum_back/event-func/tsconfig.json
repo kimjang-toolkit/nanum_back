@@ -12,6 +12,8 @@
       "forceConsistentCasingInFileNames": true,  
       "baseUrl": "./",
       "preserveValueImports": false,
+      "allowJs": true,  // JS 파일을 TypeScript에서 사용할 수 있도록 허용
+      "checkJs": false,  // (선택 사항) JS 파일에 대한 타입 검사를 비활성화
       "paths": {
         "@domain/*": ["../api-interface/src/domain/*"],
         "@interface/*": ["../api-interface/src/interface/*"],
@@ -20,7 +22,11 @@
           "../event-func/service/cobuying/*", 
           "../event-func/dao/cobuying/*"
         ],
-        "@product/*": ["../event-func/control/product", "../event-func/service/product", "../event-func/dao/product"],
+        "@product/*": [
+          "../event-func/control/product/*", 
+          "../event-func/service/product/*", 
+          "../event-func/dao/product/*"
+        ],
         "@auth/*": [
           "../event-func/control/auth/*", 
           "../event-func/service/auth/*", 
@@ -30,6 +36,11 @@
           "../event-func/control/application/*", 
           "../event-func/service/application/*", 
           "../event-func/dao/application/*",
+        ],
+        "@connect/*": [
+          "../event-func/control/connect/*", 
+          "../event-func/service/connect/*", 
+          "../event-func/dao/connect/*"
         ],
         "@common/*": ["../event-func/common/*"],
         "@query-interface/*": ["../event-func/query-interface/*"]

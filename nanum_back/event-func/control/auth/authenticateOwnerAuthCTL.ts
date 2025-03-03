@@ -1,8 +1,9 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { APIERROR, AuthSuccessHeader, BaseHeader } from 'common/responseType';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
+import { APIERROR} from 'common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/authenticateOwnerAuthSRV';
-import { CoBuyingOwnerAuth, CookieOptions, TokenName, UserAuth } from '@interface/auth';
-const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
+import { AuthToken, CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { LambdaReturnDto } from 'dto/LambdaReturnDto';
+const validateInput = (event: APIGatewayProxyEventV2): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
     const { ownerName, ownerPassword } = JSON.parse(event.body || '');
     if (!ownerName || !ownerPassword || !coBuyingId) {
@@ -17,72 +18,55 @@ const validateInput = (event: APIGatewayProxyEvent): CoBuyingOwnerAuth => {
 
 /**
  * 단건의 coBuying을 조회한다. => 상세페이지 조회
+ * 
+ * Post
+ * {domain}/api/co-buying/auth/{cobuyingId}
+ * 
  * @param event
  * @returns
  */
-export const authenticateOwnerAuth = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+export const authenticateOwnerAuth = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let auth: CoBuyingOwnerAuth;
+    console.log('event : ', event);
     try {
         auth = validateInput(event);
     } catch (error) {
-        return {
-            statusCode: 400,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        // return {
+        //     statusCode: 400,
+        //     headers: BaseHeader,
+        //     body: JSON.stringify({ message: (error as Error).message }),
+        // };
+        return new LambdaReturnDto(400, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
     try {
-        // console.log(' coBuyingId : ', auth.coBuyingId, ' ownerName : ', auth.ownerName);
-        console.log('auth : ', auth);
-        const jwt = await authenticateOwnerAuthSRV(auth);
+        // console.log('auth : ', auth);
+        const jwt: AuthToken = await authenticateOwnerAuthSRV(auth);
 
         // httpOnly로 refreshToken을 쿠키에 setting
         const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',
-            'Max-Age': jwt.refreshTokenExpiresIn || 1000 * 60 * 60 * 24 * 7,
-            Domain: TokenName.domainName,
+            'Max-Age': 604800,
             Path: '/',
+            cookies : {
+                [TokenName.refreshToken] : jwt.refreshToken
+            }
         };
-        const accessCookieOptions: CookieOptions = {
-            SameSite: 'None',
-            'Max-Age': jwt.accessTokenExpiresIn || 1000 * 60 * 60,
-            Domain: TokenName.domainName,
-            Path: '/',
-        };
-        const setCookies = [
-            `${TokenName.refreshToken}=${jwt.refreshToken}; HttpOnly; Secure; ${Object.entries(refreshCookieOptions)
-                .map(([key, value]) => `${key}=${value}`)
-                .join('; ')}`,
-            `${TokenName.accessToken}=${jwt.accessToken}; HttpOnly; Secure; ${Object.entries(accessCookieOptions)
-                .map(([key, value]) => `${key}=${value}`)
-                .join('; ')}`,
-        ];
 
-        const headers = {
-            ...AuthSuccessHeader,
-            'Set-Cookie': setCookies.join(', '),
+        const headerOptions: HeaderOptions = {
+            Authorization: `Bearer ${jwt.accessToken}`,
         };
-        console.log('headers : ', headers);
-        return {
-            statusCode: 200,
-            headers: headers,
-            body: JSON.stringify({
-                ownerName: auth.ownerName,
-                coBuyingId: auth.coBuyingId,
-            } as UserAuth),
-        };
+        const lamdbdaReturnDto = new LambdaReturnDto(200, {
+            ownerName: auth.ownerName,
+            coBuyingId: auth.coBuyingId,
+        } as UserAuthDto, event, headerOptions,refreshCookieOptions);
+
+        // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
+    
+        return lamdbdaReturnDto.getLambdaReturnDto();
     } catch (error) {
         if (error instanceof APIERROR) {
-            return {
-                statusCode: error.statusCode,
-                headers: BaseHeader,
-                body: JSON.stringify({ message: error.message }),
-            };
+            return new LambdaReturnDto(error.statusCode, { message: error.message }, event).getLambdaReturnDto();
         }
-        return {
-            statusCode: 500,
-            headers: BaseHeader,
-            body: JSON.stringify({ message: (error as Error).message }),
-        };
+        return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
     }
 };
