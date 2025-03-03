@@ -1,10 +1,10 @@
 import { DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import { ApplicationDTO, ApplicationReq, CoBuyingApplication } from '@interface/application';
-import { ApplicationQuery } from '@query-interface/application';
+import { UpdateDynamoQuery } from '@query-interface/application';
 import { applicationCoBuyingDAO } from '@application/applicationCoBuyingDAO';
 import { ReturnValue } from '@aws-sdk/client-dynamodb';
-import { getAttendeeListDAO } from '@application/getAttendeeListDAO';
+import { queryCoBuyingDetail } from '@cobuying/queryCoBuyingDetailDAO';
 import { APIERROR } from 'common/responseType';
 import { AttendeeCoBuyingDetail, CoBuyingDetail, QuantityCoBuyingDetail } from '@interface/cobuying';
 import { ApplicationCostProfiler } from 'aws-sdk';
@@ -13,7 +13,7 @@ export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => 
     // 공구글에 참석자 이름 리스트 만들기
     //    만약 이미 참석자 이름을 사용 중이면 다른 이름을 사용해야 함
     try {
-        const coBuyingDetail: CoBuyingDetail = await getAttendeeListDAO(
+        const coBuyingDetail: CoBuyingDetail = await queryCoBuyingDetail(
             application.ownerName,
             application.coBuyingId,
         );
@@ -37,7 +37,7 @@ export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => 
             throw new APIERROR(400, '이미 사용 중인 이름입니다. 다른 이름을 사용해주세요.');
         }
 
-        let updateCommand: ApplicationQuery;
+        let updateCommand: UpdateDynamoQuery;
         updateCommand = getUpdateCommand(application, coBuyingDetail);
 
         // 공구글에 참여자 추가
@@ -55,7 +55,7 @@ export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => 
     }
 };
 
-function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): ApplicationQuery {
+function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): UpdateDynamoQuery {
     // 공구글 타입에 따라 유효성 검사
     validateApp(coBuyingDetail, app);
 
@@ -129,7 +129,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
         ExpressionAttributeNames: expressionAttributeNames,
         ExpressionAttributeValues: expressionAttributeValues,
         ReturnValues: ReturnValue.ALL_NEW,
-    } as ApplicationQuery;
+    } as UpdateDynamoQuery;
     // console.log('query param', param);
     return param;
 }

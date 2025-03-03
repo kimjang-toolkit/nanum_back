@@ -1,4 +1,4 @@
-import { DivideType } from '@domain/cobuying';
+import { CoBuyingStatus, DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import {
     AttendeeCoBuyingDetail,
@@ -30,7 +30,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,
-        coBuyingStatus: Number(res.coBuyingStatus.N),
+        coBuyingStatus: CoBuyingStatus[res.coBuyingStatus.S as keyof typeof CoBuyingStatus],
     };
 
     if (baseDetail.type === DivideType.quantity) {
