@@ -77,6 +77,28 @@ function getUpdateCommand(manageCoBuyingParams: ManageCoBuyingParams, coBuyingDe
     } 
   }
 
+  /**
+   * 나눔 정보 변경 시 업데이트문 작성
+   * 다만, 나눔 시간은 마감시간 이후에 가능함.
+   */
+  if(manageCoBuyingParams.sharingDateTime !== undefined && manageCoBuyingParams.sharingDateTime !== coBuyingDetail.sharingDateTime){
+    updateExpression += '#sharingDateTime = :sharingDateTime, ';
+    expressionAttributeValues[':sharingDateTime'] = manageCoBuyingParams.sharingDateTime;
+    expressionAttributeNames['#sharingDateTime'] = 'sharingDateTime';
+    console.log("As-Is: ", coBuyingDetail.sharingDateTime, "To-Be: ", manageCoBuyingParams.sharingDateTime);
+
+    if(manageCoBuyingParams.sharingDateTime < coBuyingDetail.deadline){
+      throw new APIERROR(400, '나눔 시간은 마감시간 이후에 가능해요.');
+    }
+  }
+
+  if(manageCoBuyingParams.sharingLocation !== undefined && manageCoBuyingParams.sharingLocation !== coBuyingDetail.sharingLocation){
+    updateExpression += '#sharingLocation = :sharingLocation, ';
+    expressionAttributeValues[':sharingLocation'] = manageCoBuyingParams.sharingLocation;
+    expressionAttributeNames['#sharingLocation'] = 'sharingLocation';
+    console.log("As-Is: ", coBuyingDetail.sharingLocation, "To-Be: ", manageCoBuyingParams.sharingLocation);
+  }
+
   if(Object.keys(expressionAttributeValues).length === 0){
     throw new APIERROR(400, '수정할 속성이 없어요.');
   }
