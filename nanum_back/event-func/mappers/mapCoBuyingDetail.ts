@@ -32,6 +32,8 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             ) || [],
         createdAt: res.createdAt.S,
         coBuyingStatus: (res.coBuyingStatus.N || Number(res.coBuyingStatus.S)) as CoBuyingStatus,
+        sharingDateTime: res.sharingDateTime?.S,
+        sharingLocation: res.sharingLocation?.S,
     };
 
     if (baseDetail.type === DivideType.quantity) {

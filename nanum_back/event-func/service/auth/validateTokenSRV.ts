@@ -48,7 +48,8 @@ export const validateTokenSRV = async (token: string): Promise<UserAuthDto> => {
 };
 
 export const extractTokenFromHeader = (event: APIGatewayProxyEventV2): string => {
-    const token = event.headers.Authorization?.split(' ')[1];
+    console.log('event : ', event);
+    const token = event.headers.Authorization?.split(' ')[1] || event.headers.authorization?.split(' ')[1];
     if (!token) {
         throw new APIERROR(401, '옳바르지 않은 인증 정보입니다. 다시 로그인해주세요.');
     }

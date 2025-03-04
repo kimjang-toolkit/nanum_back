@@ -5,7 +5,7 @@ import { APIERROR } from "@common/responseType";
 import { manageCoBuyingSRV } from "@manage/manageCoBuyingSRV";
 import { CoBuyingStatus } from "@domain/cobuying";
 import { validateTokenFromHeader } from "@auth/validateTokenSRV";
-import { AuthToken, UserAuthDto } from "@interface/auth";
+import { UserAuthDto } from "@interface/auth";
 
 export const manageCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
 
