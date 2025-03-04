@@ -78,6 +78,8 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
+        sharingDateTime: input.sharingDateTime,
+        sharingLocation: input.sharingLocation,
     };
     if (item.ownerQuantity === undefined) {
         throw new Error('공구장의 수량을 정해주세요.');
@@ -133,6 +135,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
+        sharingDateTime: input.sharingDateTime,
+        sharingLocation: input.sharingLocation,
     };
     if (item.targetAttendeeCount === undefined) {
         throw new Error('목표 신청자 수를 정해주세요.');
