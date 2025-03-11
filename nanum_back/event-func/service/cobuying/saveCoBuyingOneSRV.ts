@@ -29,7 +29,7 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     const productInformation = await retrieveProductInformation(input);
     if(productInformation.productId){
         // 상품원장에 저장
-        await saveProductLedger(productInformation);
+        // await saveProductLedger(productInformation);
     }
     
     let cobuying: CoBuyingPost;
