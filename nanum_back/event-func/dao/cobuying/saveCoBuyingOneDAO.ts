@@ -39,6 +39,8 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSu
                     createdAt: cobuying.createdAt,
                     imageUrl: cobuying.imageUrl,
                     type: cobuying.type,
+                    sharingDateTime: cobuying.sharingDateTime,
+                    sharingLocation: cobuying.sharingLocation,
                     } as AttendeeCoBuyingSummary;
             } else {
                 return {
@@ -56,6 +58,8 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSu
                     unitPrice: cobuying.unitPrice,
                     remainQuantity: cobuying.remainQuantity,
                     coBuyingStatus: cobuying.coBuyingStatus,
+                    sharingDateTime: cobuying.sharingDateTime,
+                    sharingLocation: cobuying.sharingLocation,
                 } as QuantityCoBuyingSummary;
             }
         } else {

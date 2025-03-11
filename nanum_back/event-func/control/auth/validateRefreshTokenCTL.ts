@@ -3,6 +3,7 @@ import { APIERROR } from 'common/responseType';
 import { validateTokenSRV } from '@auth/validateTokenSRV';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 import { AuthToken, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { regenerateToken } from '@auth/authEncrptorSRV';
 
 /**
  * 
@@ -24,7 +25,8 @@ export const validateRefreshTokenCTL = async (event: APIGatewayProxyEventV2): Pr
 
     try {
         // 토큰 기반 사용자 인증
-        const authToken : AuthToken = await validateTokenSRV(token);
+        const userAuth : UserAuthDto = await validateTokenSRV(token);
+        const authToken : AuthToken = regenerateToken(userAuth);
         // httpOnly로 refreshToken을 쿠키에 setting
         const refreshCookieOptions: CookieOptions = {
             SameSite: 'None',

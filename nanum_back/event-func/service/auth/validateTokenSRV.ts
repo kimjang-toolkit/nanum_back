@@ -2,10 +2,11 @@ import { extractPayload, regenerateToken } from '@auth/authEncrptorSRV';
 import { queryCoBuyingById } from '@cobuying/queryCoBuyingOneDAO';
 import { AuthToken, UserAuthDto } from '@interface/auth';
 import { CoBuyingSummary } from '@interface/cobuying';
+import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { APIERROR } from 'common/responseType';
 import { JwtPayload } from 'jsonwebtoken';
 
-export const validateTokenSRV = async (token: string): Promise<AuthToken> => {
+export const validateTokenSRV = async (token: string): Promise<UserAuthDto> => {
     // let userAuth: UserAuth;
 
     // token 유효성 검증
@@ -40,8 +41,22 @@ export const validateTokenSRV = async (token: string): Promise<AuthToken> => {
     } as UserAuthDto;
 
 
-    const authToken: AuthToken = regenerateToken(userAuth);
+    // const authToken: AuthToken = regenerateToken(userAuth);
     // token 정보로 공구글 조회 성공 시 토큰 인증 성공!
-    console.log('토큰 재발급 성공!');
-    return authToken;
+    console.log('토큰 인증 성공');
+    return userAuth;
 };
+
+export const extractTokenFromHeader = (event: APIGatewayProxyEventV2): string => {
+    console.log('event : ', event);
+    const token = event.headers.Authorization?.split(' ')[1] || event.headers.authorization?.split(' ')[1];
+    if (!token) {
+        throw new APIERROR(401, '옳바르지 않은 인증 정보입니다. 다시 로그인해주세요.');
+    }
+    return token;
+}
+
+export const validateTokenFromHeader = async (event: APIGatewayProxyEventV2): Promise<UserAuthDto> => {
+    const token = extractTokenFromHeader(event);
+    return validateTokenSRV(token);
+}

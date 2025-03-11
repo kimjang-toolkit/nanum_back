@@ -9,6 +9,8 @@ import { hashPassword } from '@auth/authEncrptorSRV';
 import { scrapCupangSiteSRV } from '@product/scrapCupangSiteSRV';
 import { saveImageToS3SRV } from '@product/saveImageToS3SRV';
 import { ProductInformation } from '@interface/product.js';
+import { retrieveProductInformation } from '@product/retrieveProductInformation';
+import { saveProductLedger } from '@product/saveProductLedger';
 
 /**
  * DB에 공구글 데이터 생성
@@ -16,6 +18,7 @@ import { ProductInformation } from '@interface/product.js';
  * 
  * 조승효B 요구 사항 : 수량, 인원 기준 가격을 계산할 때 소수점 이하의 값을 올림
  *                 가정산 부담액 속성 추가
+ * 스크래핑한 상품 정보를 상품원장에 저장
  *
  * @param input 공구글 생성 입력 데이터
  * @returns 공구글 생성 출력 데이터
@@ -23,8 +26,12 @@ import { ProductInformation } from '@interface/product.js';
 export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promise<CoBuyingSummary> => {
     
     // 상품 정보 스크래핑
-    await retrieveProductInformation(input);
-
+    const productInformation = await retrieveProductInformation(input);
+    if(productInformation.productId){
+        // 상품원장에 저장
+        // await saveProductLedger(productInformation);
+    }
+    
     let cobuying: CoBuyingPost;
     input.ownerPassword = await hashPassword(input.ownerPassword);
     console.log('input type : ', input.type);
@@ -38,32 +45,15 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
         cobuying = getAttendeeCoBuying(input as CoBuyingCreateReq<DivideType.attendee>);
     }
 
+    // 비동기로 상품원장에 저장
+    // await saveProductLedger(input);
+
+    // 공구글 생성
     const result: CoBuyingSummary = await insertCoBuying(cobuying);
     return result;
 };
 
-/**
- * 상품 정보 스크래핑
- * @param input 공구글 생성 입력 데이터
- */
-async function retrieveProductInformation(input: CoBuyingCreateReq<DivideType>){
-    try {
-        if (input.productLink) {
-            const productInformation : ProductInformation = await scrapCupangSiteSRV(input.productLink);
-            console.log('productInformation : ', productInformation);
-            if(productInformation.imageUrl && productInformation.url && productInformation.productId){
-                input.imageUrl = productInformation.imageUrl;
-                input.productLink = productInformation.url;
-                const imageUrl = await saveImageToS3SRV(productInformation);
-                if(imageUrl){
-                    input.imageUrl = imageUrl;
-                }
-            }   
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
+
 
 function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): QuantityCoBuying {
     const createdAt = getFormattedKoreaTime();
@@ -73,11 +63,13 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         ...input,
         id: id,
         createdAt: createdAtDateOnly,
-        coBuyingStatus: CoBuyingStatus.APPLYING,
+        coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
+        sharingDateTime: input.sharingDateTime,
+        sharingLocation: input.sharingLocation,
     };
     if (item.ownerQuantity === undefined) {
         throw new Error('공구장의 수량을 정해주세요.');
@@ -128,11 +120,13 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         ...input,
         id: id,
         createdAt: createdAtDateOnly,
-        coBuyingStatus: CoBuyingStatus.APPLYING,
+        coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
         deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
+        sharingDateTime: input.sharingDateTime,
+        sharingLocation: input.sharingLocation,
     };
     if (item.targetAttendeeCount === undefined) {
         throw new Error('목표 신청자 수를 정해주세요.');

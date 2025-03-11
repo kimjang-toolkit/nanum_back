@@ -22,7 +22,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
             return {
                 // 참여자 기준
                 id: item.id.S,
-                coBuyingStatus: item.coBuyingStatus ? CoBuyingStatus[item.coBuyingStatus.N] : CoBuyingStatus.APPLYING,
+                coBuyingStatus: (item.coBuyingStatus ? (item.coBuyingStatus.N || Number(item.coBuyingStatus.S)) : Number(CoBuyingStatus.APPLYING)) as CoBuyingStatus,
                 type: DivideType.attendee,
                 totalQuantity: item.totalQuantity ? parseInt(item.totalQuantity.N, 10) : 0,
                 totalPrice: item.totalPrice ? parseFloat(item.totalPrice.N) : 0,
@@ -34,12 +34,14 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 targetAttendeeCount: item.targetAttendeeCount ? parseInt(item.targetAttendeeCount.N, 10) : 0,
                 remainAttendeeCount: item.remainAttendeeCount ? parseInt(item.remainAttendeeCount.N, 10) : 0,
                 perAttendeePrice: item.perAttendeePrice ? parseFloat(item.perAttendeePrice.N) : 0,
+                sharingDateTime: item.sharingDateTime?.S,
+                sharingLocation: item.sharingLocation?.S,
             } as AttendeeCoBuyingSummary;
         } else {
             // 수량 기준
             return {
                 id: item.id.S,
-                coBuyingStatus: item.coBuyingStatus ? CoBuyingStatus[item.coBuyingStatus.N] : CoBuyingStatus.APPLYING,
+                coBuyingStatus: (item.coBuyingStatus ? (item.coBuyingStatus.N || Number(item.coBuyingStatus.S)) : Number(CoBuyingStatus.APPLYING)) as CoBuyingStatus,
                 type: DivideType.quantity,
                 totalQuantity: item.totalQuantity ? parseInt(item.totalQuantity.N, 10) : 0,
                 totalPrice: item.totalPrice ? parseInt(item.totalPrice.N) : 0,
@@ -51,13 +53,15 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 totalAttendeeQuantity: item.totalAttendeeQuantity ? parseInt(item.totalAttendeeQuantity.N, 10) : 0,
                 remainQuantity: item.remainQuantity ? parseInt(item.remainQuantity.N, 10) : 0,
                 unitPrice: item.unitPrice ? parseInt(item.unitPrice.N, 10) : 0,
+                sharingDateTime: item.sharingDateTime?.S,
+                sharingLocation: item.sharingLocation?.S,
             } as QuantityCoBuyingSummary;
         }
     });
 }
 
 export function mapToCoBuyingEvaluatedKey(req: any): CoBuyingKey {
-    console.log('req : ', req);
+    // console.log('req : ', req);
     return {
         id: req.id.S,
         deletedYN: req.deletedYN.S,

@@ -1,4 +1,4 @@
-import { DivideType } from '@domain/cobuying';
+import { CoBuyingStatus, DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import {
     AttendeeCoBuyingDetail,
@@ -8,7 +8,8 @@ import {
 } from '@interface/cobuying';
 
 export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
-    console.log('res.attendeeList : ', res.attendeeList.L[0].M);
+    // console.log('res.attendeeList : ', res.attendeeList.L[0].M);
+    console.log('res.coBuyingStatus : ', res.coBuyingStatus);
     const baseDetail: BaseCoBuyingDetailDTO = {
         id: res.id.S,
         productName: res.productName.S,
@@ -30,7 +31,9 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,
-        coBuyingStatus: Number(res.coBuyingStatus.N),
+        coBuyingStatus: (res.coBuyingStatus.N || Number(res.coBuyingStatus.S)) as CoBuyingStatus,
+        sharingDateTime: res.sharingDateTime?.S,
+        sharingLocation: res.sharingLocation?.S,
     };
 
     if (baseDetail.type === DivideType.quantity) {
