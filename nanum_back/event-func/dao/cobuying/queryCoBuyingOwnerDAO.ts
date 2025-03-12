@@ -2,7 +2,7 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingOwnerAuth } from '@interface/auth';
 import { APIERROR } from 'common/responseType';
 import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
-import { mapToCoBuyingOwnerAuth } from 'mappers/mapOwnerAuth';
+import { mapToCoBuyingOwnerAuth, OwnerAuthProjectionExpression } from 'mappers/mapOwnerAuth';
 const ddbDocClient = createDynamoDBDocClient();
 
 export const queryCoBuyingOwnerById = async (ownerName: string, coBuyingId: string): Promise<CoBuyingOwnerAuth> => {
@@ -21,6 +21,7 @@ export const queryCoBuyingOwnerById = async (ownerName: string, coBuyingId: stri
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
             ':id': { S: coBuyingId }, // GSI 정렬 키 값
         },
+        ProjectionExpression: OwnerAuthProjectionExpression,
     };
     let result;
     try {
@@ -43,12 +44,5 @@ export const queryCoBuyingOwnerById = async (ownerName: string, coBuyingId: stri
         }
         console.error('DB 조회 중 문제가 발생했습니다. ',error);
         throw new Error('DB 조회 중 문제가 발생했습니다. ');
-    }
-
-    if (result.Items && result.Items.length > 0) {
-        const owner = mapToCoBuyingOwnerAuth(result.Items[0]);
-        return owner;
-    } else {
-        throw new APIERROR(404, '조회된 공구글이 없습니다.');
     }
 };

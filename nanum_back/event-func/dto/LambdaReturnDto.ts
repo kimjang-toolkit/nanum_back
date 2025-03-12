@@ -29,20 +29,26 @@ export class HeaderDto {
   }
 
   setCookies(cookieOptions: CookieOptions) {
-    const setCookies = [
-      `HttpOnly; Secure; 
-        ${Object.entries(cookieOptions)
-          .filter(([key, value]) => key !== 'cookies') // cookies 제외 쿠키 옵션 쿠가
-          .map(([key, value]) => `${key}=${value}`)
-          .join('; ')}`,
-    ];
+    let setCookies = "";
+    if (cookieOptions.cookies) {
+      const cookie = Object.entries(cookieOptions.cookies)
+          .map(([key, value]) => `${key}=${value}`).join('; ');
 
-    if(cookieOptions.cookies) {
-      setCookies.push(...Object.entries(cookieOptions.cookies)
-        .map(([key, value]) => `${key}=${value}`).join('; '));
+      setCookies+=`${cookie}; `;
+    }
+    // 기본 쿠키 옵션 처리 (cookies 제외)
+    const baseCookies = Object.entries(cookieOptions)
+        .filter(([key]) => key !== 'cookies') // 'cookies' 키 제외
+        .map(([key, value]) => `${key}=${value}`).join('; ');
+
+    if (baseCookies) {
+        setCookies+=`HttpOnly; Secure; ${baseCookies}; `;
     }
 
-    this.headers['Set-Cookie'] = setCookies.join(', ');
+    // 개별 쿠키 추가 처리
+    
+
+    this.headers['Set-Cookie'] = setCookies;
   }
 
   // 헤더 리턴
@@ -67,9 +73,9 @@ export class LambdaReturnDto {
   // 이니셜라이저 추가
   constructor(statusCode: number, body: any, event?: APIGatewayProxyEventV2, headerOptions?: HeaderOptions, cookieOptions?: CookieOptions) {
     this.statusCode = statusCode;
-    if(event?.headers?.Origin) { // 람다를 요청한 도메인을 CORS 헤더에 추가
+    if(event?.headers?.origin) { // 람다를 요청한 도메인을 CORS 헤더에 추가
       // Construct full domain
-      const fullDomain = event.headers.Origin;
+      const fullDomain = event.headers.origin;
       console.log('Full Domain:', fullDomain);
       this.headers = new HeaderDto(fullDomain, headerOptions);
 
