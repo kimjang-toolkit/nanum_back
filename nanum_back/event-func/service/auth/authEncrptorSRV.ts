@@ -7,6 +7,9 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 
 const SECRET_KEY = process.env.AUTHSECRETKEY || 'your-secret-key'; // 서버에서만 관리
 
+const refreshTokenExpiresIn = 1000 * 60 * 1; // 1분
+const accessTokenExpiresIn = 1000 * 40; // 40초
+
 // 비밀번호 해싱 함수
 export async function hashPassword(password: string): Promise<string> {
     // 비밀키를 사용해 HMAC 생성 => 인증키 + 해싱
@@ -30,14 +33,14 @@ export function verifyPassword(inputPassword: string, storedHash: string): boole
 }
 
 export function generateToken(owner: CoBuyingOwnerAuth): AuthToken {
-    const refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7; // 7일
+    
 
     const tokenOwner = {
         ownerName: owner.ownerName,
         coBuyingId: owner.coBuyingId,
     } as UserAuthDto;
 
-    const accessTokenExpiresIn = 1000 * 60 * 60; // 1시간
+    
 
     const accessToken = createToken(tokenOwner, accessTokenExpiresIn);
 
@@ -58,10 +61,7 @@ export function generateToken(owner: CoBuyingOwnerAuth): AuthToken {
 }
 
 export function regenerateToken(auth: UserAuthDto): AuthToken {
-    const refreshTokenExpiresIn = 1000 * 60 * 60 * 24 * 7; // 7일
 
-
-    const accessTokenExpiresIn = 1000 * 60 * 60; // 1시간
 
     const accessToken = createToken(auth, accessTokenExpiresIn);
 

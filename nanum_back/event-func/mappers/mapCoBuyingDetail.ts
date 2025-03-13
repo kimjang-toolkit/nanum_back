@@ -7,6 +7,14 @@ import {
     QuantityCoBuyingDetail,
 } from '@interface/cobuying';
 
+// export const CoBuyingDetailProjectionExpression = `
+//   id, productName, productLink, ownerName, totalPrice, totalQuantity,
+//   attendeeCount, deadline, type, memo , createdAt,
+//   coBuyingStatus, sharingDateTime, sharingLocation,
+//   ownerQuantity, ownerPrice, totalAttendeePrice, totalAttendeeQuantity,
+//   remainQuantity, unitPrice, remainAttendeeCount, targetAttendeeCount,
+//   perAttendeePrice, attendeeList`;
+
 export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
     // console.log('res.attendeeList : ', res.attendeeList.L[0].M);
     console.log('res.coBuyingStatus : ', res.coBuyingStatus);

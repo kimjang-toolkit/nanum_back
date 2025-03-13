@@ -1,6 +1,6 @@
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingDetail } from '@interface/cobuying';
-import { mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
+import {  mapToCoBuyingDetail } from 'mappers/mapCoBuyingDetail';
 import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
 import { APIERROR } from '@common/responseType';
 
@@ -21,6 +21,7 @@ export const queryCoBuyingDetail = async (ownerName: string, id: string): Promis
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
             ':id': { S: id }, // GSI 정렬 키 값
         },
+        // ProjectionExpression: CoBuyingDetailProjectionExpression,
     };
 
     try {

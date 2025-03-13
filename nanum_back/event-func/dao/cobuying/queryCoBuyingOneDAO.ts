@@ -22,6 +22,7 @@ export const queryCoBuyingById = async (ownerName: string, id: string): Promise<
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
             ':id': { S: id }, // GSI 정렬 키 값
         },
+        // ProjectionExpression: CoBuyingSummaryProjectionExpression,
     };
 
     try {
