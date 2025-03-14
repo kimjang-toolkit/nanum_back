@@ -26,6 +26,7 @@ Globals:
         FacebookGraphApiVersion: !Ref FacebookGraphApiVersion
         FacebookAppId: !Ref FacebookAppId
         FacebookAppSecret: !Ref FacebookAppSecret
+        GoogleApiKey: !Ref GoogleApiKey
 Parameters:
   CoBuyingTableName:
     Type: String
@@ -82,6 +83,10 @@ Parameters:
     Type: String
     Description: Facebook App Secret
     Default: "appSecret"
+  GoogleApiKey:
+    Type: String
+    Description: Google API Key
+    Default: "AIzaSyB9000000000000000000000000000000"
 
 Resources:
   ApiGatewayApi:
