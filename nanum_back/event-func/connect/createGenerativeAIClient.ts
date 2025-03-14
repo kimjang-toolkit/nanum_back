@@ -1,6 +1,6 @@
 import { GenerateContentResult, GoogleGenerativeAI } from "@google/generative-ai";
 import { TaskType, TaskRequest, ImageContent } from "@interface/generativeAI";
-  
+import { APIERROR } from "@common/responseType";
 
 const tasks = {
   [TaskType.productInfoExtract]: {
@@ -51,25 +51,23 @@ const tasks = {
 
 const genAI = new GoogleGenerativeAI(process.env.GoogleApiKey || '');
 
-export const createOpenAIClient = async (taskRequest: TaskRequest) => {
+export const createGenerativeAIClient = async (taskRequest: TaskRequest): Promise<string> => {
   const model = genAI.getGenerativeModel({ model: tasks[taskRequest.taskType].model });
   const prompt = tasks[taskRequest.taskType].prompt;
 
   const imageContent = await getImageContent(taskRequest);
 
   let generatedContent: GenerateContentResult;
-  // const text = response.text();
+
   if (taskRequest.taskType === TaskType.productInfoExtract && imageContent) {
 
     generatedContent = await model.generateContent([prompt, imageContent]);
     const text = generatedContent.response.text();
     console.log(generatedContent.response.text());
     return text;
-
-  } 
-
-  // return text;
-  
+  } else{
+    throw new APIERROR(400, "Invalid task type");
+  }
 };
 
 
