@@ -61,10 +61,10 @@ export const createGenerativeAIClient = async (taskRequest: TaskRequest): Promis
 
   if (taskRequest.taskType === TaskType.productInfoExtract && imageContent) {
 
-    generatedContent = await model.generateContent([prompt, imageContent]);
+    generatedContent = await model.generateContent([imageContent, prompt]);
     const text = generatedContent.response.text();
-    console.log(generatedContent.response.text());
-    return text;
+    // console.log(generatedContent.response.text());
+    return text.replace(/^```json\s*|\s*```$/g, "").trim();
   } else{
     throw new APIERROR(400, "Invalid task type");
   }

@@ -33,9 +33,10 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
   };
 
   console.log("taskRequest: "+JSON.stringify({imageUrl: taskRequest.imageUrl, taskType: taskRequest.taskType, imageMimeType: taskRequest.imageMimeType}));
-  // const rawTaskResult = await createGenerativeAIClient(taskRequest);
-  // const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
-  // console.log("extractedProductInfo: "+extractedProductInfo);
+  const rawTaskResult = await createGenerativeAIClient(taskRequest);
+  console.log("rawTaskResult: "+rawTaskResult);
+  const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
+  console.log("extractedProductInfo: "+extractedProductInfo);
 
   // const thumbnailImageUrl = await saveThumbnailImage(productUUID, productExtactReq, extractedProductInfo);
   // console.log("thumbnailImageUrl: "+thumbnailImageUrl);
@@ -57,7 +58,7 @@ async function saveOriginalImage(productUUID: string, productExtactReq: ProductE
                                               , productUUID+productExtactReq.imgType
                                               , productExtactReq.imgType);
   const imageType = "."+productExtactReq.imgType.split("/")[1];
-  const originalImageUrl = await await s3Client.uploadFile("productImages/generativeAI/original"
+  const originalImageUrl = await s3Client.uploadFile("productImages/generativeAI/original"
                                                   , productUUID+imageType
                                                   , originalImageFile);
   if(!originalImageUrl){
