@@ -2,7 +2,7 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 // import { CoBuyingSimple } from '@interface/cobuying';
 import { CoBuyingSummary } from '@interface/cobuying';
 import { mapToCoBuyingSummary } from 'mappers/mapCoBuyingList';
-import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
+import { createDynamoDBDocClient } from 'connect/createDDbDocClient';
 import { APIERROR } from '@common/responseType';
 
 const ddbDocClient = createDynamoDBDocClient();

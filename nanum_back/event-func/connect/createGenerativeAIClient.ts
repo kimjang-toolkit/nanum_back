@@ -75,7 +75,7 @@ const getImageContent = async (taskRequest: TaskRequest) : Promise<ImageContent|
   if (taskRequest.imageBase64 && taskRequest.imageMimeType) {
     return {
       inlineData: {
-        data: Buffer.from(taskRequest.imageBase64).toString("base64"),
+        data: taskRequest.imageBase64,
         mimeType: taskRequest.imageMimeType,
       },
     } as ImageContent;

@@ -113,6 +113,39 @@ Resources:
       StageName: GongGong99Stg
       AutoDeploy: true
 
+  ExtractProductInfoFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 상품 정보 추출 함수
+    Properties:
+      FunctionName: !Sub "${DEPLOYSTAGE}-ExtractProductInfoFunction"
+      CodeUri: event-func/control/product
+      Handler: extractProductInfoCTL.extractProductInfoCTL
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        ExtractProductInfo:
+          Type: HttpApi
+          Properties:
+            Path: /api/product/extract
+            Method: post # 상품 정보 추출 및 저장
+            ApiId: !Ref ApiGatewayApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+        - S3CrudPolicy:
+            BucketName: !Ref S3BUCKETNAME
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - extractProductInfoCTL.ts
+
   CreateCoBuyingFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 공구방 생성 함수

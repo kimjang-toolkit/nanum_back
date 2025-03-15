@@ -1,7 +1,7 @@
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingOwnerAuth } from '@interface/auth';
 import { APIERROR } from 'common/responseType';
-import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
+import { createDynamoDBDocClient } from 'connect/createDDbDocClient';
 import { mapToCoBuyingOwnerAuth, OwnerAuthProjectionExpression } from 'mappers/mapOwnerAuth';
 const ddbDocClient = createDynamoDBDocClient();
 

@@ -7,7 +7,6 @@ import { ReturnValue } from '@aws-sdk/client-dynamodb';
 import { queryCoBuyingDetail } from '@cobuying/queryCoBuyingDetailDAO';
 import { APIERROR } from 'common/responseType';
 import { AttendeeCoBuyingDetail, CoBuyingDetail, QuantityCoBuyingDetail } from '@interface/cobuying';
-import { ApplicationCostProfiler } from 'aws-sdk';
 
 export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => {
     // 공구글에 참석자 이름 리스트 만들기

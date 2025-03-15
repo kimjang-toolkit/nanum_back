@@ -1,5 +1,4 @@
 import { FacebookOGData } from '@interface/product';
-import axios from 'axios';
 
 export const getFacebookOGData = async (targetUrl: string): Promise<FacebookOGData> => {
   const FacebookGraphApiVersion = process.env.FacebookGraphApiVersion;
@@ -10,23 +9,20 @@ export const getFacebookOGData = async (targetUrl: string): Promise<FacebookOGDa
         console.log('FacebookAppId:', FacebookAppId);
         console.log('FacebookAppSecret:', FacebookAppSecret);
         // 🚀 1. Facebook Graph API 호출
-        const response = await axios.post(`https://graph.facebook.com/${FacebookGraphApiVersion}/`, null, {
-            params: {
-                id: targetUrl,
-                scrape: true,
-                access_token: `${FacebookAppId}|${FacebookAppSecret}`
-            },
+        const response = await fetch(`https://graph.facebook.com/${FacebookGraphApiVersion}/?id=${targetUrl}&scrape=true&access_token=${FacebookAppId}|${FacebookAppSecret}`, {
+            method: 'POST',
         });
 
-        console.log('Facebook OG Data:', response.data);
+        const data = await response.json();
+        console.log('Facebook OG Data:', data);
         // ✅ productId & vendorItemId 추출
-        const productInfo = extractProductInfo(response.data.ogUrl);
+        const productInfo = extractProductInfo(data.ogUrl);
         console.log('Product Info:', productInfo);
         return {
-          ogTitle: response.data.ogTitle,
-          ogDescription: response.data.ogDescription,
-          ogImage: response.data.ogImage,
-          ogUrl: response.data.ogUrl,
+          ogTitle: data.ogTitle,
+          ogDescription: data.ogDescription,
+          ogImage: data.ogImage,
+          ogUrl: data.ogUrl,
           productId: productInfo
         } as FacebookOGData;
 

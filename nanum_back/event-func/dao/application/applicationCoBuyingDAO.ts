@@ -2,7 +2,7 @@ import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import { ApplicationDTO } from '@interface/application';
 import { UpdateDynamoQuery } from '@query-interface/application';
 import { APIERROR } from 'common/responseType';
-import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
+import { createDynamoDBDocClient } from 'connect/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();
 
