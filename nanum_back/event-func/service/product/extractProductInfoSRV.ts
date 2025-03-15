@@ -38,8 +38,8 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
   const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
   console.log("extractedProductInfo: "+extractedProductInfo);
 
-  // const thumbnailImageUrl = await saveThumbnailImage(productUUID, productExtactReq, extractedProductInfo);
-  // console.log("thumbnailImageUrl: "+thumbnailImageUrl);
+  const thumbnailImageUrl = await saveThumbnailImage(productUUID, productExtactReq, extractedProductInfo);
+  console.log("thumbnailImageUrl: "+thumbnailImageUrl);
 
   // const productExtractDto: ProductExtractDto = {
   //   productName: extractedProductInfo.product_name,
@@ -67,14 +67,19 @@ async function saveOriginalImage(productUUID: string, productExtactReq: ProductE
   return originalImageUrl;
 }
 
-// async function saveThumbnailImage(productUUID: string, productExtactReq: ProductExtractReq, extractedProductInfo: ExtractedProductInfo): Promise<string> {
-//   const thumbnailFile = await imageCrop(productUUID+productExtactReq.imgType
-//                                         , productExtactReq.imgBase64, productExtactReq.imgType
-//                                         , extractedProductInfo.main_thumbnail);
-//   const imageType = "."+productExtactReq.imgType.split("/")[1];
-//   const thumbnailImageUrl = await saveProductImage("productImages/generativeAI/thumbnail"
-//                                                   , productUUID+imageType
-//                                                   , thumbnailFile);
-//   return thumbnailImageUrl;
-// }
+async function saveThumbnailImage(productUUID: string, productExtactReq: ProductExtractReq, extractedProductInfo: ExtractedProductInfo): Promise<string> {
+
+  const thumbnailFile = await imageCrop(productUUID+productExtactReq.imgType
+                                        , productExtactReq.imgBase64
+                                        , productExtactReq.imgType
+                                        , extractedProductInfo.main_thumbnail);
+  const imageType = "."+productExtactReq.imgType.split("/")[1];
+  const thumbnailImageUrl = await s3Client.uploadFile("productImages/generativeAI/thumbnail"
+                                                  , productUUID+imageType
+                                                  , thumbnailFile);
+  if(!thumbnailImageUrl){
+    throw new APIERROR(500, "이미지 업로드 실패");
+  }
+  return thumbnailImageUrl;
+}
 
