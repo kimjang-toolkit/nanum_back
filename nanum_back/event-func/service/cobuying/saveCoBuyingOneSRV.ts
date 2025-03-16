@@ -6,11 +6,7 @@ import { getFormattedKoreaTime, getKoreaDay } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
-import { scrapCupangSiteSRV } from '@product/scrapCupangSiteSRV';
-import { saveImageToS3SRV } from '@product/saveImageToS3SRV';
-import { ProductInformation } from '@interface/product.js';
 import { retrieveProductInformation } from '@product/retrieveProductInformation';
-import { saveProductLedger } from '@product/saveProductLedger';
 
 /**
  * DB에 공구글 데이터 생성

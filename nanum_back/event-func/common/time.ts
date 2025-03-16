@@ -4,6 +4,14 @@ export const getKoreaTime = (): Date => {
     return koreanTime;
 };
 
+export function getTodayDate(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}${month}${day}`;
+}
+
 export function getFormattedKoreaTime(): string {
     const timestamp = new Date();
     const koreanTime = new Date(timestamp.getTime() + 9 * 60 * 60 * 1000); // UTC에서 9시간을 더함
