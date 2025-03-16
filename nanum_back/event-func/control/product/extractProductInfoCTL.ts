@@ -17,7 +17,7 @@ export const extractProductInfoCTL = async (event: APIGatewayProxyEventV2): Prom
     return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
   }
 
-  const extractedProductInfo = await extractProductInfoSRV(productExtractReq);
+  const extractedProductInfo:ProductExtractDto = await extractProductInfoSRV(productExtractReq);
   return new LambdaReturnDto(200, extractedProductInfo, event).getLambdaReturnDto();
 };
 

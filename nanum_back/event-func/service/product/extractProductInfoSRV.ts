@@ -5,7 +5,7 @@ import { GongGongS3Client } from "@connect/createS3Client";
 import { APIERROR } from "@common/responseType";
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
-import { base64ToFile, imageCrop } from "@common/image";
+import { base64ToFile } from "@common/image";
 const s3Client = new GongGongS3Client();
 
 /**
@@ -38,17 +38,6 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
   const thumbnailImageUrl = getThumbnailImageUrl(originalImageUrl);
   console.log("originalImageUrl: "+originalImageUrl);
   console.log("thumbnailImageUrl: "+thumbnailImageUrl);
-  // const thumbnailImageUrl = await saveThumbnailImage(productUUID, productExtactReq, extractedProductInfo);
-  // console.log("thumbnailImageUrl: "+thumbnailImageUrl);
-
-  // const productExtractDto: ProductExtractDto = {
-  //   productName: extractedProductInfo.product_name,
-  //   price: extractedProductInfo.price.amount,
-  //   thumbnailUrl: extractedProductInfo.main_thumbnail.label,
-  //   itemVariants: extractedProductInfo.item_variants,
-  //   originalImageUrl: originalImageUrl,
-  //   thumbnailImageUrl: thumbnailImageUrl,
-  // };
 
   return {
     productName: extractedProductInfo.product_name,
@@ -77,20 +66,4 @@ function getThumbnailImageUrl(originalImageUrl: string): string {
   const thumbnailImageUrl = originalImageUrl.replace("original", "thumbnail");
   return thumbnailImageUrl;
 }
-
-// async function saveThumbnailImage(productUUID: string, productExtactReq: ProductExtractReq, extractedProductInfo: ExtractedProductInfo): Promise<string> {
-
-//   const thumbnailFile = await imageCrop(productUUID+productExtactReq.imgType
-//                                         , productExtactReq.imgBase64
-//                                         , productExtactReq.imgType
-//                                         , extractedProductInfo.main_thumbnail);
-//   const imageType = "."+productExtactReq.imgType.split("/")[1];
-//   const thumbnailImageUrl = await s3Client.uploadFile("productImages/generativeAI/thumbnail"
-//                                                   , productUUID+imageType
-//                                                   , thumbnailFile);
-//   if(!thumbnailImageUrl){
-//     throw new APIERROR(500, "이미지 업로드 실패");
-//   }
-//   return thumbnailImageUrl;
-// }
 
