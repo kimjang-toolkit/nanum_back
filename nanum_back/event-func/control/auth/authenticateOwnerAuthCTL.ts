@@ -61,7 +61,7 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEventV2): Prom
         } as UserAuthDto, event, headerOptions,refreshCookieOptions);
 
         // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
-    
+        console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
         return lamdbdaReturnDto.getLambdaReturnDto();
     } catch (error) {
         if (error instanceof APIERROR) {

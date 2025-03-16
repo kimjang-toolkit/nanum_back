@@ -1,6 +1,6 @@
 import { Upload } from "@aws-sdk/lib-storage";
 import { ProductInformation } from "@interface/product";
-import { createS3Client } from "dao/connect/createS3Client";
+import { createS3Client } from "@connect/createS3Client";
 
 export const saveImageToS3SRV = async (productInformation: ProductInformation) : Promise<string | null> => {
   let file;

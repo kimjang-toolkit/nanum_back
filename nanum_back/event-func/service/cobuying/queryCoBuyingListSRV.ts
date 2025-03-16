@@ -1,6 +1,7 @@
 import { queryCoBuyingListDAO } from '@cobuying/queryCoBuyingListDAO';
 import { settingPageingQuery } from '@cobuying/settingPageingQuery';
 import { CoBuyingPageingRes, CoBuyingQueryParams, PageingQuery } from '@interface/cobuyingList';
+// import { CoBuyingSummaryProjectionExpression } from 'mappers/mapCoBuyingList';
 
 export const queryCoBuyingListSRV = async (input: CoBuyingQueryParams): Promise<CoBuyingPageingRes> => {
     const query: PageingQuery = {
@@ -13,6 +14,7 @@ export const queryCoBuyingListSRV = async (input: CoBuyingQueryParams): Promise<
         },
         // CoBuyingSimple을 출력하게 기본 속성 정의. 정렬이나 필터링할 때 기준 속성 추가
         ScanIndexForward: false,
+        // ProjectionExpression: CoBuyingSummaryProjectionExpression,
     };
 
     settingPageingQuery(input, query);

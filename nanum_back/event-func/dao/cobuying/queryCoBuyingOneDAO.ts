@@ -2,7 +2,7 @@ import { QueryCommand } from '@aws-sdk/client-dynamodb';
 // import { CoBuyingSimple } from '@interface/cobuying';
 import { CoBuyingSummary } from '@interface/cobuying';
 import { mapToCoBuyingSummary } from 'mappers/mapCoBuyingList';
-import { createDynamoDBDocClient } from 'dao/connect/createDDbDocClient';
+import { createDynamoDBDocClient } from 'connect/createDDbDocClient';
 import { APIERROR } from '@common/responseType';
 
 const ddbDocClient = createDynamoDBDocClient();
@@ -22,6 +22,7 @@ export const queryCoBuyingById = async (ownerName: string, id: string): Promise<
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값
             ':id': { S: id }, // GSI 정렬 키 값
         },
+        // ProjectionExpression: CoBuyingSummaryProjectionExpression,
     };
 
     try {
