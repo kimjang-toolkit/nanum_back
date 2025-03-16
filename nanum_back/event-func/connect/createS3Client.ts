@@ -22,7 +22,7 @@ export class GongGongS3Client{
    * @param file 
    * @returns 
    */
-  public async uploadFile(path: string, key: string, file: File): Promise<string|null> {
+  public async uploadFile(path: string, key: string, file: File, metadata?: Record<string, string|number>): Promise<string|null> {
     if(file.size === 0){
       throw new APIERROR(400, "이미지 파일이 비어있습니다.");
     }
@@ -32,6 +32,10 @@ export class GongGongS3Client{
     // ✅ Base64에서 변환한 `File`을 `Blob`으로 변경
     const blob = new Blob([file], { type: file.type });
 
+    // Convert metadata values to strings
+    const stringMetadata = metadata ? Object.fromEntries(
+      Object.entries(metadata).map(([k, v]) => [k, String(v)])
+    ) : undefined;
 
     const upload = new Upload({
       client: this.s3Client,
@@ -41,6 +45,7 @@ export class GongGongS3Client{
         Body: blob,
         ContentDisposition: 'inline',
         ContentType: file.type,
+        Metadata: stringMetadata,
       },
     });
 
@@ -58,16 +63,16 @@ export class GongGongS3Client{
     return null;
   }
 
-  public async uploadImgUrl(path: string, key: string, imgUrl: string): Promise<string|null> {
+  public async uploadImgUrl(path: string, key: string, imgUrl: string, metadata?: Record<string, string|number>): Promise<string|null> {
     const rowImageFile = await fetch(imgUrl);
     const blob = await rowImageFile.blob();
     const file = new File([blob], key, { type: 'image/jpeg' });
-    return this.uploadFile(path, key, file);
+    return this.uploadFile(path, key, file, metadata);
   }
 
-  public async uploadBase64Img(path: string, key: string, base64Img: string): Promise<string|null> {
+  public async uploadBase64Img(path: string, key: string, base64Img: string, metadata?: Record<string, string|number>): Promise<string|null> {
     const file = new File([base64Img], key, { type: 'image/jpeg' });
-    return this.uploadFile(path, key, file);
+    return this.uploadFile(path, key, file, metadata);
   }
   
 }

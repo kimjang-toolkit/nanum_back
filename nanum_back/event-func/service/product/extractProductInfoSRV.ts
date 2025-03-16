@@ -18,28 +18,28 @@ const s3Client = new GongGongS3Client();
  * @param productExtactReq
  * @returns 
  */
-export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq) => {
-
-
-  const productUUID = uuidv4(); 
-  const originalImageUrl = await saveOriginalImage(productUUID, productExtactReq);
-  console.log("originalImageUrl: "+originalImageUrl);
+export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq) : Promise<ProductExtractDto> => {
 
   const taskRequest : TaskRequest = {
     taskType: TaskType.productInfoExtract,
     imageBase64: productExtactReq.imgBase64,
     imageMimeType: productExtactReq.imgType,
-    imageUrl: originalImageUrl,
+    // imageUrl: originalImageUrl,
   };
 
-  console.log("taskRequest: "+JSON.stringify({imageUrl: taskRequest.imageUrl, taskType: taskRequest.taskType, imageMimeType: taskRequest.imageMimeType}));
+  console.log("taskRequest: "+JSON.stringify(taskRequest));
   const rawTaskResult = await createGenerativeAIClient(taskRequest);
   console.log("rawTaskResult: "+rawTaskResult);
   const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
   console.log("extractedProductInfo: "+extractedProductInfo);
 
-  const thumbnailImageUrl = await saveThumbnailImage(productUUID, productExtactReq, extractedProductInfo);
+  const productUUID = uuidv4(); 
+  const originalImageUrl = await saveOriginalImage(productUUID, productExtactReq, extractedProductInfo.main_thumbnail.box_2d);
+  const thumbnailImageUrl = getThumbnailImageUrl(originalImageUrl);
+  console.log("originalImageUrl: "+originalImageUrl);
   console.log("thumbnailImageUrl: "+thumbnailImageUrl);
+  // const thumbnailImageUrl = await saveThumbnailImage(productUUID, productExtactReq, extractedProductInfo);
+  // console.log("thumbnailImageUrl: "+thumbnailImageUrl);
 
   // const productExtractDto: ProductExtractDto = {
   //   productName: extractedProductInfo.product_name,
@@ -50,36 +50,47 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
   //   thumbnailImageUrl: thumbnailImageUrl,
   // };
 
-  return {};
+  return {
+    productName: extractedProductInfo.product_name,
+    price: extractedProductInfo.price.amount,
+    itemVariants: extractedProductInfo.item_variants,
+    originalImageUrl: originalImageUrl,
+    thumbnailImageUrl: thumbnailImageUrl,
+  } as ProductExtractDto;
 };
 
-async function saveOriginalImage(productUUID: string, productExtactReq: ProductExtractReq): Promise<string> {
+async function saveOriginalImage(productUUID: string, productExtactReq: ProductExtractReq, metadata: Record<string, string|number>): Promise<string> {
   const originalImageFile = await base64ToFile(productExtactReq.imgBase64
                                               , productUUID+productExtactReq.imgType
                                               , productExtactReq.imgType);
   const imageType = "."+productExtactReq.imgType.split("/")[1];
   const originalImageUrl = await s3Client.uploadFile("productImages/generativeAI/original"
                                                   , productUUID+imageType
-                                                  , originalImageFile);
+                                                  , originalImageFile, metadata);
   if(!originalImageUrl){
     throw new APIERROR(500, "이미지 업로드 실패");
   }
   return originalImageUrl;
 }
 
-async function saveThumbnailImage(productUUID: string, productExtactReq: ProductExtractReq, extractedProductInfo: ExtractedProductInfo): Promise<string> {
-
-  const thumbnailFile = await imageCrop(productUUID+productExtactReq.imgType
-                                        , productExtactReq.imgBase64
-                                        , productExtactReq.imgType
-                                        , extractedProductInfo.main_thumbnail);
-  const imageType = "."+productExtactReq.imgType.split("/")[1];
-  const thumbnailImageUrl = await s3Client.uploadFile("productImages/generativeAI/thumbnail"
-                                                  , productUUID+imageType
-                                                  , thumbnailFile);
-  if(!thumbnailImageUrl){
-    throw new APIERROR(500, "이미지 업로드 실패");
-  }
+function getThumbnailImageUrl(originalImageUrl: string): string {
+  const thumbnailImageUrl = originalImageUrl.replace("original", "thumbnail");
   return thumbnailImageUrl;
 }
+
+// async function saveThumbnailImage(productUUID: string, productExtactReq: ProductExtractReq, extractedProductInfo: ExtractedProductInfo): Promise<string> {
+
+//   const thumbnailFile = await imageCrop(productUUID+productExtactReq.imgType
+//                                         , productExtactReq.imgBase64
+//                                         , productExtactReq.imgType
+//                                         , extractedProductInfo.main_thumbnail);
+//   const imageType = "."+productExtactReq.imgType.split("/")[1];
+//   const thumbnailImageUrl = await s3Client.uploadFile("productImages/generativeAI/thumbnail"
+//                                                   , productUUID+imageType
+//                                                   , thumbnailFile);
+//   if(!thumbnailImageUrl){
+//     throw new APIERROR(500, "이미지 업로드 실패");
+//   }
+//   return thumbnailImageUrl;
+// }
 
