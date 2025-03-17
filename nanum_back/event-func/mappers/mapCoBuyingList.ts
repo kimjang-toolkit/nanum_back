@@ -27,6 +27,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 targetAttendeeCount: item.targetAttendeeCount ? parseInt(item.targetAttendeeCount.N, 10) : 0,
                 remainAttendeeCount: item.remainAttendeeCount ? parseInt(item.remainAttendeeCount.N, 10) : 0,
                 perAttendeePrice: item.perAttendeePrice ? parseFloat(item.perAttendeePrice.N) : 0,
+                imageUrl: item.imageUrl?.S,
                 sharingDateTime: item.sharingDateTime?.S,
                 sharingLocation: item.sharingLocation?.S,
             } as AttendeeCoBuyingSummary;
@@ -46,6 +47,7 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 totalAttendeeQuantity: item.totalAttendeeQuantity ? parseInt(item.totalAttendeeQuantity.N, 10) : 0,
                 remainQuantity: item.remainQuantity ? parseInt(item.remainQuantity.N, 10) : 0,
                 unitPrice: item.unitPrice ? parseInt(item.unitPrice.N, 10) : 0,
+                imageUrl: item.imageUrl?.S,
                 sharingDateTime: item.sharingDateTime?.S,
                 sharingLocation: item.sharingLocation?.S,
             } as QuantityCoBuyingSummary;
