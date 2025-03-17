@@ -61,16 +61,20 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         createdAt: createdAtDateOnly,
         coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
-        deadlineId: input.deadline + '#' + id,
+        // deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
         sharingDateTime: input.sharingDateTime,
         sharingLocation: input.sharingLocation,
+        imageUrl: input.thumbnailImageUrl,
+        originalImageUrl: input.originalImageUrl,
     };
-    if (item.ownerQuantity === undefined) {
-        throw new Error('공구장의 수량을 정해주세요.');
-    }
 
+    // 수량 기준 나눔에서 공구장 수량은 옵션 수량 합계로 수정
+    // if (item.ownerQuantity === undefined) {
+    //     throw new Error('공구장의 수량을 정해주세요.');
+    // }
+    const ownerQuantity: number = item.itemOptions.reduce((acc, curr) => acc + curr.quantity, 0);
     // 공구장의 수량 결정
     // const ownerPrice: number = calculatOwnerQuantityPrice(item);
 
@@ -78,7 +82,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
     const unitPrice: number = calculatUnitPrice(item);
 
     // 공구장의 신청 부담액 계산 = 단위 가격 * 신청 수량
-    const ownerPrice: number = unitPrice * item.ownerQuantity;
+    const ownerPrice: number = unitPrice * ownerQuantity;
 
     /**
      * 초기에 신청자는 공구장 한명이므로 공구장 부담액이 전체 부담액.
@@ -86,8 +90,9 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
      */
     const hostAttende: Attendee = {
         attendeeName: item.ownerName, // 공구장 이름
-        appliedQuantity: item.ownerQuantity, // 실제 공구장 구매 수량
+        attendeeQuantity: ownerQuantity, // 실제 공구장 구매 수량
         attendeePrice: ownerPrice, // 공구장 신청 부담액
+        attendeeOptions: item.ownerOptions, // 공구장 구매 옵션, 수량 기준만 사용하는 속성
         // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
         // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
     };
@@ -98,11 +103,13 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         unitPrice: unitPrice,
         ownerQuantity: item.totalQuantity, // 공구장이 구매할 가정산 수량
         ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
-        totalAttendeeQuantity: item.ownerQuantity,
+        ownerOptions: item.ownerOptions,
+        totalAttendeeQuantity: ownerQuantity,
         totalAttendeePrice: ownerPrice, // 아직 공구장 밖에 신청자가 없기 때문에 공구장 부담액이 전체 부담액.
-        remainQuantity: item.totalQuantity - item.ownerQuantity,
+        remainQuantity: item.totalQuantity - ownerQuantity,
         attendeeCount: 1,
         attendeeList: [hostAttende],
+        itemOptions: item.itemOptions,
     };
 
     return quantityCoBuying;
@@ -118,7 +125,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         createdAt: createdAtDateOnly,
         coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
-        deadlineId: input.deadline + '#' + id,
+        // deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
         sharingDateTime: input.sharingDateTime,
@@ -140,7 +147,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
      */
     const hostAttendee: Attendee = {
         attendeeName: item.ownerName,
-        appliedQuantity: item.ownerQuantity || 1, // 공구장 구매 신청 수량
+        attendeeQuantity: 1, // 공구장 구매는 1인이기에 1로 하드코딩
         attendeePrice: perAttendeePrice, // 일단 단순 계산, 공구가 마감될 때 totalPrice - totalAttendeeCount*perAttendeePrice 로 업데이트
         // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
         // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량

@@ -402,17 +402,6 @@ Resources:
           ProvisionedThroughput:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
-        - IndexName: DeadlineIndex
-          KeySchema:
-            - AttributeName: deletedYN
-              KeyType: HASH # 파티션 키는 deadline
-            - AttributeName: deadlineId
-              KeyType: RANGE # 정렬 키는 id
-          Projection:
-            ProjectionType: ALL # 인덱스에 모든 속성 포함
-          ProvisionedThroughput:
-            ReadCapacityUnits: 1
-            WriteCapacityUnits: 1
         - IndexName: PagenationIndex
           KeySchema:
             - AttributeName: deletedYN
