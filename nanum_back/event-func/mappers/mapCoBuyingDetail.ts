@@ -16,7 +16,7 @@ import {
 //   perAttendeePrice, attendeeList`;
 
 export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
-    // console.log('res.attendeeList : ', res.attendeeList.L[0].M);
+    console.log('res.attendeeList : ', res.attendeeList.L[0].M);
     console.log('res.coBuyingStatus : ', res.coBuyingStatus);
     const baseDetail: BaseCoBuyingDetailDTO = {
         id: res.id.S,
@@ -34,7 +34,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                 (attendee: any) =>
                     ({
                         attendeeName: attendee.M.attendeeName.S,
-                        appliedQuantity: Number(attendee.M.appliedQuantity.N || 0),
+                        attendeeQuantity: Number(attendee.M.attendeeQuantity.N || 0),
                         attendeePrice: Number(attendee.M.attendeePrice.N || 0),
                     } as Attendee),
             ) || [],
