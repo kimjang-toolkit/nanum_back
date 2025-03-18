@@ -31,8 +31,7 @@ Parameters:
   CoBuyingTableName:
     Type: String
     Description: 공구방 테이블을 위한 테이블
-    Default: "CoBuyingTable"
-
+    Default: "Dev-CoBuyingTable"
   REGIONNAME:
     Type: String
     Description: Default region for deployment.
@@ -54,7 +53,7 @@ Parameters:
   DYNAMODBHOST:
     Type: String
     Description: 실행 환경에 따른 DynamoDB Endpoint
-    # Default: "dynamodb.ap-northeast-2.amazonaws.com"
+    Default: "dynamodb.ap-northeast-2.amazonaws.com"
   DYNAMODBPORT:
     Type: String
     Description: 실행 환경에 따른 DynamoDB Endpoint
@@ -62,11 +61,11 @@ Parameters:
   DBPROTOCAL:
     Type: String
     Description: DynamoDB 연결 프로토콜
-    # Default: "http:"
+    Default: "https:"
   DEPLOYSTAGE:
     Type: String
     Description: 배포 스테이지
-    Default: "Stg"
+    Default: "Dev"
   DOMAINNAME:
     Type: String
     Description: 도메인 이름
@@ -382,8 +381,6 @@ Resources:
           AttributeType: S # 공구장 이름
         - AttributeName: createdAtId
           AttributeType: S # 생성일자와 id
-        - AttributeName: deadlineId
-          AttributeType: S # 마감일자와 id
         - AttributeName: deletedYN
           AttributeType: S # 삭제 여부
       KeySchema:
