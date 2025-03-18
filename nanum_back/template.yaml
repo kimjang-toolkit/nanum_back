@@ -53,12 +53,16 @@ Parameters:
     Default: "https://dynamodb.ap-northeast-2.amazonaws.com"
   DYNAMODBHOST:
     Type: String
+    Description: 실행 환경에 따른 DynamoDB Endpoint
+    # Default: "dynamodb.ap-northeast-2.amazonaws.com"
   DYNAMODBPORT:
     Type: String
+    Description: 실행 환경에 따른 DynamoDB Endpoint
+    Default: "8000"
   DBPROTOCAL:
     Type: String
     Description: DynamoDB 연결 프로토콜
-    Default: "http:"
+    # Default: "http:"
   DEPLOYSTAGE:
     Type: String
     Description: 배포 스테이지

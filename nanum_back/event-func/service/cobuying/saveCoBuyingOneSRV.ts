@@ -32,6 +32,10 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     input.ownerPassword = await hashPassword(input.ownerPassword);
     console.log('input type : ', input.type);
     console.log('DivideType.quantity : ', DivideType.quantity);
+    
+    if(!input.imageUrl || input.imageUrl === ''){
+        input.imageUrl = input.thumbnailImageUrl;
+    }
     // 방법 1: 문자열로 비교
     if (input.type === DivideType.quantity) {
         // 수량나눔
@@ -53,17 +57,20 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
 
 function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): QuantityCoBuying {
     const createdAt = getFormattedKoreaTime();
-    const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
+    const totalQuantity: number = input.itemOptions.reduce((acc, curr) => acc + curr.quantity, 0);
+    const ownerQuantity: number = input.ownerOptions.reduce((acc, curr) => acc + curr.quantity, 0);
     const item = {
         ...input,
         id: id,
-        createdAt: createdAtDateOnly,
+        createdAt: createdAt,
         coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
         // deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
+        totalQuantity: totalQuantity,
+        ownerQuantity: ownerQuantity,
         sharingDateTime: input.sharingDateTime,
         sharingLocation: input.sharingLocation,
         imageUrl: input.thumbnailImageUrl,
@@ -74,7 +81,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
     // if (item.ownerQuantity === undefined) {
     //     throw new Error('공구장의 수량을 정해주세요.');
     // }
-    const ownerQuantity: number = item.itemOptions.reduce((acc, curr) => acc + curr.quantity, 0);
+   
     // 공구장의 수량 결정
     // const ownerPrice: number = calculatOwnerQuantityPrice(item);
 
@@ -117,12 +124,11 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
 
 function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): AttendeeCoBuying {
     const createdAt = getFormattedKoreaTime();
-    const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
         ...input,
         id: id,
-        createdAt: createdAtDateOnly,
+        createdAt: createdAt,
         coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
         // deadlineId: input.deadline + '#' + id,

@@ -7,7 +7,7 @@ const ddbDocClient = createDynamoDBDocClient();
 
 export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSummary> => {
     console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
-    console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
+    // console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
 
     // DynamoDB에 삽입할 데이터 맵핑
     const params: PutCommandInput = {
@@ -69,7 +69,6 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSu
                     ownerName: cobuying.ownerName,
                     ownerQuantity: cobuying.ownerQuantity,
                     ownerPrice: cobuying.ownerPrice,
-                    ownerOptions: cobuying.ownerOptions,
                     // 나눔 정보
                     sharingDateTime: cobuying.sharingDateTime,
                     sharingLocation: cobuying.sharingLocation,
