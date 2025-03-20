@@ -22,11 +22,14 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 attendeeCount: item.attendeeCount ? parseInt(item.attendeeCount.N, 10) : 0,
                 productName: item.productName ? item.productName.S : '',
                 ownerName: item.ownerName ? item.ownerName.S : '',
-                deadline: item.deadline ? item.deadline.S : '',
+                imageUrl: item.imageUrl?.S,
+                // deadline: item.deadline ? item.deadline.S : '',
                 createdAt: item.createdAt.S,
                 targetAttendeeCount: item.targetAttendeeCount ? parseInt(item.targetAttendeeCount.N, 10) : 0,
+                // 인원나눔 특화 속성
                 remainAttendeeCount: item.remainAttendeeCount ? parseInt(item.remainAttendeeCount.N, 10) : 0,
                 perAttendeePrice: item.perAttendeePrice ? parseFloat(item.perAttendeePrice.N) : 0,
+                
                 sharingDateTime: item.sharingDateTime?.S,
                 sharingLocation: item.sharingLocation?.S,
             } as AttendeeCoBuyingSummary;
@@ -41,11 +44,14 @@ export function mapToCoBuyingSummary(res: any): CoBuyingSummary[] {
                 attendeeCount: item.attendeeCount ? parseInt(item.attendeeCount.N, 10) : 0,
                 productName: item.productName ? item.productName.S : '',
                 ownerName: item.ownerName ? item.ownerName.S : '',
-                deadline: item.deadline ? item.deadline.S : '',
+                imageUrl: item.imageUrl?.S,
+                // deadline: item.deadline ? item.deadline.S : '',
                 createdAt: item.createdAt.S,
                 totalAttendeeQuantity: item.totalAttendeeQuantity ? parseInt(item.totalAttendeeQuantity.N, 10) : 0,
+                // 수량나눔 특화 속성
                 remainQuantity: item.remainQuantity ? parseInt(item.remainQuantity.N, 10) : 0,
                 unitPrice: item.unitPrice ? parseInt(item.unitPrice.N, 10) : 0,
+                
                 sharingDateTime: item.sharingDateTime?.S,
                 sharingLocation: item.sharingLocation?.S,
             } as QuantityCoBuyingSummary;

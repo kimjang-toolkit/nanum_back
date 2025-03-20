@@ -16,7 +16,7 @@ import {
 //   perAttendeePrice, attendeeList`;
 
 export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
-    // console.log('res.attendeeList : ', res.attendeeList.L[0].M);
+    console.log('res.attendeeList : ', res.attendeeList.L[0].M);
     console.log('res.coBuyingStatus : ', res.coBuyingStatus);
     const baseDetail: BaseCoBuyingDetailDTO = {
         id: res.id.S,
@@ -26,7 +26,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
         totalPrice: Number(res.totalPrice.N),
         totalQuantity: Number(res.totalQuantity.N),
         attendeeCount: Number(res.attendeeCount.N),
-        deadline: res.deadline.S,
+        // deadline: res.deadline.S,
         type: res.type.S as DivideType,
         memo: res.memo?.S,
         attendeeList:
@@ -34,12 +34,13 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                 (attendee: any) =>
                     ({
                         attendeeName: attendee.M.attendeeName.S,
-                        appliedQuantity: Number(attendee.M.appliedQuantity.N || 0),
+                        attendeeQuantity: Number(attendee.M.attendeeQuantity.N || 0),
                         attendeePrice: Number(attendee.M.attendeePrice.N || 0),
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,
         coBuyingStatus: (res.coBuyingStatus.N || Number(res.coBuyingStatus.S)) as CoBuyingStatus,
+        imageUrl: res.imageUrl?.S,
         sharingDateTime: res.sharingDateTime?.S,
         sharingLocation: res.sharingLocation?.S,
     };
@@ -55,6 +56,14 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             totalAttendeeQuantity: Number(res.totalAttendeeQuantity.N),
             remainQuantity: Number(res.remainQuantity.N),
             unitPrice: Number(res.unitPrice.N),
+            itemOptions: res.itemOptions?.L?.map((item: any) => ({
+                name: item.M.name.S,
+                quantity: Number(item.M.quantity.N || 0),
+            })) || [],
+            ownerOptions: res.ownerOptions?.L?.map((item: any) => ({
+                name: item.M.name.S,
+                quantity: Number(item.M.quantity.N || 0),
+            })) || [],
         } as QuantityCoBuyingDetail;
     } else if (baseDetail.type === DivideType.attendee) {
         return {

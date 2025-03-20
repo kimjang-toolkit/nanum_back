@@ -7,11 +7,11 @@ const ddbDocClient = createDynamoDBDocClient();
 
 export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSummary> => {
     console.log('조회 테이블 : ' + process.env.CoBuyingTableName);
-    console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
+    // console.log('조회 테이블 URL : ' + process.env.DYNAMODBURL);
 
     // DynamoDB에 삽입할 데이터 맵핑
     const params: PutCommandInput = {
-        TableName: process.env.CoBuyingTableName || 'CoBuyingTable', // 환경 변수로 테이블 이름 지정
+        TableName: process.env.CoBuyingTableName || 'Dev-CoBuyingTable', // 환경 변수로 테이블 이름 지정
         Item: {
             ...cobuying,
         },
@@ -24,40 +24,52 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSu
         console.log(result);
         if (result.$metadata.httpStatusCode == 200){
             if(cobuying.type === DivideType.attendee){
-                return {
+                return { // 인원 나눔 공구글
+                    // 공통 정보
                     id: cobuying.id,
+                    type: cobuying.type,
+                    createdAt: cobuying.createdAt,
                     productName: cobuying.productName,
-                    ownerName: cobuying.ownerName,
+                    imageUrl: cobuying.imageUrl,
+                    originalImageUrl: cobuying.originalImageUrl, // 원본 이미지 링크
                     totalPrice: cobuying.totalPrice,
                     totalQuantity: cobuying.totalQuantity,
-                    attendeeCount: cobuying.attendeeCount,
-                    deadline: cobuying.deadline,
                     coBuyingStatus: cobuying.coBuyingStatus,
+                    // deadline: cobuying.deadline,
+                    // 신청정보
+                    attendeeCount: cobuying.attendeeCount,
                     targetAttendeeCount: cobuying.targetAttendeeCount,
                     perAttendeePrice: cobuying.perAttendeePrice,
                     remainAttendeeCount: cobuying.remainAttendeeCount,
-                    createdAt: cobuying.createdAt,
-                    imageUrl: cobuying.imageUrl,
-                    type: cobuying.type,
+                    // 공구장 정보
+                    ownerName: cobuying.ownerName,
+                    // 나눔 정보
                     sharingDateTime: cobuying.sharingDateTime,
                     sharingLocation: cobuying.sharingLocation,
                     } as AttendeeCoBuyingSummary;
-            } else {
+            } else { // 수량 나눔 공구글
                 return {
+                    // 공통 정보
                     id: cobuying.id,
-                    attendeeCount: cobuying.attendeeCount,
                     type: cobuying.type,
-                    ownerName: cobuying.ownerName,
-                    deadline: cobuying.deadline,
                     createdAt: cobuying.createdAt,
-                    imageUrl: cobuying.imageUrl,
                     productName: cobuying.productName,
+                    imageUrl: cobuying.imageUrl,
+                    originalImageUrl: cobuying.originalImageUrl, // 원본 이미지 링크 
                     totalPrice: cobuying.totalPrice,
                     totalQuantity: cobuying.totalQuantity,
+                    coBuyingStatus: cobuying.coBuyingStatus,
+                    // deadline: cobuying.deadline,
+                    // 신청정보
+                    attendeeCount: cobuying.attendeeCount,
                     totalAttendeeQuantity: cobuying.totalAttendeeQuantity,
                     unitPrice: cobuying.unitPrice,
                     remainQuantity: cobuying.remainQuantity,
-                    coBuyingStatus: cobuying.coBuyingStatus,
+                    // 공구장 정보
+                    ownerName: cobuying.ownerName,
+                    ownerQuantity: cobuying.ownerQuantity,
+                    ownerPrice: cobuying.ownerPrice,
+                    // 나눔 정보
                     sharingDateTime: cobuying.sharingDateTime,
                     sharingLocation: cobuying.sharingLocation,
                 } as QuantityCoBuyingSummary;

@@ -14,10 +14,6 @@
       "AttributeType": "S"
     },
     {
-      "AttributeName": "deadline",
-      "AttributeType": "S"
-    },
-    {
       "AttributeName": "createdAtId",
       "AttributeType": "S"
     },
@@ -46,26 +42,6 @@
       "KeySchema": [
         {
           "AttributeName": "createdAt",
-          "KeyType": "HASH"
-        },
-        {
-          "AttributeName": "id",
-          "KeyType": "RANGE"
-        }
-      ],
-      "Projection": {
-        "ProjectionType": "ALL"
-      },
-      "ProvisionedThroughput": {
-        "ReadCapacityUnits": 5,
-        "WriteCapacityUnits": 5
-      }
-    },
-    {
-      "IndexName": "DeadlineIndex",
-      "KeySchema": [
-        {
-          "AttributeName": "deadline",
           "KeyType": "HASH"
         },
         {

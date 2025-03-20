@@ -61,7 +61,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
     const attendee: Attendee = {
         attendeeName: app.attendeeName,
         attendeePrice: app.attendeePrice || 0,
-        appliedQuantity: app.attendeeQuantity,
+        attendeeQuantity: app.attendeeQuantity,
     };
 
     let updateExpression = 'SET ';
@@ -119,7 +119,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
     }
 
     const param = {
-        TableName: process.env.CoBuyingTableName || 'CoBuyingTable',
+        TableName: process.env.CoBuyingTableName || 'Dev-CoBuyingTable',
         Key: {
             ownerName: coBuyingDetail.ownerName,
             id: coBuyingDetail.id,

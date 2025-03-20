@@ -13,8 +13,7 @@ export async function retrieveProductInformation(input: CoBuyingCreateReq<Divide
       if (input.productLink) {
           const productInformation : ProductInformation = await scrapCupangSiteSRV(input.productLink);
           console.log('productInformation : ', productInformation);
-          if(productInformation.productImageUrl && productInformation.productUrl && productInformation.productId){
-              input.imageUrl = productInformation.productImageUrl;
+          if(productInformation.productUrl && productInformation.productId){
               input.productLink = productInformation.productUrl;
               const imageUrl = await saveImageToS3SRV(productInformation);
               if(imageUrl){

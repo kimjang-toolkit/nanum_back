@@ -31,6 +31,8 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
         deadline: item.deadline.S,
         type: item.type.S === 'quantity' ? DivideType.quantity : DivideType.attendee,
         memo: item.memo?.S,
+        imageUrl: item.imageUrl?.S,
+        totalAttendeePrice: Number(item.totalAttendeePrice.N),
         attendeeList: mapAttendeeList(item.attendeeList.L),
         createdAt: item.createdAt.S,
         coBuyingStatus: Number(item.coBuyingStatus.N) as CoBuyingStatus,
