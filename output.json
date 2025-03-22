@@ -2,1717 +2,563 @@
     "Items": [
         {
             "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-01-08#0ad15f2e-63ca-4de8-8fc3-34f3a9701b1b"
-            },
-            "totalAttendeeQuantity": {
-                "N": "3"
+                "N": "8"
             },
             "totalPrice": {
-                "N": "15000"
+                "N": "15410"
             },
             "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+                "S": "공구합시다!! 풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
             },
-            "type": {
-                "S": "quantity"
-            },
-            "ownerNameId": {
-                "S": "오찬솔#0ad15f2e-63ca-4de8-8fc3-34f3a9701b1b"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "오찬솔"
-                            },
-                            "attendeePrice": {
-                                "N": "3000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "싱싱한 노트북 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#0ad15f2e-63ca-4de8-8fc3-34f3a9701b1b"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "오찬솔"
-            },
-            "ownerPrice": {
-                "N": "3000"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "0ad15f2e-63ca-4de8-8fc3-34f3a9701b1b"
-            },
-            "deadline": {
-                "S": "2025-01-08"
-            },
-            "remainQuantity": {
-                "N": "12"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "totalAttendeePrice": {
-                "N": "3000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "4285"
-            },
-            "deadlineId": {
-                "S": "2025-02-08#4a2442c5-257a-4835-9f50-1209a58d8a2f"
-            },
-            "totalAttendeeQuantity": {
-                "N": "3"
-            },
-            "totalPrice": {
-                "N": "60000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "type": {
-                "S": "quantity"
-            },
-            "ownerNameId": {
-                "S": "오찬솔#4a2442c5-257a-4835-9f50-1209a58d8a2f"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "오찬솔"
-                            },
-                            "attendeePrice": {
-                                "N": "12865"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "비타민 1kg 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-02-01"
-            },
-            "createdAtId": {
-                "S": "2025-02-01#4a2442c5-257a-4835-9f50-1209a58d8a2f"
-            },
-            "totalQuantity": {
-                "N": "14"
-            },
-            "ownerName": {
-                "S": "오찬솔"
-            },
-            "ownerPrice": {
-                "N": "12865"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "4a2442c5-257a-4835-9f50-1209a58d8a2f"
-            },
-            "deadline": {
-                "S": "2025-02-08"
-            },
-            "remainQuantity": {
-                "N": "11"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "totalAttendeePrice": {
-                "N": "12865"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "4285.714285714285"
-            },
-            "deadlineId": {
-                "S": "2025-02-08#6604b050-39f4-4fc8-8752-7484e07103e4"
-            },
-            "totalAttendeeQuantity": {
+            "remainAttendeeCount": {
                 "N": "7"
             },
-            "totalPrice": {
-                "N": "60000"
+            "targetAttendeeCount": {
+                "N": "8"
             },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "ownerNameId": {
-                "S": "오찬솔#6604b050-39f4-4fc8-8752-7484e07103e4"
+            "sharingLocation": {
+                "S": "3층 의자 위에서"
             },
             "type": {
-                "S": "quantity"
+                "S": "attendee"
             },
             "attendeeList": {
                 "L": [
                     {
                         "M": {
                             "attendeeName": {
-                                "S": "오찬솔"
+                                "S": "김철수"
                             },
-                            "attendeePrice": {
-                                "N": "12857.142857142857"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    },
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "효승이"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
+                            "attendeeQuantity": {
                                 "N": "1"
-                            }
-                        }
-                    },
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "효뜨니"
                             },
                             "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "1"
-                            }
-                        }
-                    },
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "효뜨니 사랑!"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "1"
-                            }
-                        }
-                    },
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "같이_먹어요!"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "1"
+                                "N": "1927"
                             }
                         }
                     }
                 ]
             },
             "productName": {
-                "S": "비타민 1kg 공구!"
+                "S": "풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "originalImageUrl": {
+                "S": "https:example.image/original"
+            },
+            "ownerPassword": {
+                "S": "1aa01f3c805f28923899ac761b2afc5199f6400f2594706d9636b42de70b6240"
+            },
+            "createdAt": {
+                "S": "2025-03-22T18:59:35"
+            },
+            "sharingDateTime": {
+                "S": "202503121300"
+            },
+            "thumbnailImageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "totalQuantity": {
+                "N": "1"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "imageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "productLink": {
+                "S": "https://www.coupang.com/vp/products/1371175579?itemId=2403791258&searchId=daeb9bab2c1b4686985983b781213e4e&sourceType=brandstore_display_ads&storeId=109697&subSourceType=brandstore_display_ads&vendorId=A00051649&vendorItemId=70398567624&isAddedCart="
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "55106894-4d6c-470a-9c71-f4d1e8d3ffb9"
+            },
+            "totalAttendeePrice": {
+                "N": "1927"
+            },
+            "ownerNameId": {
+                "S": "김철수#55106894-4d6c-470a-9c71-f4d1e8d3ffb9"
             },
             "deletedYN": {
                 "S": "N"
             },
-            "createdAt": {
-                "S": "2025-02-01"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
             "createdAtId": {
-                "S": "2025-02-01#6604b050-39f4-4fc8-8752-7484e07103e4"
-            },
-            "totalQuantity": {
-                "N": "14"
-            },
-            "ownerName": {
-                "S": "오찬솔"
+                "S": "2025-03-22T18:59:35#55106894-4d6c-470a-9c71-f4d1e8d3ffb9"
             },
             "ownerPrice": {
-                "N": "12857.142857142857"
+                "N": "15410"
             },
-            "attendeeCount": {
-                "N": "5"
+            "coBuyingStatus": {
+                "N": "1"
             },
-            "productLink": {
-                "S": "https://example.com/상품링크"
+            "perAttendeePrice": {
+                "N": "1927"
+            }
+        },
+        {
+            "ownerQuantity": {
+                "N": "8"
             },
-            "id": {
-                "S": "6604b050-39f4-4fc8-8752-7484e07103e4"
+            "totalPrice": {
+                "N": "15410"
             },
-            "deadline": {
-                "S": "2025-02-08"
+            "memo": {
+                "S": "공구합시다!! 풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
             },
-            "remainQuantity": {
+            "remainAttendeeCount": {
                 "N": "7"
             },
-            "coBuyingStatus": {
-                "N": "1"
+            "targetAttendeeCount": {
+                "N": "8"
             },
-            "totalAttendeePrice": {
-                "N": "16857.142857142857"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "4285"
-            },
-            "deadlineId": {
-                "S": "2025-02-08#cf8ae864-d4fb-4178-883f-f695b8f6b99c"
-            },
-            "totalAttendeeQuantity": {
-                "N": "3"
-            },
-            "totalPrice": {
-                "N": "60000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+            "sharingLocation": {
+                "S": "3층 의자 위에서"
             },
             "type": {
-                "S": "quantity"
-            },
-            "ownerNameId": {
-                "S": "오찬솔#cf8ae864-d4fb-4178-883f-f695b8f6b99c"
+                "S": "attendee"
             },
             "attendeeList": {
                 "L": [
                     {
                         "M": {
                             "attendeeName": {
-                                "S": "오찬솔"
+                                "S": "김철수"
+                            },
+                            "attendeeQuantity": {
+                                "N": "1"
                             },
                             "attendeePrice": {
-                                "N": "12865"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
+                                "N": "1927"
                             }
                         }
                     }
                 ]
             },
             "productName": {
-                "S": "비타민 1kg 공구!"
+                "S": "풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "originalImageUrl": {
+                "S": "https:example.image/original"
+            },
+            "ownerPassword": {
+                "S": "1aa01f3c805f28923899ac761b2afc5199f6400f2594706d9636b42de70b6240"
+            },
+            "createdAt": {
+                "S": "2025-03-22T18:59:41"
+            },
+            "sharingDateTime": {
+                "S": "202503121300"
+            },
+            "thumbnailImageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "totalQuantity": {
+                "N": "1"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "imageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "productLink": {
+                "S": "https://www.coupang.com/vp/products/1371175579?itemId=2403791258&searchId=daeb9bab2c1b4686985983b781213e4e&sourceType=brandstore_display_ads&storeId=109697&subSourceType=brandstore_display_ads&vendorId=A00051649&vendorItemId=70398567624&isAddedCart="
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "8b34bcfc-15f2-494b-80eb-b5af72c68d34"
+            },
+            "totalAttendeePrice": {
+                "N": "1927"
+            },
+            "ownerNameId": {
+                "S": "김철수#8b34bcfc-15f2-494b-80eb-b5af72c68d34"
             },
             "deletedYN": {
                 "S": "N"
             },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-02-01"
-            },
             "createdAtId": {
-                "S": "2025-02-01#cf8ae864-d4fb-4178-883f-f695b8f6b99c"
-            },
-            "totalQuantity": {
-                "N": "14"
-            },
-            "ownerName": {
-                "S": "오찬솔"
+                "S": "2025-03-22T18:59:41#8b34bcfc-15f2-494b-80eb-b5af72c68d34"
             },
             "ownerPrice": {
-                "N": "12865"
+                "N": "15410"
+            },
+            "coBuyingStatus": {
+                "N": "1"
+            },
+            "perAttendeePrice": {
+                "N": "1927"
+            }
+        },
+        {
+            "ownerQuantity": {
+                "N": "8"
+            },
+            "totalPrice": {
+                "N": "15410"
+            },
+            "memo": {
+                "S": "공구합시다!! 풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "remainAttendeeCount": {
+                "N": "7"
+            },
+            "targetAttendeeCount": {
+                "N": "8"
+            },
+            "sharingLocation": {
+                "S": "3층 의자 위에서"
+            },
+            "type": {
+                "S": "attendee"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "김철수"
+                            },
+                            "attendeeQuantity": {
+                                "N": "1"
+                            },
+                            "attendeePrice": {
+                                "N": "1927"
+                            }
+                        }
+                    }
+                ]
+            },
+            "productName": {
+                "S": "풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "originalImageUrl": {
+                "S": "https:example.image/original"
+            },
+            "ownerPassword": {
+                "S": "1aa01f3c805f28923899ac761b2afc5199f6400f2594706d9636b42de70b6240"
+            },
+            "createdAt": {
+                "S": "2025-03-22T18:59:45"
+            },
+            "sharingDateTime": {
+                "S": "202503121300"
+            },
+            "thumbnailImageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "totalQuantity": {
+                "N": "1"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "imageUrl": {
+                "S": "https:example.image/thumbnail"
             },
             "productLink": {
-                "S": "https://example.com/상품링크"
+                "S": "https://www.coupang.com/vp/products/1371175579?itemId=2403791258&searchId=daeb9bab2c1b4686985983b781213e4e&sourceType=brandstore_display_ads&storeId=109697&subSourceType=brandstore_display_ads&vendorId=A00051649&vendorItemId=70398567624&isAddedCart="
             },
             "attendeeCount": {
                 "N": "1"
             },
             "id": {
-                "S": "cf8ae864-d4fb-4178-883f-f695b8f6b99c"
-            },
-            "deadline": {
-                "S": "2025-02-08"
-            },
-            "remainQuantity": {
-                "N": "11"
-            },
-            "coBuyingStatus": {
-                "N": "1"
+                "S": "a2153ef5-a3e6-416d-a78a-1954ca00b109"
             },
             "totalAttendeePrice": {
-                "N": "12865"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#09f06ac9-9cba-405b-8754-a05f5289a0df"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
+                "N": "1927"
             },
             "ownerNameId": {
-                "S": "김철수#09f06ac9-9cba-405b-8754-a05f5289a0df"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
+                "S": "김철수#a2153ef5-a3e6-416d-a78a-1954ca00b109"
             },
             "deletedYN": {
                 "S": "N"
             },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
             "createdAtId": {
-                "S": "2025-01-30#09f06ac9-9cba-405b-8754-a05f5289a0df"
+                "S": "2025-03-22T18:59:45#a2153ef5-a3e6-416d-a78a-1954ca00b109"
             },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "09f06ac9-9cba-405b-8754-a05f5289a0df"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
+            "ownerPrice": {
+                "N": "15410"
             },
             "coBuyingStatus": {
                 "N": "1"
             },
             "perAttendeePrice": {
-                "N": "1000"
+                "N": "1927"
             }
         },
         {
             "ownerQuantity": {
-                "N": "3"
+                "N": "24"
             },
-            "deadlineId": {
-                "S": "2025-02-17#13390d26-7da7-4835-b757-e1ec2ba68842"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#13390d26-7da7-4835-b757-e1ec2ba68842"
-            },
-            "attendeeList": {
+            "ownerOptions": {
                 "L": [
                     {
                         "M": {
-                            "attendeeName": {
-                                "S": "김철수"
+                            "name": {
+                                "S": "딸기"
                             },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-02-01"
-            },
-            "createdAtId": {
-                "S": "2025-02-01#13390d26-7da7-4835-b757-e1ec2ba68842"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "13390d26-7da7-4835-b757-e1ec2ba68842"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#17535ecb-e7a6-42dd-83f2-0673b2f96f44"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#17535ecb-e7a6-42dd-83f2-0673b2f96f44"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#17535ecb-e7a6-42dd-83f2-0673b2f96f44"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "17535ecb-e7a6-42dd-83f2-0673b2f96f44"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#23092d90-2e1a-4add-a72c-98f227f3fcad"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#23092d90-2e1a-4add-a72c-98f227f3fcad"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#23092d90-2e1a-4add-a72c-98f227f3fcad"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "23092d90-2e1a-4add-a72c-98f227f3fcad"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#27a743de-d8a6-4281-886f-531b2040ed17"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#27a743de-d8a6-4281-886f-531b2040ed17"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#27a743de-d8a6-4281-886f-531b2040ed17"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "27a743de-d8a6-4281-886f-531b2040ed17"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#318f9c1d-f7f0-4ce6-9663-39d3714156c1"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#318f9c1d-f7f0-4ce6-9663-39d3714156c1"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#318f9c1d-f7f0-4ce6-9663-39d3714156c1"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "318f9c1d-f7f0-4ce6-9663-39d3714156c1"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#541222c0-e08f-43b0-b94b-1fa621f0e62f"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#541222c0-e08f-43b0-b94b-1fa621f0e62f"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#541222c0-e08f-43b0-b94b-1fa621f0e62f"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "541222c0-e08f-43b0-b94b-1fa621f0e62f"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#72f2b236-db7e-4c37-9afc-a9635698ab85"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#72f2b236-db7e-4c37-9afc-a9635698ab85"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#72f2b236-db7e-4c37-9afc-a9635698ab85"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "72f2b236-db7e-4c37-9afc-a9635698ab85"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#7c3dc176-4985-4856-ba14-9a9322922124"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#7c3dc176-4985-4856-ba14-9a9322922124"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#7c3dc176-4985-4856-ba14-9a9322922124"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "7c3dc176-4985-4856-ba14-9a9322922124"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#a9be8772-9bbe-4af6-9f46-7f5ec4b28746"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#a9be8772-9bbe-4af6-9f46-7f5ec4b28746"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#a9be8772-9bbe-4af6-9f46-7f5ec4b28746"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "a9be8772-9bbe-4af6-9f46-7f5ec4b28746"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#ab57a69a-405b-49c5-95e4-6f05e951c785"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#ab57a69a-405b-49c5-95e4-6f05e951c785"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#ab57a69a-405b-49c5-95e4-6f05e951c785"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "ab57a69a-405b-49c5-95e4-6f05e951c785"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#bd9ed3a2-aec9-41bf-b64f-40673cf60e55"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#bd9ed3a2-aec9-41bf-b64f-40673cf60e55"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#bd9ed3a2-aec9-41bf-b64f-40673cf60e55"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "bd9ed3a2-aec9-41bf-b64f-40673cf60e55"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#c4738643-568a-4ff1-9e06-558b335a0299"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#c4738643-568a-4ff1-9e06-558b335a0299"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-30"
-            },
-            "createdAtId": {
-                "S": "2025-01-30#c4738643-568a-4ff1-9e06-558b335a0299"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "c4738643-568a-4ff1-9e06-558b335a0299"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#dc17497b-5a23-444f-bcf2-071a69e22918"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#dc17497b-5a23-444f-bcf2-071a69e22918"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
-                                "N": "3"
-                            }
-                        }
-                    }
-                ]
-            },
-            "productName": {
-                "S": "대나무 같은 참외 공구!"
-            },
-            "deletedYN": {
-                "S": "N"
-            },
-            "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
-            },
-            "createdAt": {
-                "S": "2025-01-31"
-            },
-            "createdAtId": {
-                "S": "2025-01-31#dc17497b-5a23-444f-bcf2-071a69e22918"
-            },
-            "totalQuantity": {
-                "N": "15"
-            },
-            "ownerName": {
-                "S": "김철수"
-            },
-            "productLink": {
-                "S": "https://example.com/상품링크"
-            },
-            "attendeeCount": {
-                "N": "1"
-            },
-            "id": {
-                "S": "dc17497b-5a23-444f-bcf2-071a69e22918"
-            },
-            "deadline": {
-                "S": "2025-02-17"
-            },
-            "remainQuantity": {
-                "N": "14"
-            },
-            "coBuyingStatus": {
-                "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
-            }
-        },
-        {
-            "ownerQuantity": {
-                "N": "3"
-            },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#f61fd605-128d-454e-af7b-d85093a9cd4b"
-            },
-            "totalPrice": {
-                "N": "15000"
-            },
-            "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
-            },
-            "targetAttendeeCount": {
-                "N": "15"
-            },
-            "ownerNameId": {
-                "S": "김철수#f61fd605-128d-454e-af7b-d85093a9cd4b"
-            },
-            "type": {
-                "S": "attendee"
-            },
-            "attendeeList": {
-                "L": [
-                    {
-                        "M": {
-                            "attendeeName": {
-                                "S": "김철수"
-                            },
-                            "attendeePrice": {
-                                "N": "1000"
-                            },
-                            "appliedQuantity": {
+                            "quantity": {
                                 "N": "3"
                             }
                         }
                     },
                     {
                         "M": {
+                            "name": {
+                                "S": "복숭아"
+                            },
+                            "quantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
+            },
+            "totalPrice": {
+                "N": "15410"
+            },
+            "memo": {
+                "S": "공구합시다!! 풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "sharingLocation": {
+                "S": "3층 의자 위에서"
+            },
+            "type": {
+                "S": "quantity"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
                             "attendeeName": {
-                                "S": "효승이"
+                                "S": "김철수"
                             },
                             "attendeePrice": {
-                                "N": "1000"
+                                "N": "2410"
                             },
-                            "appliedQuantity": {
-                                "N": "1"
+                            "attendeeQuantity": {
+                                "N": "5"
+                            },
+                            "attendeeOptions": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "딸기"
+                                            },
+                                            "quantity": {
+                                                "N": "2"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "복숭아"
+                                            },
+                                            "quantity": {
+                                                "N": "3"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "효뜨니3"
+                            },
+                            "attendeePrice": {
+                                "N": "4820"
+                            },
+                            "attendeeQuantity": {
+                                "N": "5"
+                            },
+                            "attendeeOptions": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "딸기"
+                                            },
+                                            "quantity": {
+                                                "N": "10"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "효뜨니4"
+                            },
+                            "attendeePrice": {
+                                "N": "1446"
+                            },
+                            "attendeeQuantity": {
+                                "N": "3"
+                            },
+                            "attendeeOptions": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "딸기"
+                                            },
+                                            "quantity": {
+                                                "N": "3"
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     }
                 ]
             },
             "productName": {
-                "S": "대나무 같은 참외 공구!"
+                "S": "풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
             },
-            "deletedYN": {
-                "S": "N"
+            "originalImageUrl": {
+                "S": "https:example.image/original"
             },
             "createdAt": {
-                "S": "2025-02-01"
+                "S": "2025-03-22T18:59:48"
             },
             "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
+                "S": "1aa01f3c805f28923899ac761b2afc5199f6400f2594706d9636b42de70b6240"
             },
-            "createdAtId": {
-                "S": "2025-02-01#f61fd605-128d-454e-af7b-d85093a9cd4b"
+            "sharingDateTime": {
+                "S": "2025-03-12T13:00"
+            },
+            "thumbnailImageUrl": {
+                "S": "https:example.image/thumbnail"
             },
             "totalQuantity": {
-                "N": "15"
+                "N": "32"
             },
             "ownerName": {
                 "S": "김철수"
             },
+            "imageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
             "attendeeCount": {
-                "N": "2"
+                "N": "3"
             },
             "productLink": {
-                "S": "https://example.com/상품링크"
+                "S": "https://www.coupang.com/vp/products/1371175579?itemId=2403791258&searchId=daeb9bab2c1b4686985983b781213e4e&sourceType=brandstore_display_ads&storeId=109697&subSourceType=brandstore_display_ads&vendorId=A00051649&vendorItemId=70398567624&isAddedCart="
             },
             "id": {
-                "S": "f61fd605-128d-454e-af7b-d85093a9cd4b"
-            },
-            "deadline": {
-                "S": "2025-02-17"
+                "S": "b49e474d-dd78-490c-8ba7-d70680e314b2"
             },
             "remainQuantity": {
+                "N": "19"
+            },
+            "totalAttendeePrice": {
+                "N": "8676"
+            },
+            "unitPrice": {
+                "N": "482"
+            },
+            "totalAttendeeQuantity": {
                 "N": "13"
             },
+            "ownerNameId": {
+                "S": "김철수#b49e474d-dd78-490c-8ba7-d70680e314b2"
+            },
+            "deletedYN": {
+                "S": "N"
+            },
+            "createdAtId": {
+                "S": "2025-03-22T18:59:48#b49e474d-dd78-490c-8ba7-d70680e314b2"
+            },
+            "ownerPrice": {
+                "N": "9144"
+            },
+            "itemOptions": {
+                "L": [
+                    {
+                        "M": {
+                            "name": {
+                                "S": "딸기"
+                            },
+                            "remainQuantity": {
+                                "N": "3"
+                            },
+                            "quantity": {
+                                "N": "16"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "name": {
+                                "S": "복숭아"
+                            },
+                            "remainQuantity": {
+                                "N": "13"
+                            },
+                            "quantity": {
+                                "N": "16"
+                            }
+                        }
+                    }
+                ]
+            },
             "coBuyingStatus": {
                 "N": "1"
-            },
-            "perAttendeePrice": {
-                "N": "1000"
             }
         },
         {
             "ownerQuantity": {
-                "N": "3"
+                "N": "32"
             },
-            "unitPrice": {
-                "N": "1000"
-            },
-            "deadlineId": {
-                "S": "2025-02-17#ff32bb0c-a7ba-4a11-90fa-a584541fee9f"
+            "ownerOptions": {
+                "L": [
+                    {
+                        "M": {
+                            "name": {
+                                "S": "딸기"
+                            },
+                            "quantity": {
+                                "N": "2"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "name": {
+                                "S": "복숭아"
+                            },
+                            "quantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
             },
             "totalPrice": {
-                "N": "15000"
+                "N": "15410"
             },
             "memo": {
-                "S": "아찔한 토마토의 빨강색 향연! 응원합니다 여러분의 싱싱한 삶을"
+                "S": "공구합시다!! 풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
             },
-            "targetAttendeeCount": {
-                "N": "15"
+            "sharingLocation": {
+                "S": "3층 의자 위에서"
             },
             "type": {
-                "S": "attendee"
-            },
-            "ownerNameId": {
-                "S": "김철수#ff32bb0c-a7ba-4a11-90fa-a584541fee9f"
+                "S": "quantity"
             },
             "attendeeList": {
                 "L": [
@@ -1722,60 +568,310 @@
                                 "S": "김철수"
                             },
                             "attendeePrice": {
-                                "N": "1000"
+                                "N": "2410"
                             },
-                            "appliedQuantity": {
-                                "N": "3"
+                            "attendeeQuantity": {
+                                "N": "5"
+                            },
+                            "attendeeOptions": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "딸기"
+                                            },
+                                            "quantity": {
+                                                "N": "2"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "복숭아"
+                                            },
+                                            "quantity": {
+                                                "N": "3"
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     }
                 ]
             },
             "productName": {
-                "S": "대나무 같은 참외 공구!"
+                "S": "풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
             },
-            "deletedYN": {
-                "S": "N"
+            "originalImageUrl": {
+                "S": "https:example.image/original"
             },
             "ownerPassword": {
-                "S": "d259cc7adaab2a9e6d958ff6ec87aed57432f4c73f27930aa4fdc0a28cc0ea80"
+                "S": "1aa01f3c805f28923899ac761b2afc5199f6400f2594706d9636b42de70b6240"
             },
             "createdAt": {
-                "S": "2025-01-30"
+                "S": "2025-03-22T18:59:43"
             },
-            "createdAtId": {
-                "S": "2025-01-30#ff32bb0c-a7ba-4a11-90fa-a584541fee9f"
+            "sharingDateTime": {
+                "S": "2025-03-12T13:00"
+            },
+            "thumbnailImageUrl": {
+                "S": "https:example.image/thumbnail"
             },
             "totalQuantity": {
-                "N": "15"
+                "N": "32"
             },
             "ownerName": {
                 "S": "김철수"
             },
+            "imageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
             "productLink": {
-                "S": "https://example.com/상품링크"
+                "S": "https://www.coupang.com/vp/products/1371175579?itemId=2403791258&searchId=daeb9bab2c1b4686985983b781213e4e&sourceType=brandstore_display_ads&storeId=109697&subSourceType=brandstore_display_ads&vendorId=A00051649&vendorItemId=70398567624&isAddedCart="
             },
             "attendeeCount": {
                 "N": "1"
             },
             "id": {
-                "S": "ff32bb0c-a7ba-4a11-90fa-a584541fee9f"
-            },
-            "deadline": {
-                "S": "2025-02-17"
+                "S": "d7482967-c7f0-4da8-89d8-836d83d69adc"
             },
             "remainQuantity": {
-                "N": "14"
+                "N": "27"
+            },
+            "totalAttendeePrice": {
+                "N": "2410"
+            },
+            "unitPrice": {
+                "N": "482"
+            },
+            "totalAttendeeQuantity": {
+                "N": "5"
+            },
+            "ownerNameId": {
+                "S": "김철수#d7482967-c7f0-4da8-89d8-836d83d69adc"
+            },
+            "deletedYN": {
+                "S": "N"
+            },
+            "createdAtId": {
+                "S": "2025-03-22T18:59:43#d7482967-c7f0-4da8-89d8-836d83d69adc"
+            },
+            "ownerPrice": {
+                "N": "15410"
+            },
+            "itemOptions": {
+                "L": [
+                    {
+                        "M": {
+                            "name": {
+                                "S": "딸기"
+                            },
+                            "remainQuantity": {
+                                "N": "14"
+                            },
+                            "quantity": {
+                                "N": "16"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "name": {
+                                "S": "복숭아"
+                            },
+                            "remainQuantity": {
+                                "N": "13"
+                            },
+                            "quantity": {
+                                "N": "16"
+                            }
+                        }
+                    }
+                ]
             },
             "coBuyingStatus": {
                 "N": "1"
+            }
+        },
+        {
+            "ownerQuantity": {
+                "N": "32"
             },
-            "perAttendeePrice": {
-                "N": "1000"
+            "ownerOptions": {
+                "L": [
+                    {
+                        "M": {
+                            "name": {
+                                "S": "딸기"
+                            },
+                            "quantity": {
+                                "N": "2"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "name": {
+                                "S": "복숭아"
+                            },
+                            "quantity": {
+                                "N": "3"
+                            }
+                        }
+                    }
+                ]
+            },
+            "totalPrice": {
+                "N": "15410"
+            },
+            "memo": {
+                "S": "공구합시다!! 풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "sharingLocation": {
+                "S": "3층 의자 위에서"
+            },
+            "type": {
+                "S": "quantity"
+            },
+            "attendeeList": {
+                "L": [
+                    {
+                        "M": {
+                            "attendeeName": {
+                                "S": "김철수"
+                            },
+                            "attendeePrice": {
+                                "N": "2410"
+                            },
+                            "attendeeQuantity": {
+                                "N": "5"
+                            },
+                            "attendeeOptions": {
+                                "L": [
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "딸기"
+                                            },
+                                            "quantity": {
+                                                "N": "2"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "M": {
+                                            "name": {
+                                                "S": "복숭아"
+                                            },
+                                            "quantity": {
+                                                "N": "3"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "productName": {
+                "S": "풀무원다논 엑티비아 딸기 80g x 4개 + 복숭아 80g x 4개, 4세트"
+            },
+            "originalImageUrl": {
+                "S": "https:example.image/original"
+            },
+            "ownerPassword": {
+                "S": "1aa01f3c805f28923899ac761b2afc5199f6400f2594706d9636b42de70b6240"
+            },
+            "createdAt": {
+                "S": "2025-03-22T18:59:39"
+            },
+            "sharingDateTime": {
+                "S": "2025-03-12T13:00"
+            },
+            "thumbnailImageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "totalQuantity": {
+                "N": "32"
+            },
+            "ownerName": {
+                "S": "김철수"
+            },
+            "imageUrl": {
+                "S": "https:example.image/thumbnail"
+            },
+            "productLink": {
+                "S": "https://www.coupang.com/vp/products/1371175579?itemId=2403791258&searchId=daeb9bab2c1b4686985983b781213e4e&sourceType=brandstore_display_ads&storeId=109697&subSourceType=brandstore_display_ads&vendorId=A00051649&vendorItemId=70398567624&isAddedCart="
+            },
+            "attendeeCount": {
+                "N": "1"
+            },
+            "id": {
+                "S": "e49d96dc-87e1-4d24-b607-6749da9a9a42"
+            },
+            "remainQuantity": {
+                "N": "27"
+            },
+            "totalAttendeePrice": {
+                "N": "2410"
+            },
+            "unitPrice": {
+                "N": "482"
+            },
+            "totalAttendeeQuantity": {
+                "N": "5"
+            },
+            "ownerNameId": {
+                "S": "김철수#e49d96dc-87e1-4d24-b607-6749da9a9a42"
+            },
+            "deletedYN": {
+                "S": "N"
+            },
+            "createdAtId": {
+                "S": "2025-03-22T18:59:39#e49d96dc-87e1-4d24-b607-6749da9a9a42"
+            },
+            "ownerPrice": {
+                "N": "15410"
+            },
+            "itemOptions": {
+                "L": [
+                    {
+                        "M": {
+                            "name": {
+                                "S": "딸기"
+                            },
+                            "remainQuantity": {
+                                "N": "14"
+                            },
+                            "quantity": {
+                                "N": "16"
+                            }
+                        }
+                    },
+                    {
+                        "M": {
+                            "name": {
+                                "S": "복숭아"
+                            },
+                            "remainQuantity": {
+                                "N": "13"
+                            },
+                            "quantity": {
+                                "N": "16"
+                            }
+                        }
+                    }
+                ]
+            },
+            "coBuyingStatus": {
+                "N": "1"
             }
         }
     ],
-    "Count": 20,
-    "ScannedCount": 20,
+    "Count": 6,
+    "ScannedCount": 6,
     "ConsumedCapacity": null
 }

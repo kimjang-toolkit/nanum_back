@@ -13,7 +13,11 @@ const tasks = {
       - \`product_options\`: A list of available product variants (e.g., different pack sizes such as 10pcs, 20pcs, 30pcs, 50pcs).
       - \`selected_product_option\`: The package size currently selected on the webpage.
       - \`item_variants\`: A breakdown of the different types or flavors contained within the selected product, along with their respective quantities.
-      - \`main_thumbnail\`: Extract the most prominent and largest product image from the webpage. Ignore any smaller, secondary images (such as small preview images or additional thumbnails). Output a JSON object containing:
+      - \`main_thumbnail\`: Extract the most **prominent and largest** product image from the webpage, ensuring the following conditions:
+            1\. The **aspect ratio should be as close to 1:1 as possible**.
+            2\. The bounding box should **contain the most relevant area that matches the product name** \(\`product_name\`\)\.
+            3\. If possible, the bounding box should **include all item variants** listed in \`item_variants\`.
+            4\. Select **the largest possible area** while still meeting the above conditions. Output a JSON object containing:
         - \`box_2d\`: The 2D bounding box coordinates of the detected main product image.
         - \`label\`: The text label associated with the detected product image.
 

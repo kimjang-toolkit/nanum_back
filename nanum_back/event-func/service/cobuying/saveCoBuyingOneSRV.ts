@@ -7,6 +7,7 @@ import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
 import { retrieveProductInformation } from '@product/retrieveProductInformation';
+import { ItemOption } from '@domain/product';
 
 /**
  * DB에 공구글 데이터 생성
@@ -32,6 +33,10 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     input.ownerPassword = await hashPassword(input.ownerPassword);
     console.log('input type : ', input.type);
     console.log('DivideType.quantity : ', DivideType.quantity);
+    
+    if(!input.imageUrl || input.imageUrl === ''){
+        input.imageUrl = input.thumbnailImageUrl;
+    }
     // 방법 1: 문자열로 비교
     if (input.type === DivideType.quantity) {
         // 수량나눔
@@ -53,32 +58,31 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
 
 function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): QuantityCoBuying {
     const createdAt = getFormattedKoreaTime();
-    const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
+    const totalQuantity: number = input.itemOptions.reduce((acc, curr) => acc + curr.quantity, 0);
+    const ownerQuantity: number = input.ownerOptions.reduce((acc, curr) => acc + curr.quantity, 0);
     const item = {
         ...input,
         id: id,
-        createdAt: createdAtDateOnly,
+        createdAt: createdAt,
         coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
-        deadlineId: input.deadline + '#' + id,
+        // deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
+        totalQuantity: totalQuantity,
+        ownerQuantity: ownerQuantity,
         sharingDateTime: input.sharingDateTime,
         sharingLocation: input.sharingLocation,
+        imageUrl: input.thumbnailImageUrl,
+        originalImageUrl: input.originalImageUrl,
     };
-    if (item.ownerQuantity === undefined) {
-        throw new Error('공구장의 수량을 정해주세요.');
-    }
-
-    // 공구장의 수량 결정
-    // const ownerPrice: number = calculatOwnerQuantityPrice(item);
-
+   
     // 공구글 단위 가격 계산
     const unitPrice: number = calculatUnitPrice(item);
 
     // 공구장의 신청 부담액 계산 = 단위 가격 * 신청 수량
-    const ownerPrice: number = unitPrice * item.ownerQuantity;
+    const ownerPrice: number = unitPrice * ownerQuantity;
 
     /**
      * 초기에 신청자는 공구장 한명이므로 공구장 부담액이 전체 부담액.
@@ -86,11 +90,16 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
      */
     const hostAttende: Attendee = {
         attendeeName: item.ownerName, // 공구장 이름
-        appliedQuantity: item.ownerQuantity, // 실제 공구장 구매 수량
+        attendeeQuantity: ownerQuantity, // 실제 공구장 구매 수량
         attendeePrice: ownerPrice, // 공구장 신청 부담액
+        attendeeOptions: item.ownerOptions, // 공구장 구매 옵션, 수량 기준만 사용하는 속성
         // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
         // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
     };
+
+    // itemOptions 초기화
+    const itemOptions = getItemOptionsInitial(input);
+
     // 수량나눔
     const quantityCoBuying: QuantityCoBuying = {
         ...item,
@@ -98,11 +107,13 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         unitPrice: unitPrice,
         ownerQuantity: item.totalQuantity, // 공구장이 구매할 가정산 수량
         ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
-        totalAttendeeQuantity: item.ownerQuantity,
+        ownerOptions: item.ownerOptions,
+        totalAttendeeQuantity: ownerQuantity,
         totalAttendeePrice: ownerPrice, // 아직 공구장 밖에 신청자가 없기 때문에 공구장 부담액이 전체 부담액.
-        remainQuantity: item.totalQuantity - item.ownerQuantity,
+        remainQuantity: item.totalQuantity - ownerQuantity,
         attendeeCount: 1,
         attendeeList: [hostAttende],
+        itemOptions: itemOptions,
     };
 
     return quantityCoBuying;
@@ -110,15 +121,14 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
 
 function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): AttendeeCoBuying {
     const createdAt = getFormattedKoreaTime();
-    const createdAtDateOnly = getKoreaDay();
     const id = uuidv4();
     const item = {
         ...input,
         id: id,
-        createdAt: createdAtDateOnly,
+        createdAt: createdAt,
         coBuyingStatus: Number(CoBuyingStatus.APPLYING),
         createdAtId: createdAt + '#' + id,
-        deadlineId: input.deadline + '#' + id,
+        // deadlineId: input.deadline + '#' + id,
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
         sharingDateTime: input.sharingDateTime,
@@ -130,7 +140,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
 
     // 인당 가격 계산
     const perAttendeePrice: number = calculatAttendeePrice(item);
-
+    // 인당 구매 수량 계산
+    const perAttendeeQuantity: number = calculatPerAttendeeQuantity(item);
     // 공구장의 부담액 계산
     // const ownerPrice: number = item.totalPrice - perAttendeePrice * (item.targetAttendeeCount - 1);
 
@@ -140,7 +151,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
      */
     const hostAttendee: Attendee = {
         attendeeName: item.ownerName,
-        appliedQuantity: item.ownerQuantity || 1, // 공구장 구매 신청 수량
+        attendeeQuantity: 1, // 공구장 구매는 1인이기에 1로 하드코딩
         attendeePrice: perAttendeePrice, // 일단 단순 계산, 공구가 마감될 때 totalPrice - totalAttendeeCount*perAttendeePrice 로 업데이트
         // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
         // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
@@ -157,6 +168,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
         attendeeCount: 1,
         attendeeList: [hostAttendee],
+        perAttendeeQuantity: perAttendeeQuantity,
     };
 
     console.log('attendee item : ', attendeeCoBuying);
@@ -191,3 +203,34 @@ function calculatUnitPrice(input: CoBuyingCreateReq<DivideType>): number {
 
 //     return {};
 // };
+
+function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): ItemOption[] {
+    const itemOptions: ItemOption[] = [];
+
+    // 옵션별 신청 가능 수량 계산
+    for (const option of input.itemOptions) {
+        const name = option.name;
+        const quantity = option.quantity;
+        let remainQuantity = quantity;
+
+        // 옵션별 신청 가능 수량 계산
+        for (const ownerOption of input.ownerOptions) {
+            if (ownerOption.name === name) {
+                remainQuantity -= ownerOption.quantity;
+            }
+        }
+        const itemOption: ItemOption = {
+            name: name,
+            quantity: quantity,
+            remainQuantity: remainQuantity,
+        };
+        itemOptions.push(itemOption);
+    }
+    return itemOptions;
+}
+
+// 인당 구매 수량 계산, 소수점 3자리 미만 버림
+function calculatPerAttendeeQuantity(input: CoBuyingCreateReq<DivideType.attendee>): number {
+    const perAttendeeQuantity = input.totalQuantity / input.targetAttendeeCount;
+    return Math.floor(perAttendeeQuantity * 1000) / 1000;
+}

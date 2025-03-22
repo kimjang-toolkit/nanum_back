@@ -4,7 +4,6 @@ import { TaskRequest, TaskType } from "@interface/generativeAI";
 import { GongGongS3Client } from "@connect/createS3Client";
 import { APIERROR } from "@common/responseType";
 import { v4 as uuidv4 } from 'uuid';
-import fs from 'fs';
 import { base64ToFile } from "@common/image";
 const s3Client = new GongGongS3Client();
 
