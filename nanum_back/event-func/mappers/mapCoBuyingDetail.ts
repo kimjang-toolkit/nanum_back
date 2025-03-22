@@ -36,6 +36,10 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                         attendeeName: attendee.M.attendeeName.S,
                         attendeeQuantity: Number(attendee.M.attendeeQuantity.N || 0),
                         attendeePrice: Number(attendee.M.attendeePrice.N || 0),
+                        attendeeOptions: attendee.M.attendeeOptions?.L?.map((item: any) => ({
+                            name: item.M.name.S,
+                            quantity: Number(item.M.quantity.N || 0),
+                        })) || [],
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,
@@ -59,6 +63,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             itemOptions: res.itemOptions?.L?.map((item: any) => ({
                 name: item.M.name.S,
                 quantity: Number(item.M.quantity.N || 0),
+                remainQuantity: Number(item.M.remainQuantity.N || 0),
             })) || [],
             ownerOptions: res.ownerOptions?.L?.map((item: any) => ({
                 name: item.M.name.S,
@@ -75,6 +80,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             ownerQuantity: Number(res.ownerQuantity.N || 0), // 공구장이 구매할 가정산 수량
             ownerPrice: Number(res.ownerPrice.N || 0), // 공구장이 부담할 가정산 금액
             perAttendeePrice: Number(res.perAttendeePrice.N),
+            perAttendeeQuantity: Number(res.perAttendeeQuantity.N || 0),
         } as AttendeeCoBuyingDetail;
     } else {
         throw new Error('Invalid type in response');

@@ -1,10 +1,17 @@
 import { ApplicationDTO } from '@interface/application';
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
-import { APIERROR, BaseHeader } from '@common/responseType';
+import { APIERROR } from '@common/responseType';
 import { ApplicationReq } from '@interface/application';
 import { applicationsInCoBuyingSRV } from '@application/applicationsInCoBuyingSRV';
 import { LambdaReturnDto } from 'dto/LambdaReturnDto';
 
+/**
+ * 공구 신청 정보 검증
+ * 신청 수량과 인원 수로 계산되기 때문에 가격 검증 생략
+ * 상품 옵션 정보 추가 for 수량 나눔 공구
+ * @param event 
+ * @returns 
+ */
 function validateApplication(event: APIGatewayProxyEventV2): ApplicationReq {
     if (!event.body) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
@@ -13,24 +20,22 @@ function validateApplication(event: APIGatewayProxyEventV2): ApplicationReq {
 
     if (
         body.attendeeName === undefined ||
-        body.attendeePrice === undefined ||
-        body.attendeePrice <= 0 ||
-        body.attendeeQuantity === undefined ||
-        body.attendeeQuantity <= 0 ||
         body.coBuyingId === undefined ||
-        body.ownerName === undefined ||
-        body.attendeePrice > Number.MAX_SAFE_INTEGER ||
-        body.attendeeQuantity > Number.MAX_SAFE_INTEGER
+        body.ownerName === undefined 
+        // 수량 나눔 시 신청자가 구매할 세부 옵션 속성 추가로 인해 수량 검증 생략
+        // body.attendeeQuantity === undefined ||
+        // body.attendeeQuantity <= 0 ||
+        // body.attendeeQuantity > Number.MAX_SAFE_INTEGER // 수량이 int 범위를 넘어가면 안됨
     ) {
         throw new APIERROR(400, '정확한 신청 정보를 전달해주세요.');
     }
-
     return {
         attendeeName: body.attendeeName,
-        attendeePrice: body.attendeePrice,
-        attendeeQuantity: body.attendeeQuantity,
+        attendeePrice: 0,
+        attendeeQuantity: 0,
         coBuyingId: body.coBuyingId,
         ownerName: body.ownerName,
+        itemOptions: body.itemOptions
     } as ApplicationReq;
 }
 
