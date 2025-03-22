@@ -140,7 +140,8 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
 
     // 인당 가격 계산
     const perAttendeePrice: number = calculatAttendeePrice(item);
-
+    // 인당 구매 수량 계산
+    const perAttendeeQuantity: number = calculatPerAttendeeQuantity(item);
     // 공구장의 부담액 계산
     // const ownerPrice: number = item.totalPrice - perAttendeePrice * (item.targetAttendeeCount - 1);
 
@@ -167,6 +168,7 @@ function getAttendeeCoBuying(input: CoBuyingCreateReq<DivideType.attendee>): Att
         ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
         attendeeCount: 1,
         attendeeList: [hostAttendee],
+        perAttendeeQuantity: perAttendeeQuantity,
     };
 
     console.log('attendee item : ', attendeeCoBuying);
@@ -225,4 +227,10 @@ function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): I
         itemOptions.push(itemOption);
     }
     return itemOptions;
+}
+
+// 인당 구매 수량 계산, 소수점 3자리 미만 버림
+function calculatPerAttendeeQuantity(input: CoBuyingCreateReq<DivideType.attendee>): number {
+    const perAttendeeQuantity = input.totalQuantity / input.targetAttendeeCount;
+    return Math.floor(perAttendeeQuantity * 1000) / 1000;
 }
