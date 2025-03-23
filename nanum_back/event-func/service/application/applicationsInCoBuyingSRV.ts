@@ -1,4 +1,4 @@
-import { DivideType } from '@domain/cobuying';
+import { CoBuyingStatus, DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
 import { ApplicationDTO, ApplicationReq, CoBuyingApplication } from '@interface/application';
 import { UpdateDynamoQuery } from '@query-interface/application';
@@ -213,6 +213,9 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
 }
 
 function validateApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
+
+    validateCoBuyingStatus(coBuyingDetail, app);
+
     if (coBuyingDetail.type === DivideType.quantity) {
         validateQuantityApp(coBuyingDetail, app);
     } else {
@@ -245,14 +248,20 @@ function validateQuantityApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq
     }    
 }
 
+/**
+ * Quantity에 신청 인원 수를 넣는 게 아니라 실제 구매할 상품 수량을 저장하는 것으로 수정.
+ * 따라서 수량관련 검증로직 수정
+ * @param coBuyingDetail 
+ * @param app 
+ */
 function validateAttendeeApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
-    if (app.attendeeQuantity !== 1) {
-        throw new APIERROR(400, '인원 나눔은 1인당 1개만 신청 가능합니다.');
-    }
+    // if (app.attendeeQuantity !== 1) {
+    //     throw new APIERROR(400, '인원 나눔은 1인당 1개만 신청 가능합니다.');
+    // }
     // if (Math.round(app.attendeePrice) !== Math.round((coBuyingDetail as AttendeeCoBuyingDetail).perAttendeePrice)) {
     //     throw new APIERROR(400, '신청 금액이 1인당 금액과 일치하지 않습니다.');
     // }
-    if (app.attendeeQuantity > (coBuyingDetail as AttendeeCoBuyingDetail).remainAttendeeCount) {
+    if (1 > (coBuyingDetail as AttendeeCoBuyingDetail).remainAttendeeCount) {
         throw new APIERROR(400, '더 이상 신청할 수 없습니다. 남은 인원이 없습니다.');
     }
 }
@@ -260,5 +269,19 @@ function validateAttendeeApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq
 function getPerAttendeeQuantity(coBuyingDetail: AttendeeCoBuyingDetail): number {
     const perAttendeeQuantity = coBuyingDetail.totalQuantity / coBuyingDetail.targetAttendeeCount;
     return Math.floor(perAttendeeQuantity * 1000) / 1000;
+}
+
+/**
+ * 모집 중일 때만 신청 가능
+ * @param coBuyingDetail 
+ * @param app 
+ */
+function validateCoBuyingStatus(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
+    console.log('coBuyingDetail.coBuyingStatus: ', coBuyingDetail.coBuyingStatus, ' CoBuyingStatus.APPLYING: ', CoBuyingStatus.APPLYING);
+    console.log(typeof coBuyingDetail.coBuyingStatus); // 아마 'string'
+    console.log(typeof CoBuyingStatus.APPLYING); // 아마 'number'
+    if(coBuyingDetail.coBuyingStatus !== CoBuyingStatus.APPLYING) {
+        throw new APIERROR(400, '모집 중일 때만 신청 가능해요.');
+    }
 }
 

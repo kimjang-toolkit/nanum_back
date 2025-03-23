@@ -88,6 +88,12 @@ async function validateManageCoBuying(event: APIGatewayProxyEventV2): Promise<Ma
   return {
     coBuyingId,
     ownerName,
-    ...manageCoBuyingReq
+    memo: manageCoBuyingReq.memo,
+    productLink: manageCoBuyingReq.productLink,
+    productName: manageCoBuyingReq.productName,
+    deadline: manageCoBuyingReq.deadline,
+    coBuyingStatus: Number(manageCoBuyingReq.coBuyingStatus),
+    sharingDateTime: manageCoBuyingReq.sharingDateTime,
+    sharingLocation: manageCoBuyingReq.sharingLocation,
   } as ManageCoBuyingParams;
 }

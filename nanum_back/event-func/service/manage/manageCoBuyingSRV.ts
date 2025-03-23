@@ -1,12 +1,21 @@
 import { ReturnValue } from "@aws-sdk/client-dynamodb";
 import { queryCoBuyingDetail } from "@cobuying/queryCoBuyingDetailDAO";
 import { APIERROR } from "@common/responseType";
+import { CoBuyingStatus } from "@domain/cobuying";
 import { CoBuyingDetail } from "@interface/cobuying";
 import { ManageCoBuyingDto, ManageCoBuyingParams } from "@interface/manage";
 import { manageCoBuyingDAO } from "@manage/manageCoBuyingDAO";
 import { UpdateDynamoQuery } from "@query-interface/application";
 
 
+/**
+ * 공구 상세 정보 수정
+ * @param manageCoBuyingParams 
+ * @returns 
+ * 
+ * deadline은 제거됐고, 모집중 상태가 아니라면 신청 불가능
+ * 
+ */
 export const manageCoBuyingSRV = async (manageCoBuyingParams: ManageCoBuyingParams) => {
   let coBuyingDetail: CoBuyingDetail;
   
@@ -15,6 +24,8 @@ export const manageCoBuyingSRV = async (manageCoBuyingParams: ManageCoBuyingPara
       manageCoBuyingParams.ownerName,
       manageCoBuyingParams.coBuyingId,
     );
+
+    validateCoBuyingDetail(coBuyingDetail, manageCoBuyingParams);
 
     let updateCommand: UpdateDynamoQuery;
     updateCommand = getUpdateCommand(manageCoBuyingParams, coBuyingDetail);
@@ -69,34 +80,33 @@ function getUpdateCommand(manageCoBuyingParams: ManageCoBuyingParams, coBuyingDe
       console.log("As-Is: ", coBuyingDetail.productName, "To-Be: ", manageCoBuyingParams.productName);
     }
   
-    if(manageCoBuyingParams.deadline !== undefined && manageCoBuyingParams.deadline !== coBuyingDetail.deadline){
-      updateExpression += '#deadline = :deadline, ';
-      expressionAttributeValues[':deadline'] = manageCoBuyingParams.deadline;
-      expressionAttributeNames['#deadline'] = 'deadline';
-      console.log("As-Is: ", coBuyingDetail.deadline, "To-Be: ", manageCoBuyingParams.deadline);
-    } 
+    // if(manageCoBuyingParams.deadline !== undefined && manageCoBuyingParams.deadline !== coBuyingDetail.deadline){
+    //   updateExpression += '#deadline = :deadline, ';
+    //   expressionAttributeValues[':deadline'] = manageCoBuyingParams.deadline;
+    //   expressionAttributeNames['#deadline'] = 'deadline';
+    //   // console.log("As-Is: ", coBuyingDetail.deadline, "To-Be: ", manageCoBuyingParams.deadline);
+    // } 
   }
 
   /**
    * 나눔 정보 변경 시 업데이트문 작성
-   * 다만, 나눔 시간은 마감시간 이후에 가능함.
+   * 나눔 정보는 어느때든 변경 가능
    */
   if(manageCoBuyingParams.sharingDateTime !== undefined && manageCoBuyingParams.sharingDateTime !== coBuyingDetail.sharingDateTime){
     updateExpression += '#sharingDateTime = :sharingDateTime, ';
     expressionAttributeValues[':sharingDateTime'] = manageCoBuyingParams.sharingDateTime;
     expressionAttributeNames['#sharingDateTime'] = 'sharingDateTime';
-    console.log("As-Is: ", coBuyingDetail.sharingDateTime, "To-Be: ", manageCoBuyingParams.sharingDateTime);
-
-    if(manageCoBuyingParams.sharingDateTime < coBuyingDetail.deadline){
-      throw new APIERROR(400, '나눔 시간은 마감시간 이후에 가능해요.');
-    }
+    // console.log("As-Is: ", coBuyingDetail.sharingDateTime, "To-Be: ", manageCoBuyingParams.sharingDateTime);
+    // if(manageCoBuyingParams.sharingDateTime < coBuyingDetail.deadline){
+    //   throw new APIERROR(400, '나눔 시간은 마감시간 이후에 가능해요.');
+    // }
   }
 
   if(manageCoBuyingParams.sharingLocation !== undefined && manageCoBuyingParams.sharingLocation !== coBuyingDetail.sharingLocation){
     updateExpression += '#sharingLocation = :sharingLocation, ';
     expressionAttributeValues[':sharingLocation'] = manageCoBuyingParams.sharingLocation;
     expressionAttributeNames['#sharingLocation'] = 'sharingLocation';
-    console.log("As-Is: ", coBuyingDetail.sharingLocation, "To-Be: ", manageCoBuyingParams.sharingLocation);
+    // console.log("As-Is: ", coBuyingDetail.sharingLocation, "To-Be: ", manageCoBuyingParams.sharingLocation);
   }
 
   if(Object.keys(expressionAttributeValues).length === 0){
@@ -120,5 +130,57 @@ function getUpdateCommand(manageCoBuyingParams: ManageCoBuyingParams, coBuyingDe
       ReturnValues: ReturnValue.ALL_NEW,
   } as UpdateDynamoQuery;
   return param;
+}
+
+/**
+ * 공구 상세 정보 검증
+ * @param coBuyingDetail 
+ * @param manageCoBuyingParams 
+ * 
+ * 공구 상태 플로우
+ * 
+ * 모집중 -> 모집완료/나눔중 
+ * 모집완료/나눔중 -> 나눔완료
+ * 모집중 -> 취소
+ * 나눔중 -> 취소
+ * 
+ */
+function validateCoBuyingDetail(coBuyingDetail: CoBuyingDetail, manageCoBuyingParams: ManageCoBuyingParams) {
+  console.log('coBuyingDetail.coBuyingStatus: ', coBuyingDetail.coBuyingStatus, ' CoBuyingStatus.APPLYING: ', CoBuyingStatus.APPLYING);
+  console.log(typeof coBuyingDetail.coBuyingStatus); // 아마 'string'
+    console.log(typeof CoBuyingStatus.APPLYING); // 아마 'number'
+    console.log(typeof CoBuyingStatus.SHARING_COMPLETE); // 아마 'number'
+
+  if(coBuyingDetail.coBuyingStatus === CoBuyingStatus.CANCELLED){
+    throw new APIERROR(400, '취소된 공구글은 수정할 수 없어요.');
+  }
+
+  // 어떤 상태든 모집 중으로 변경 불가능!
+  if(manageCoBuyingParams.coBuyingStatus === CoBuyingStatus.APPLYING){
+    throw new APIERROR(400, '모집 중으로 변경 불가능해요.');
+  }
+
+  // 모집 완료는 모집중 상태에서만 가능
+  if(manageCoBuyingParams.coBuyingStatus === CoBuyingStatus.SHARING){
+    if(coBuyingDetail.coBuyingStatus !== CoBuyingStatus.APPLYING){
+      throw new APIERROR(400, '모집 완료는 모집중 상태에서만 가능해요.');
+    }
+  }
+  
+  // 나눔 완료는 나눔중 상태에서만 가능
+  if(manageCoBuyingParams.coBuyingStatus === CoBuyingStatus.SHARING_COMPLETE){
+    if(coBuyingDetail.coBuyingStatus !== CoBuyingStatus.SHARING){
+      throw new APIERROR(400, '나눔 완료는 나눔중 상태에서만 가능해요.');
+    }
+  }
+
+  // 취소는 모집중, 나눔중 상태에서만 가능
+  if(manageCoBuyingParams.coBuyingStatus === CoBuyingStatus.CANCELLED){
+    if(coBuyingDetail.coBuyingStatus !== CoBuyingStatus.APPLYING && coBuyingDetail.coBuyingStatus !== CoBuyingStatus.SHARING){
+      throw new APIERROR(400, '취소는 모집중, 나눔중 상태에서만 가능해요.');
+    }
+  }
+  
+
 }
 
