@@ -55,10 +55,11 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEventV2): Prom
         const headerOptions: HeaderOptions = {
             Authorization: `Bearer ${jwt.accessToken}`,
         };
-        const lamdbdaReturnDto = new LambdaReturnDto(200, {
+        const userAuthDto: UserAuthDto = {
             ownerName: auth.ownerName,
             coBuyingId: auth.coBuyingId,
-        } as UserAuthDto, event, headerOptions,refreshCookieOptions);
+        }
+        const lamdbdaReturnDto = new LambdaReturnDto(200, userAuthDto, event, headerOptions, refreshCookieOptions);
 
         // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
         console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
