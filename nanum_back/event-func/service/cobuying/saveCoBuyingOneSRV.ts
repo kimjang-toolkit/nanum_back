@@ -71,7 +71,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         ownerNameId: input.ownerName + '#' + id,
         deletedYN: 'N',
         totalQuantity: totalQuantity,
-        ownerQuantity: ownerQuantity,
+        ownerQuantity: totalQuantity,
         sharingDateTime: input.sharingDateTime,
         sharingLocation: input.sharingLocation,
         imageUrl: input.thumbnailImageUrl,
@@ -107,12 +107,12 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
         unitPrice: unitPrice,
         ownerQuantity: item.totalQuantity, // 공구장이 구매할 가정산 수량
         ownerPrice: item.totalPrice, // 공구장이 부담할 가정산 금액
-        ownerOptions: item.ownerOptions,
         totalAttendeeQuantity: ownerQuantity,
         totalAttendeePrice: ownerPrice, // 아직 공구장 밖에 신청자가 없기 때문에 공구장 부담액이 전체 부담액.
         remainQuantity: item.totalQuantity - ownerQuantity,
         attendeeCount: 1,
         attendeeList: [hostAttende],
+        ownerOptions: item.itemOptions, // 공구장이 구매할 가정산 수량, 이름과 수량만 있으면 된다. 남은 수량은 필요 없음.
         itemOptions: itemOptions,
     };
 

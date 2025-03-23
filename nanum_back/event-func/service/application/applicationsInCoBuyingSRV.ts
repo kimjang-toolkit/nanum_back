@@ -140,7 +140,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
 
         // 신청자가 구매할 세부 옵션 신청 가능 수량 업데이트
         const indexes = app.itemOptions?.map((itemOption: ItemOptionBase) => {
-                const index = coBuyingDetail.itemOptions.findIndex((itemOption) => itemOption.name === itemOption.name);
+                const index = coBuyingDetail.itemOptions.findIndex((detailItemOption) => detailItemOption.name === itemOption.name);
                 return {
                     // item Option 인덱스
                     index: index,
@@ -156,13 +156,13 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
         
                 updateExpression += `, ${optionKey} = ${optionKey} - ${valueKey}`;
                 expressionAttributeNames['#itemOptions'] = 'itemOptions';
-                expressionAttributeValues[valueKey] = coBuyingDetail.itemOptions[option.index].remainQuantity - option.optionQuantity;
+                expressionAttributeValues[valueKey] = option.optionQuantity;
             }
         });
 
         // 정산용으로 옵션 정보 추가
         const indexesForOwner = app.itemOptions?.map((itemOption: ItemOptionBase) => {
-            const index = coBuyingDetail.ownerOptions?.findIndex((itemOption) => itemOption.name === itemOption.name);
+            const index = coBuyingDetail.ownerOptions?.findIndex((ownerItemOption) => ownerItemOption.name === itemOption.name);
             return {
                 // item Option 인덱스
                 index: index,
@@ -179,7 +179,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
 
                 updateExpression += `, ${optionKey} = ${optionKey} - ${valueKey}`;
                 expressionAttributeNames['#ownerOptions'] = 'ownerOptions';
-                expressionAttributeValues[valueKey] = coBuyingDetail.ownerOptions[option.index].quantity - option.optionQuantity;
+                expressionAttributeValues[valueKey] = option.optionQuantity;
             }
         });
 
@@ -278,8 +278,8 @@ function getPerAttendeeQuantity(coBuyingDetail: AttendeeCoBuyingDetail): number 
  */
 function validateCoBuyingStatus(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
     console.log('coBuyingDetail.coBuyingStatus: ', coBuyingDetail.coBuyingStatus, ' CoBuyingStatus.APPLYING: ', CoBuyingStatus.APPLYING);
-    console.log(typeof coBuyingDetail.coBuyingStatus); // 아마 'string'
-    console.log(typeof CoBuyingStatus.APPLYING); // 아마 'number'
+    // console.log(typeof coBuyingDetail.coBuyingStatus); // 아마 'string'
+    // console.log(typeof CoBuyingStatus.APPLYING); // 아마 'number'
     if(coBuyingDetail.coBuyingStatus !== CoBuyingStatus.APPLYING) {
         throw new APIERROR(400, '모집 중일 때만 신청 가능해요.');
     }
