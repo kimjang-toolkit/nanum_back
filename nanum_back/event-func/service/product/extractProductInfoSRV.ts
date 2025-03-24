@@ -5,6 +5,7 @@ import { GongGongS3Client } from "@connect/createS3Client";
 import { APIERROR } from "@common/responseType";
 import { v4 as uuidv4 } from 'uuid';
 import { base64ToFile } from "@common/image";
+import { getTodayDate } from "@common/time";
 const s3Client = new GongGongS3Client();
 
 /**
@@ -51,8 +52,9 @@ async function saveOriginalImage(productUUID: string, productExtactReq: ProductE
   const originalImageFile = await base64ToFile(productExtactReq.imgBase64
                                               , productUUID+productExtactReq.imgType
                                               , productExtactReq.imgType);
+  const todayDate = getTodayDate();
   const imageType = "."+productExtactReq.imgType.split("/")[1];
-  const originalImageUrl = await s3Client.uploadFile("productImages/generativeAI/original"
+  const originalImageUrl = await s3Client.uploadFile(`productImages/generativeAI/original/${todayDate}`
                                                   , productUUID+imageType
                                                   , originalImageFile, metadata);
   if(!originalImageUrl){

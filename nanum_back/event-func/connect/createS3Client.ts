@@ -26,8 +26,6 @@ export class GongGongS3Client{
     if(file.size === 0){
       throw new APIERROR(400, "이미지 파일이 비어있습니다.");
     }
-    // 오늘 날짜를 yyyyMMdd 형식으로 가져옴
-    const todayDate = getTodayDate();
     
     // ✅ Base64에서 변환한 `File`을 `Blob`으로 변경
     const blob = new Blob([file], { type: file.type });
@@ -41,7 +39,7 @@ export class GongGongS3Client{
       client: this.s3Client,
       params: {
         Bucket: "jang-nanugi-front",
-        Key: `${path}/${todayDate}/${key}`,
+        Key: `${path}/${key}`,
         Body: blob,
         ContentDisposition: 'inline',
         ContentType: file.type,
@@ -54,7 +52,7 @@ export class GongGongS3Client{
       const url = await upload.done()
       console.log("Uploading file to S3...", url);
       if(url.Location !== undefined){
-        return `https://gonggong99.store/${path}/${todayDate}/${key}`;
+        return `https://gonggong99.store/${path}/${key}`;
       }
     } catch (error) {
       console.error("Error uploading file:", error);
