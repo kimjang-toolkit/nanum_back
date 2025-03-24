@@ -12,15 +12,15 @@ import { CreatePreviewPageDto } from "@interface/cobuying";
  * https://gonggong99.store/preview/{생성일}/{공구글id}?ownerName=공구장이름
  * 
  */
-export const createPreviewPageSRV = async (coBuying: CoBuyingPost) => {
+export const createPreviewPageSRV = async (coBuying: CoBuyingPost) : Promise<string> => {
 
   // 생성일 trim
   const previewPageKey = getPreviewPageKey(coBuying);
-  const path = '/preview';
+  const path = 'preview';
 
   // ✅ 상세 페이지 URL 생성
   const detailPageUrl = `https://gonggong99.store/co-buying/${coBuying.id}?ownerName=${encodeURIComponent(coBuying.ownerName)}`;
-  const previewPageUrl = `https://gonggong99.store/${previewPageKey}`;
+  const previewPageUrl = `https://gonggong99.store/${path}/${previewPageKey}`;
 
   // ✅ 미리보기 페이지 데이터 구성
   const createPreviewPageDto: CreatePreviewPageDto = {
@@ -84,7 +84,7 @@ function getPreviewHTMLContent(createPreviewPageDto: CreatePreviewPageDto) {
 
 function getPreviewPageKey(coBuying: CoBuyingPost) {
   const createdDay = coBuying.createdAt.split('T')[0];
-  const createdAt = coBuying.createdAt.split('T')[1].replace(':', '');
+  const createdAt = coBuying.createdAt.split('T')[1].replaceAll(':', '');
   // 랜덤 아이디 3자리 생성
   const randomId = Math.random().toString(36).substring(2, 5);
 
