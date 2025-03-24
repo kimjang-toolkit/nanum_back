@@ -116,6 +116,39 @@ Resources:
       StageName: GongGong99Stg
       AutoDeploy: true
 
+  SharingCheckCoBuyingFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 공구글 나눔 체크 함수
+    Properties:
+      FunctionName: !Sub "${DEPLOYSTAGE}-SharingCheckCoBuyingFunction"
+      CodeUri: event-func/control/manage
+      Handler: sharingCheckCoBuyingCTL.sharingCheckCoBuyingHandler
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        SharingCheckCoBuying:
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying/sharing-check/{coBuyingId}
+            Method: put
+            ApiId: !Ref ApiGatewayApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+        - S3CrudPolicy:
+            BucketName: !Ref S3BUCKETNAME
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2023"
+        Sourcemap: true
+        EntryPoints:
+          - sharingCheckCoBuyingCTL.ts
+
   ExtractProductInfoFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Description: 상품 정보 추출 함수
