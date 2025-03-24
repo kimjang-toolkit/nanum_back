@@ -47,6 +47,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
         imageUrl: res.imageUrl?.S,
         sharingDateTime: res.sharingDateTime?.S,
         sharingLocation: res.sharingLocation?.S,
+        previewPageUrl: res.previewPageUrl?.S,
     };
 
     if (baseDetail.type === DivideType.quantity) {

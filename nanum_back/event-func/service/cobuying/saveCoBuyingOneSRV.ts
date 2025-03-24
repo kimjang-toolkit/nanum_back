@@ -8,6 +8,7 @@ import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
 import { retrieveProductInformation } from '@product/retrieveProductInformation';
 import { ItemOption } from '@domain/product';
+import { createPreviewPageSRV } from '@cobuying/createPreviewPageSRV';
 
 /**
  * DB에 공구글 데이터 생성
@@ -44,6 +45,13 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     } else {
         // 인원나눔
         cobuying = getAttendeeCoBuying(input as CoBuyingCreateReq<DivideType.attendee>);
+    }
+
+    // 미리보기 페이지 링크 생성
+    const previewPageUrl = await createPreviewPageSRV(cobuying);
+    console.log('previewPageUrl : ', previewPageUrl);
+    if(previewPageUrl !== ''){ // 미리보기 페이지 링크가 생성되었을 경우
+        cobuying.previewPageUrl = previewPageUrl;
     }
 
     // 비동기로 상품원장에 저장

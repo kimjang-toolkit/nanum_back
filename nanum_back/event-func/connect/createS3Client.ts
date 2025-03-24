@@ -22,12 +22,10 @@ export class GongGongS3Client{
    * @param file 
    * @returns 
    */
-  public async uploadFile(path: string, key: string, file: File, metadata?: Record<string, string|number>): Promise<string|null> {
+  public async uploadFile(path: string, key: string, file: File, metadata?: Record<string, string|number>): Promise<string> {
     if(file.size === 0){
       throw new APIERROR(400, "이미지 파일이 비어있습니다.");
     }
-    // 오늘 날짜를 yyyyMMdd 형식으로 가져옴
-    const todayDate = getTodayDate();
     
     // ✅ Base64에서 변환한 `File`을 `Blob`으로 변경
     const blob = new Blob([file], { type: file.type });
@@ -41,7 +39,7 @@ export class GongGongS3Client{
       client: this.s3Client,
       params: {
         Bucket: "jang-nanugi-front",
-        Key: `${path}/${todayDate}/${key}`,
+        Key: `${path}/${key}`,
         Body: blob,
         ContentDisposition: 'inline',
         ContentType: file.type,
@@ -50,17 +48,18 @@ export class GongGongS3Client{
     });
 
     // S3 오브젝트 url을 반환
+    let previewPageUrl: string = '';
     try {
       const url = await upload.done()
       console.log("Uploading file to S3...", url);
       if(url.Location !== undefined){
-        return `https://gonggong99.store/${path}/${todayDate}/${key}`;
+        previewPageUrl = `https://gonggong99.store/${path}/${key}`;
       }
     } catch (error) {
       console.error("Error uploading file:", error);
       throw new APIERROR(500, "이미지 업로드 실패"+(error as Error).message);
     }
-    return null;
+    return previewPageUrl;
   }
 
   public async uploadImgUrl(path: string, key: string, imgUrl: string, metadata?: Record<string, string|number>): Promise<string|null> {
