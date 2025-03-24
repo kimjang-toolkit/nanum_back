@@ -40,6 +40,9 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
                             name: item.M.name.S,
                             quantity: Number(item.M.quantity.N || 0),
                         })) || [],
+                        // 공구물품 수령 체크
+                        attendeeReceivedYN: Boolean(attendee.M.attendeeSharingCheckYN?.BOOL) || false,
+                        attendeeReceivedAt: attendee.M.attendeeSharingCheckAt?.S || '0000-00-00T00:00:00',
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,

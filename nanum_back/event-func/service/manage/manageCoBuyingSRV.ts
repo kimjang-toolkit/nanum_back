@@ -168,10 +168,16 @@ function validateCoBuyingDetail(coBuyingDetail: CoBuyingDetail, manageCoBuyingPa
   }
   
   // 나눔 완료는 나눔중 상태에서만 가능
+  // 나눔 완료는 모든 신청자의 나눔체크가 Y인 경우만 가능
   if(manageCoBuyingParams.coBuyingStatus === CoBuyingStatus.SHARING_COMPLETE){
     if(coBuyingDetail.coBuyingStatus !== CoBuyingStatus.SHARING){
       throw new APIERROR(400, '나눔 완료는 나눔중 상태에서만 가능해요.');
     }
+    coBuyingDetail.attendeeList?.forEach(attendee => {
+      if(attendee.attendeeSharingCheckYN !== true){
+        throw new APIERROR(400, '모든 신청자가 나눔 체크된 경우만 가능해요.');
+      }
+    });
   }
 
   // 취소는 모집중, 나눔중 상태에서만 가능
