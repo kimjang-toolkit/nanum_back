@@ -41,8 +41,8 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
 
   return {
     productName: extractedProductInfo.product_name,
-    price: extractedProductInfo.price.amount,
-    itemVariants: extractedProductInfo.item_variants,
+    pricePrice: extractedProductInfo.price.amount,
+    itemOptions: extractedProductInfo.item_variants,
     originalImageUrl: originalImageUrl,
     thumbnailImageUrl: thumbnailImageUrl,
   } as ProductExtractDto;
