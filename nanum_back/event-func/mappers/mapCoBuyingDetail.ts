@@ -67,7 +67,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             itemOptions: res.itemOptions?.L?.map((item: any) => ({
                 name: item.M.name.S,
                 quantity: Number(item.M.quantity.N || 0),
-                remainQuantity: Number(item.M.remainQuantity.N || 0),
+                remainQuantity: Number(item.M.remainQuantity?.N || 0),
             })) || [],
             ownerOptions: res.ownerOptions?.L?.map((item: any) => ({
                 name: item.M.name.S,
