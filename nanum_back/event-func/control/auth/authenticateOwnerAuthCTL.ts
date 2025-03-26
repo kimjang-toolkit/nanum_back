@@ -22,8 +22,13 @@ const validateInput = (event: APIGatewayProxyEventV2): CoBuyingOwnerAuth => {
  * Post
  * {domain}/api/co-buying/auth/{cobuyingId}
  * 
- * @param event
- * @returns
+ * @param {APIGatewayProxyEventV2} event - API Gateway 이벤트 객체
+ * @pathParam {string} coBuyingId - 공구 ID
+ * @requestBody {object} requestBody - 요청 본문
+ * @requestBody {string} requestBody.ownerName - 공구장 이름
+ * @requestBody {string} requestBody.ownerPassword - 공구장 비밀번호
+ * @returns {object} response - 응답 객체
+ * @returns {string} response.message - 응답 메시지
  */
 export const authenticateOwnerAuth = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let auth: CoBuyingOwnerAuth;
