@@ -7,7 +7,7 @@ import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
 import { retrieveProductInformation } from '@product/retrieveProductInformation';
-import { ItemOption } from '@domain/product';
+import { ItemOption, ItemOptionBase } from '@domain/product';
 import { createPreviewPageSRV } from '@cobuying/createPreviewPageSRV';
 
 /**
@@ -106,7 +106,7 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
     };
 
     // itemOptions 초기화
-    const itemOptions = getItemOptionsInitial(input);
+    const {itemOptions, ownerOptions} = getItemOptionsInitial(input);
 
     // 수량나눔
     const quantityCoBuying: QuantityCoBuying = {
@@ -212,29 +212,55 @@ function calculatUnitPrice(input: CoBuyingCreateReq<DivideType>): number {
 //     return {};
 // };
 
-function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): ItemOption[] {
+function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): {itemOptions: ItemOption[], ownerOptions: ItemOptionBase[]} {
     const itemOptions: ItemOption[] = [];
+    const ownerOptions: ItemOptionBase[] = [];
 
+    let optionIndex = 0;
     // 옵션별 신청 가능 수량 계산
     for (const option of input.itemOptions) {
+        let optionId = option.optionId;
         const name = option.name;
         const quantity = option.quantity;
         let remainQuantity = quantity;
 
+
+        
         // 옵션별 신청 가능 수량 계산
         for (const ownerOption of input.ownerOptions) {
+            let hasOwnerOption = false;
             if (ownerOption.name === name) {
-                remainQuantity -= ownerOption.quantity;
+                if(optionId !== undefined && optionId !== -1){
+                    if(ownerOption.optionId === optionId){
+                        hasOwnerOption = true;
+                        remainQuantity -= ownerOption.quantity;
+                    }
+                } else {
+                    hasOwnerOption = true;
+                    remainQuantity -= ownerOption.quantity;
+                    optionId = optionIndex;
+                    optionIndex++;
+                }
+            }
+            if(hasOwnerOption){
+                ownerOptions.push({
+                    optionId: optionId,
+                    name: ownerOption.name,
+                    quantity: ownerOption.quantity,
+                } as ItemOptionBase);
             }
         }
+
         const itemOption: ItemOption = {
+            optionId: optionId,
             name: name,
             quantity: quantity,
             remainQuantity: remainQuantity,
         };
         itemOptions.push(itemOption);
     }
-    return itemOptions;
+    // console.log('itemOptions : ', itemOptions);
+    return {itemOptions, ownerOptions};
 }
 
 // 인당 구매 수량 계산, 소수점 3자리 미만 버림
