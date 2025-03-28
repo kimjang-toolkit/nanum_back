@@ -35,9 +35,15 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     console.log('input type : ', input.type);
     console.log('DivideType.quantity : ', DivideType.quantity);
     
+    /** 썸네일 이미지가 없을 경우 원본 이미지를 사용 */
     if(!input.imageUrl || input.imageUrl === ''){
-        input.imageUrl = input.thumbnailImageUrl;
+        if(input.thumbnailImageUrl && input.thumbnailImageUrl !== ''){
+            input.imageUrl = input.thumbnailImageUrl;
+        } else {
+            input.imageUrl = input.originalImageUrl;
+        }
     }
+
     // 방법 1: 문자열로 비교
     if (input.type === DivideType.quantity) {
         // 수량나눔

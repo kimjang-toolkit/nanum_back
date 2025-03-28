@@ -28,7 +28,7 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
     // imageUrl: originalImageUrl,
   };
 
-  console.log("taskRequest: "+JSON.stringify(taskRequest));
+  // console.log("taskRequest: "+JSON.stringify(taskRequest));
   const rawTaskResult = await createGenerativeAIClient(taskRequest);
   console.log("rawTaskResult: "+rawTaskResult);
   const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
