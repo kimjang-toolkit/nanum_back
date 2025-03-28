@@ -234,8 +234,8 @@ function validateQuantityApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq
     const coBuyingItemOptions = (coBuyingDetail as QuantityCoBuyingDetail).itemOptions;
 
     appItemOptions?.forEach((itemOption) => {
-        const coBuyingItemOption = coBuyingItemOptions?.find((coBuyingItemOption) => coBuyingItemOption.name === itemOption.name);
-        if(!coBuyingItemOption) {
+        const coBuyingItemOption = coBuyingItemOptions?.find((coBuyingItemOption) => coBuyingItemOption.optionId === itemOption.optionId);
+        if(!coBuyingItemOption || coBuyingItemOption.optionId === -1) {
             throw new APIERROR(400, '신청 가능한 옵션이 아닙니다. '+itemOption.name);
         }
         if (itemOption.quantity > (coBuyingItemOption?.remainQuantity || 0)) {

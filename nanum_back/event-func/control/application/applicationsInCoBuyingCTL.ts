@@ -50,8 +50,14 @@ function validateApplication(event: APIGatewayProxyEventV2): ApplicationReq {
  *      수량나눔: 기준가격 * 신청 수량
  *      인원나눔: 기준가격 * 1
  * 
- * @param event 
- * @returns 
+ * @param {APIGatewayProxyEventV2} event - API Gateway 이벤트 객체
+ * @requestBody {object} requestBody - 요청 본문
+ * @requestBody {string} requestBody.attendeeName - 신청자 이름
+ * @requestBody {string} requestBody.coBuyingId - 공구 ID
+ * @requestBody {string} requestBody.ownerName - 공구장 이름
+ * @requestBody {ItemOptionBase[]} [requestBody.itemOptions] - 아이템 옵션
+ * @returns {object} response - 응답 객체
+ * @returns {string} response.message - 응답 메시지
  */
 export const applicationsInCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let application: ApplicationReq;

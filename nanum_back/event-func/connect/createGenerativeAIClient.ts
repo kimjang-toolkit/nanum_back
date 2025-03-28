@@ -6,20 +6,23 @@ const tasks = {
   [TaskType.productInfoExtract]: {
     model: 'gemini-1.5-flash-8b',
     prompt: `
-      Analyze the image and extract product information along with the main product thumbnail section. Provide the output in JSON format with the following structure:
+      Analyze the image and ex  tract product information along with the main product thumbnail section. Provide the output in JSON format with the following structure:
 
-      - \`product_name\`: The name of the product.
-      - \`price\`: The total price of the selected product.
+      - \`product_name\`: The name of the product. If the product name is not available, set it to an empty string.
+      - \`price\`: The total price of the selected product. If the price is not available, set it to 0.
       - \`product_options\`: A list of available product variants (e.g., different pack sizes such as 10pcs, 20pcs, 30pcs, 50pcs).
-      - \`selected_product_option\`: The package size currently selected on the webpage.
-      - \`item_variants\`: A breakdown of the different types or flavors contained within the selected product, along with their respective quantities.
+      - \`selected_product_option\`: The package size currently selected on the webpage. If the package size is not available, set it to {}.
+      - \`item_variants\`: A breakdown of the different types or flavors contained within the selected product, along with their respective quantities. If the item variants are not available, set it to [].
+            1. If there are no product options, set it to an empty array.
+            2. If the name is not available, set it to an empty string.
+            3. If the quantity is not available, set it to 0.
       - \`main_thumbnail\`: Extract the most **prominent and largest** product image from the webpage, ensuring the following conditions:
             1\. The **aspect ratio should be as close to 1:1 as possible**.
             2\. The bounding box should **contain the most relevant area that matches the product name** \(\`product_name\`\)\.
             3\. If possible, the bounding box should **include all item variants** listed in \`item_variants\`.
             4\. Select **the largest possible area** while still meeting the above conditions. Output a JSON object containing:
         - \`box_2d\`: The 2D bounding box coordinates of the detected main product image.
-        - \`label\`: The text label associated with the detected product image.
+        - \`label\`: The text label associated with the detected product image. If the label is not available, set it to an empty string.
 
       Ensure that:
       1. \`product_options\` lists all available package sizes and prices.

@@ -6,6 +6,7 @@ import { APIERROR } from "@common/responseType";
 import { v4 as uuidv4 } from 'uuid';
 import { base64ToFile } from "@common/image";
 import { getTodayDate } from "@common/time";
+import { ItemOptionBase } from "@domain/product";
 const s3Client = new GongGongS3Client();
 
 /**
@@ -27,7 +28,7 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
     // imageUrl: originalImageUrl,
   };
 
-  console.log("taskRequest: "+JSON.stringify(taskRequest));
+  // console.log("taskRequest: "+JSON.stringify(taskRequest));
   const rawTaskResult = await createGenerativeAIClient(taskRequest);
   console.log("rawTaskResult: "+rawTaskResult);
   const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
@@ -39,10 +40,16 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
   console.log("originalImageUrl: "+originalImageUrl);
   console.log("thumbnailImageUrl: "+thumbnailImageUrl);
 
+  const itemOptions = extractedProductInfo.item_variants.map((item, idx) => ({
+    optionId: idx,
+    name: item.name,
+    quantity: item.quantity,
+  } as ItemOptionBase));
+  
   return {
     productName: extractedProductInfo.product_name,
-    price: extractedProductInfo.price.amount,
-    itemVariants: extractedProductInfo.item_variants,
+    totalPrice: extractedProductInfo.price.amount,
+    itemOptions: itemOptions,
     originalImageUrl: originalImageUrl,
     thumbnailImageUrl: thumbnailImageUrl,
   } as ProductExtractDto;

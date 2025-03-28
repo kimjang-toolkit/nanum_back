@@ -7,7 +7,7 @@ import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
 import { retrieveProductInformation } from '@product/retrieveProductInformation';
-import { ItemOption } from '@domain/product';
+import { ItemOption, ItemOptionBase } from '@domain/product';
 import { createPreviewPageSRV } from '@cobuying/createPreviewPageSRV';
 
 /**
@@ -35,9 +35,15 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     console.log('input type : ', input.type);
     console.log('DivideType.quantity : ', DivideType.quantity);
     
+    /** 썸네일 이미지가 없을 경우 원본 이미지를 사용 */
     if(!input.imageUrl || input.imageUrl === ''){
-        input.imageUrl = input.thumbnailImageUrl;
+        if(input.thumbnailImageUrl && input.thumbnailImageUrl !== ''){
+            input.imageUrl = input.thumbnailImageUrl;
+        } else {
+            input.imageUrl = input.originalImageUrl;
+        }
     }
+
     // 방법 1: 문자열로 비교
     if (input.type === DivideType.quantity) {
         // 수량나눔
@@ -92,22 +98,21 @@ function getQuantityCoBuying(input: CoBuyingCreateReq<DivideType.quantity>): Qua
     // 공구장의 신청 부담액 계산 = 단위 가격 * 신청 수량
     const ownerPrice: number = unitPrice * ownerQuantity;
 
+    // itemOptions 초기화
+    const {itemOptions, ownerOptions} = getItemOptionsInitial(input);
+
     /**
-     * 초기에 신청자는 공구장 한명이므로 공구장 부담액이 전체 부담액.
-     * 사람들이 신청하면서 공구장의 가정산 부담액과 가정산 부담 수량이 변경됨.
-     */
+         * 초기에 신청자는 공구장 한명이므로 공구장 부담액이 전체 부담액.
+         * 사람들이 신청하면서 공구장의 가정산 부담액과 가정산 부담 수량이 변경됨.
+         */
     const hostAttende: Attendee = {
         attendeeName: item.ownerName, // 공구장 이름
         attendeeQuantity: ownerQuantity, // 실제 공구장 구매 수량
         attendeePrice: ownerPrice, // 공구장 신청 부담액
-        attendeeOptions: item.ownerOptions, // 공구장 구매 옵션, 수량 기준만 사용하는 속성
+        attendeeOptions: ownerOptions, // 공구장 구매 옵션, 수량 기준만 사용하는 속성
         // estimatedSettlePrice: item.totalPrice, // 가정산 부담액
         // estimatedSettleQuantity: item.totalQuantity, // 가정산 부담 수량
     };
-
-    // itemOptions 초기화
-    const itemOptions = getItemOptionsInitial(input);
-
     // 수량나눔
     const quantityCoBuying: QuantityCoBuying = {
         ...item,
@@ -212,29 +217,49 @@ function calculatUnitPrice(input: CoBuyingCreateReq<DivideType>): number {
 //     return {};
 // };
 
-function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): ItemOption[] {
+function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): {itemOptions: ItemOption[], ownerOptions: ItemOptionBase[]} {
     const itemOptions: ItemOption[] = [];
+    const ownerOptions: ItemOptionBase[] = [];
 
     // 옵션별 신청 가능 수량 계산
     for (const option of input.itemOptions) {
+        let optionId = option.optionId;
         const name = option.name;
         const quantity = option.quantity;
         let remainQuantity = quantity;
 
+
+        
         // 옵션별 신청 가능 수량 계산
         for (const ownerOption of input.ownerOptions) {
+            let hasOwnerOption = false;
             if (ownerOption.name === name) {
-                remainQuantity -= ownerOption.quantity;
+                if(optionId !== undefined && optionId !== -1){
+                    if(ownerOption.optionId === optionId){
+                        hasOwnerOption = true;
+                        remainQuantity -= ownerOption.quantity;
+                    }
+                }
+            }
+            if(hasOwnerOption){
+                ownerOptions.push({
+                    optionId: optionId,
+                    name: ownerOption.name,
+                    quantity: ownerOption.quantity,
+                } as ItemOptionBase);
             }
         }
+
         const itemOption: ItemOption = {
+            optionId: optionId,
             name: name,
             quantity: quantity,
             remainQuantity: remainQuantity,
         };
         itemOptions.push(itemOption);
     }
-    return itemOptions;
+    // console.log('itemOptions : ', itemOptions);
+    return {itemOptions, ownerOptions};
 }
 
 // 인당 구매 수량 계산, 소수점 3자리 미만 버림
