@@ -79,7 +79,20 @@ export const handler = async (event, context) => {
   console.log("xMin: ", xMin, "yMin: ", yMin, "xMax: ", xMax, "yMax: ", yMax);
 
   if (isNaN(xMin) || isNaN(yMin) || isNaN(xMax) || isNaN(yMax)) {
-    throw new Error("Invalid crop metadata.");
+    console.error(
+      "Invalid crop metadata. xMin: ",
+      xMin,
+      "yMin: ",
+      yMin,
+      "xMax: ",
+      xMax,
+      "yMax: ",
+      yMax
+    );
+    xMin = 0;
+    yMin = 0;
+    xMax = width;
+    yMax = height;
   }
 
   // ✅ 5️⃣ 이미지 크롭 및 320x320 리사이징 (비율 유지)
@@ -97,6 +110,7 @@ export const handler = async (event, context) => {
         // 비율 유지하며 320x320 크기로 조정
         fit: "inside",
       })
+      .jpeg({ quality: 60 }) // JPEG 품질을 60으로 설정
       .toBuffer();
   } catch (error) {
     console.log("Error processing image:", error);
