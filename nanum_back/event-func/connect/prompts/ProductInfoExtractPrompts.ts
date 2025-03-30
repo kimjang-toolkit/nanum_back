@@ -24,29 +24,6 @@ export const productInfoExtractPrompt = `
       2. \`selected_product_option\` correctly identifies the currently selected package.
       3. \`item_variants\` includes the breakdown of different flavors/types in the selected package.
       4. \`main_thumbnail\` detects and includes only the **largest and most prominent** product image while **ignoring smaller secondary images**.
-
-      #### **Example JSON Output**
-      
-      {
-        "product_name": "미식 밀키트 BEST SET (소고기된장전골 & 곱창전골)",
-        "price": {
-          "amount": 13500,
-          "currency": "원"
-        },
-        "product_options": [
-          {"name": "기본 세트", "price": "12,320원"}
-        ],
-        "selected_product_option": {"name": "기본 세트", "price": "12,320원"},
-        "item_variants": [
-          {"name": "소고기된장전골", "quantity": 1},
-          {"name": "소고기곱창전골", "quantity": 1}
-        ],
-        "main_thumbnail": {
-          "box_2d": {"x_min": 50, "y_min": 100, "x_max": 600, "y_max": 800},
-          "label": "미식 밀키트 BEST SET (소고기된장전골 & 곱창전골)"
-        }
-      }
-      
       `
 
 export const productInfoExtractJsonConfig = {
@@ -99,7 +76,7 @@ export const productInfoExtractJsonConfig = {
       },
       item_variants: {
         type: Type.ARRAY,
-        description: '상품 구성(예: 소고기된장전골 1개, 곱창전골 1개 등)',
+        description: '상품 구성',
         items: {
           type: Type.OBJECT,
           properties: {
@@ -142,3 +119,28 @@ export const productInfoExtractJsonConfig = {
     ],
   }
 }
+
+/***
+ * 
+ * #### **Example JSON Output**
+      
+      {
+        "product_name": "미식 밀키트 BEST SET (소고기된장전골 & 곱창전골)",
+        "price": {
+          "amount": 13500,
+          "currency": "원"
+        },
+        "product_options": [
+          {"name": "기본 세트", "price": "12,320원"}
+        ],
+        "selected_product_option": {"name": "기본 세트", "price": "12,320원"},
+        "item_variants": [
+          {"name": "소고기된장전골", "quantity": 1},
+          {"name": "소고기곱창전골", "quantity": 1}
+        ],
+        "main_thumbnail": {
+          "box_2d": {"x_min": 50, "y_min": 100, "x_max": 600, "y_max": 800},
+          "label": "미식 밀키트 BEST SET (소고기된장전골 & 곱창전골)"
+        }
+      }
+ */

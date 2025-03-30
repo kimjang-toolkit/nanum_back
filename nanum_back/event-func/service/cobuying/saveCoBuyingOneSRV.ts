@@ -2,7 +2,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { CoBuyingStatus, QuantityCoBuying, AttendeeCoBuying, CoBuyingPost, DivideType } from '@domain/cobuying';
 import { Attendee } from '@domain/user';
-import { getFormattedKoreaTime, getKoreaDay } from 'common/time';
+import { getFormattedKoreaTime } from 'common/time';
 import { insertCoBuying } from '@cobuying/saveCoBuyingOneDAO';
 import { CoBuyingCreateReq, CoBuyingSummary } from '@interface/cobuying';
 import { hashPassword } from '@auth/authEncrptorSRV';
@@ -35,7 +35,7 @@ export const saveCoBuying = async (input: CoBuyingCreateReq<DivideType>): Promis
     console.log('input type : ', input.type);
     console.log('DivideType.quantity : ', DivideType.quantity);
     
-    /** 썸네일 이미지가 없을 경우 원본 이미지를 사용 */
+    /** 썸네일 이미지가 없을 경우 원본 이미지를 사용 jpeg, jpg, png, webp, heic, heif 타입만 사용 */
     if(!input.imageUrl || input.imageUrl === ''){
         if(input.thumbnailImageUrl && input.thumbnailImageUrl !== ''){
             input.imageUrl = input.thumbnailImageUrl;

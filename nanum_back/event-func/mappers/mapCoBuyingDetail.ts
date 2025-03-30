@@ -48,7 +48,7 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             ) || [],
         createdAt: res.createdAt.S,
         coBuyingStatus: Number(res.coBuyingStatus.N || res.coBuyingStatus.S) as CoBuyingStatus,
-        imageUrl: res.imageUrl?.S,
+        imageUrl: res.originalImageUrl?.S,
         sharingDateTime: res.sharingDateTime?.S,
         sharingLocation: res.sharingLocation?.S,
         previewPageUrl: res.previewPageUrl?.S,
