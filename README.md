@@ -72,3 +72,5 @@ zip -r function.zip .
 ```
 
 function.zip 파일을 람다 함수로 배포
+
+aws lambda update-function-code  --function-name Dev-convertOrigin2Thumbnail --zip-file fileb://function.zip --region ap-northeast-2

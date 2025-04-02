@@ -66,41 +66,41 @@ export const handler = async (event, context) => {
   const contentBuffer = Buffer.concat(await stream.toArray());
 
   // ✅ 메타데이터 추출
-  const s3Metadata = response.Metadata;
-  if (!s3Metadata) throw new Error("No metadata found in the source image.");
+  // const s3Metadata = response.Metadata;
+  // if (!s3Metadata) throw new Error("No metadata found in the source image.");
 
   // ✅ Sharp 라이브러리를 사용하여 이미지의 width, height 가져오기
-  const metadata = await sharp(contentBuffer).metadata();
-  const width = metadata.width;
-  const height = metadata.height;
+  // const metadata = await sharp(contentBuffer).metadata();
+  // const width = metadata.width;
+  // const height = metadata.height;
 
   // ✅ 메타데이터 확인
-  console.log(`Image dimensions - Width: ${width}, Height: ${height}`);
+  // console.log(`Image dimensions - Width: ${width}, Height: ${height}`);
 
   // ✅ 좌표 정규화 (0~1000 → 실제 픽셀 값)
-  let xMin = Math.round((parseInt(s3Metadata["x_min"], 10) / 1000) * width);
-  let yMin = Math.round((parseInt(s3Metadata["y_min"], 10) / 1000) * height);
-  let xMax = Math.round((parseInt(s3Metadata["x_max"], 10) / 1000) * width);
-  let yMax = Math.round((parseInt(s3Metadata["y_max"], 10) / 1000) * height);
+  // let xMin = Math.round((parseInt(s3Metadata["x_min"], 10) / 1000) * width);
+  // let yMin = Math.round((parseInt(s3Metadata["y_min"], 10) / 1000) * height);
+  // let xMax = Math.round((parseInt(s3Metadata["x_max"], 10) / 1000) * width);
+  // let yMax = Math.round((parseInt(s3Metadata["y_max"], 10) / 1000) * height);
 
-  console.log("xMin: ", xMin, "yMin: ", yMin, "xMax: ", xMax, "yMax: ", yMax);
+  // console.log("xMin: ", xMin, "yMin: ", yMin, "xMax: ", xMax, "yMax: ", yMax);
 
-  if (isNaN(xMin) || isNaN(yMin) || isNaN(xMax) || isNaN(yMax)) {
-    console.error(
-      "Invalid crop metadata. xMin: ",
-      xMin,
-      "yMin: ",
-      yMin,
-      "xMax: ",
-      xMax,
-      "yMax: ",
-      yMax
-    );
-    xMin = 0;
-    yMin = 0;
-    xMax = width;
-    yMax = height;
-  }
+  // if (isNaN(xMin) || isNaN(yMin) || isNaN(xMax) || isNaN(yMax)) {
+  //   console.error(
+  //     "Invalid crop metadata. xMin: ",
+  //     xMin,
+  //     "yMin: ",
+  //     yMin,
+  //     "xMax: ",
+  //     xMax,
+  //     "yMax: ",
+  //     yMax
+  //   );
+  //   xMin = 0;
+  //   yMin = 0;
+  //   xMax = width;
+  //   yMax = height;
+  // }
 
   // ✅ 5️⃣ 이미지 크롭 및 320x320 리사이징 (비율 유지)
   let outputBuffer;
@@ -117,7 +117,7 @@ export const handler = async (event, context) => {
         // 비율 유지하며 320x320 크기로 조정
         fit: "inside",
       })
-      .jpeg({ quality: 60 }) // JPEG 품질을 60으로 설정
+      .jpeg({ quality: 80 }) // JPEG 품질을 60으로 설정
       .toBuffer();
   } catch (error) {
     console.log("Error processing image:", error);
