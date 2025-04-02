@@ -43,7 +43,14 @@ export const handler = async (event, context) => {
     return;
   }
   const imageType = typeMatch[1].toLowerCase();
-  if (imageType !== "jpg" && imageType !== "png") {
+  if (
+    imageType !== "jpg" &&
+    imageType !== "png" &&
+    imageType !== "jpeg" &&
+    imageType !== "webp" &&
+    imageType !== "heic" &&
+    imageType !== "heif"
+  ) {
     console.log(`Unsupported image type: ${imageType}`);
     return;
   }
@@ -79,24 +86,38 @@ export const handler = async (event, context) => {
   console.log("xMin: ", xMin, "yMin: ", yMin, "xMax: ", xMax, "yMax: ", yMax);
 
   if (isNaN(xMin) || isNaN(yMin) || isNaN(xMax) || isNaN(yMax)) {
-    throw new Error("Invalid crop metadata.");
+    console.error(
+      "Invalid crop metadata. xMin: ",
+      xMin,
+      "yMin: ",
+      yMin,
+      "xMax: ",
+      xMax,
+      "yMax: ",
+      yMax
+    );
+    xMin = 0;
+    yMin = 0;
+    xMax = width;
+    yMax = height;
   }
 
   // ✅ 5️⃣ 이미지 크롭 및 320x320 리사이징 (비율 유지)
   let outputBuffer;
   try {
     outputBuffer = await sharp(contentBuffer)
-      .extract({
-        // 메타데이터 기반 크롭
-        left: xMin,
-        top: yMin,
-        width: xMax - xMin,
-        height: yMax - yMin,
-      })
+      // .extract({
+      //   // 메타데이터 기반 크롭
+      //   left: xMin,
+      //   top: yMin,
+      //   width: xMax - xMin,
+      //   height: yMax - yMin,
+      // })
       .resize(320, 320, {
         // 비율 유지하며 320x320 크기로 조정
         fit: "inside",
       })
+      .jpeg({ quality: 60 }) // JPEG 품질을 60으로 설정
       .toBuffer();
   } catch (error) {
     console.log("Error processing image:", error);
