@@ -96,11 +96,34 @@ Resources:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
-        AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie'"
-        AllowOrigins: "'https://gonggong99.store', 'http://localhost:5173'"
-        ExposeHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie'"
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Forwarded-For"
+          - "X-Api-Key"
+          - "X-Amz-Security-Token"
+          - "GongGong99-AccessToken"
+          - "GongGong99-RefreshToken"
+          - "Set-Cookie"
+        ExposeHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Forwarded-For"
+          - "X-Api-Key"
+          - "X-Amz-Security-Token"
+          - "GongGong99-AccessToken"
+          - "GongGong99-RefreshToken"
+          - "Set-Cookie"
         AllowCredentials: true
+        AllowOrigins:
+          - "https://gonggong99.store"
+          - "http://localhost:5173"
 
   ApiGatewayProdStage:
     Type: AWS::ApiGatewayV2::Stage
@@ -132,7 +155,7 @@ Resources:
         SharingCheckCoBuying:
           Type: HttpApi
           Properties:
-            Path: /api/co-buying/sharing-check/{coBuyingId}
+            Path: /api/co-buying/{coBuyingId}/sharing-check
             Method: put
             ApiId: !Ref ApiGatewayApi
       Policies:

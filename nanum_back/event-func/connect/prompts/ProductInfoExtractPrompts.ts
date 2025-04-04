@@ -28,8 +28,12 @@ import { Type } from "@google/genai";
  *      - Color (e.g., Red package vs. Green package)
  *      - Size or shape
  *      - Any other visible characteristic (e.g., different flavor or variety)
+ *    - If no distinct variants are found, create a single item option using a simplified version of the product_name
+ *      (remove promotional words and unnecessary details) with quantity = 1
  *    - If a name is unavailable, use ""; if quantity is unavailable, use 0.
- *    - If the model cannot find any separate variants, return an empty array [].
+ *    - If the model cannot find any separate variants and product_name is empty, return an empty array [].
+ *    - If item options are not found, use a simplified title of the main product as the name.
+ *    - If quantity cannot be inferred, try to extract it from the product_name.
  * 
  * 5. selected_product_option
  *    - The user-selected package or variant from the webpage.
@@ -165,8 +169,12 @@ export const productInfoExtractPrompt = `
       - Color (e.g., Red package vs. Green package)
       - Size or shape
       - Any other visible characteristic (e.g., different flavor or variety)
+    - If no distinct variants are found, create a single item option using a simplified version of the product_name
+      (remove promotional words and unnecessary details) with quantity = 1
     - If a name is unavailable, use ""; if quantity is unavailable, use 0.
-    - If the model cannot find any separate variants, return an empty array [].
+    - If item options are not found, use a simplified title of the main product as the name.
+    - If quantity cannot be inferred, try to extract it from the product_name.
+    - If the model cannot find any separate variants and product_name is empty, return an empty array [].
   5. selected_product_option
     - The user-selected package or variant from the webpage.
     - If not specified, use an empty object {}.

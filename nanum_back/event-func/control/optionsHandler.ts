@@ -16,5 +16,7 @@ export const optionsHandler = async (event:APIGatewayProxyEventV2): Promise<APIG
   //   body: ""
   // };
 
-    return new LambdaReturnDto(200, {}, event).getLambdaReturnDto();
+    const dto = new LambdaReturnDto(200, {}, event).getLambdaReturnDto();
+    console.log("dto: "+ JSON.stringify(dto));
+    return dto;
 };
