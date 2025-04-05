@@ -42,12 +42,12 @@ async function validateSharingCoBuying(event: APIGatewayProxyEventV2): Promise<S
   console.log(sharingReq);
 
   // 공구글 나눔 완료 체크 요청 유효성 검사
-  if (sharingReq.attendeeName === undefined || sharingReq.sharingCheckYN === undefined) {
+  if (sharingReq.name === undefined || sharingReq.isShared === undefined) {
     throw new APIERROR(400, "공구글 나눔 완료 체크 요청 유효성 검사 실패");
   }
   
   // check 값이 true 또는 false 인지 확인
-  if (sharingReq.sharingCheckYN !== true && sharingReq.sharingCheckYN !== false) {
+  if (sharingReq.isShared !== true && sharingReq.isShared !== false) {
     throw new APIERROR(400, "공구글 나눔 완료 체크 값이 옳바르지 않아요.");
   }
 
@@ -68,8 +68,8 @@ async function validateSharingCoBuying(event: APIGatewayProxyEventV2): Promise<S
   }
 
   return {
-    attendeeName: sharingReq.attendeeName,
-    sharingCheckYN: sharingReq.sharingCheckYN,
+    name: sharingReq.name,
+    isShared: sharingReq.isShared,
     coBuyingId: coBuyingId,
     ownerName: ownerName,
   } as SharingCheckCoBuyingParams;

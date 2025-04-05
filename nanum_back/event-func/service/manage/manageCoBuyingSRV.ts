@@ -174,7 +174,7 @@ function validateCoBuyingDetail(coBuyingDetail: CoBuyingDetail, manageCoBuyingPa
       throw new APIERROR(400, '나눔 완료는 나눔중 상태에서만 가능해요.');
     }
     coBuyingDetail.attendeeList?.forEach(attendee => {
-      if(attendee.attendeeSharingCheckYN !== true){
+      if(attendee.isShared !== true){
         throw new APIERROR(400, '모든 신청자가 나눔 체크된 경우만 가능해요.');
       }
     });

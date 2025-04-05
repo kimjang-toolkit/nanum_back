@@ -33,17 +33,17 @@ export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
             res.attendeeList?.L?.map(
                 (attendee: any) =>
                     ({
-                        attendeeName: attendee.M.attendeeName.S,
-                        attendeeQuantity: Number(attendee.M.attendeeQuantity.N || 0),
-                        attendeePrice: Number(attendee.M.attendeePrice.N || 0),
-                        attendeeOptions: attendee.M.attendeeOptions?.L?.map((item: any) => ({
+                        name: attendee.M.name.S,
+                        totalQuantity: Number(attendee.M.totalQuantity.N || 0),
+                        totalPrice: Number(attendee.M.totalPrice.N || 0),
+                        options: attendee.M.options?.L?.map((item: any) => ({
                             optionId: Number(item.M.optionId?.N || -1),
                             name: item.M.name.S,
                             quantity: Number(item.M.quantity.N || 0),
                         })) || [],
                         // 공구물품 수령 체크
-                        attendeeReceivedYN: Boolean(attendee.M.attendeeSharingCheckYN?.BOOL) || false,
-                        attendeeReceivedAt: attendee.M.attendeeSharingCheckAt?.S || '0000-00-00T00:00:00',
+                        isShared: Boolean(attendee.M.isShared?.BOOL) || false,
+                        sharingCheckAt: attendee.M.sharingCheckAt?.S || '0000-00-00T00:00:00',
                     } as Attendee),
             ) || [],
         createdAt: res.createdAt.S,
