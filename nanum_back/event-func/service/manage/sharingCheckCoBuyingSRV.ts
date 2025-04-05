@@ -42,7 +42,7 @@ function getUpdateCommand(sharingCoBuyingParams: SharingCheckCoBuyingParams, coB
   const expressionAttributeNames: Record<string, string> = {};
 
   // coBuyingDetail에서 신청자 리스트 중 나눔 체크한 신청자의 인덱스 찾기
-  const attendeeIndex = coBuyingDetail.attendeeList?.findIndex((attendee: Attendee) => attendee.attendeeName === sharingCoBuyingParams.attendeeName);
+  const attendeeIndex = coBuyingDetail.attendeeList?.findIndex((attendee: Attendee) => attendee.name === sharingCoBuyingParams.name);
 
   if (attendeeIndex === -1) {
     throw new APIERROR(400, '존재하지 않는 신청자입니다.');
@@ -50,16 +50,16 @@ function getUpdateCommand(sharingCoBuyingParams: SharingCheckCoBuyingParams, coB
 
   
   // 해당 인덱스의 attendeeSharingCheckYN 값을 업데이트 해주기
-  const ynOptionKey = `#attendeeList[${attendeeIndex}].attendeeSharingCheckYN`;
-  const ynValueKey = `:attendeeSharingCheckYN_${attendeeIndex}`;
+  const ynOptionKey = `#attendeeList[${attendeeIndex}].isShared`;
+  const ynValueKey = `:isShared_${attendeeIndex}`;
 
   updateExpression += ` ${ynOptionKey} = ${ynValueKey}`;
   expressionAttributeNames['#attendeeList'] = 'attendeeList';
-  expressionAttributeValues[ynValueKey] = sharingCoBuyingParams.sharingCheckYN;
+  expressionAttributeValues[ynValueKey] = sharingCoBuyingParams.isShared;
 
   // 해당 인덱스의 attendeeSharingCheckAt 값을 업데이트 해주기
-  const atOptionKey = `#attendeeList[${attendeeIndex}].attendeeSharingCheckAt`;
-  const atValueKey = `:attendeeSharingCheckAt_${attendeeIndex}`;
+  const atOptionKey = `#attendeeList[${attendeeIndex}].sharingCheckAt`;
+  const atValueKey = `:sharingCheckAt_${attendeeIndex}`;
 
   updateExpression += `, ${atOptionKey} = ${atValueKey}`;
   expressionAttributeNames['#attendeeList'] = 'attendeeList';

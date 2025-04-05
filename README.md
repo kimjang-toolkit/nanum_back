@@ -64,11 +64,17 @@ Stg, Prod 배포가 안정화되면 그때 도메인 변경 및 배포 추가
 - 여러 리소스를 동시에 수정은 가능하지만, **꼭 리소스 당 하나의 변경사항**만 적용.
 - 인덱스 삭제 후 새로운 인덱스 생성 시 기존 인덱스 삭제 후 새로운 인덱스 생성 필요
 
-## 이미지 크롭핑 함수 배포
 
+
+## 이미지 크롭핑 함수 배포
+### sharp 배포를 위해 컨테이너 빌드 방법
+
+npm install --platform=linux --arch=x64 sharp@0.32.6
 ```
 cd lambda-s3
 zip -r function.zip .
 ```
 
 function.zip 파일을 람다 함수로 배포
+
+aws lambda update-function-code  --function-name Dev-convertOrigin2Thumbnail --zip-file fileb://function.zip --region ap-northeast-2
