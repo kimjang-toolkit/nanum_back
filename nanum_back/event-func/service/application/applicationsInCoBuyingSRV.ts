@@ -31,23 +31,23 @@ export const applicationsInCoBuyingSRV = async (application: ApplicationReq) => 
         // 공구글 타입에 따라 신청자가 부담하는 금액 계산
         if(coBuyingDetail.type === DivideType.quantity) {
             attendeeQuantity = application.itemOptions?.reduce((acc, curr) => acc + curr.quantity, 0) || 0;
-            application.attendeeQuantity = attendeeQuantity;
-            application.attendeePrice = (coBuyingDetail as QuantityCoBuyingDetail).unitPrice * attendeeQuantity;
+            application.totalQuantity = attendeeQuantity;
+            application.totalPrice = (coBuyingDetail as QuantityCoBuyingDetail).unitPrice * attendeeQuantity;
         } else {
             // attendeeQuantity = 1;
             if( !coBuyingDetail.perAttendeeQuantity || coBuyingDetail.perAttendeeQuantity === 0) {
-                application.attendeeQuantity = getPerAttendeeQuantity(coBuyingDetail as AttendeeCoBuyingDetail);
+                application.totalQuantity = getPerAttendeeQuantity(coBuyingDetail as AttendeeCoBuyingDetail);
             } else {
-                application.attendeeQuantity = coBuyingDetail.perAttendeeQuantity;
+                application.totalQuantity = coBuyingDetail.perAttendeeQuantity;
             }
-            application.attendeePrice = (coBuyingDetail as AttendeeCoBuyingDetail).perAttendeePrice;
+            application.totalPrice = (coBuyingDetail as AttendeeCoBuyingDetail).perAttendeePrice;
         }
 
         const attendeeList: Attendee[] = coBuyingDetail.attendeeList || [];
         // console.log('attendeeList', attendeeList);
         if (
             attendeeList.find(
-                (attendee: Attendee) => attendee.attendeeName === application.attendeeName,
+                (attendee: Attendee) => attendee.name === application.name,
             )
         ) {
             throw new APIERROR(400, '이미 사용 중인 이름입니다. 다른 이름을 사용해주세요.');
@@ -87,14 +87,14 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
 
     /** 신청자의 상세 옵션 정보 추가 */
     const attendee: Attendee = {
-        attendeeName: app.attendeeName,
-        attendeePrice: app.attendeePrice || 0,
-        attendeeQuantity: app.attendeeQuantity,
+        name: app.name,
+        totalPrice: app.totalPrice || 0,
+        totalQuantity: app.totalQuantity,
     };
 
     // 신청자의 상세 옵션 정보 추가
     if(app.itemOptions && app.itemOptions.length > 0) {
-        attendee.attendeeOptions = app.itemOptions;
+        attendee.options = app.itemOptions;
     }
 
     let updateExpression = 'SET ';
@@ -114,33 +114,33 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
     // 참여자 총 금액 증가
     updateExpression += ', #totalAttendeePrice = #totalAttendeePrice + :newAttendeePrice';
     expressionAttributeNames['#totalAttendeePrice'] = 'totalAttendeePrice';
-    expressionAttributeValues[':newAttendeePrice'] = app.attendeePrice;
+    expressionAttributeValues[':newAttendeePrice'] = app.totalPrice;
 
     // 공구장 가정산 금액 업데이트
     // 신청자가 부담하는 만큼 공구장 부담액이 감소함
     updateExpression += ', #ownerPrice = #ownerPrice - :newAttendeePrice';
     expressionAttributeNames['#ownerPrice'] = 'ownerPrice';
-    expressionAttributeValues[':newAttendeePrice'] = app.attendeePrice;
+    expressionAttributeValues[':newAttendeePrice'] = app.totalPrice;
 
     // 수량 나눔 공구글에 대한 추가 업데이트
     if (coBuyingDetail.type === DivideType.quantity) {
         updateExpression += ', #totalAttendeeQuantity = #totalAttendeeQuantity + :newAttendeeQuantity';
         expressionAttributeNames['#totalAttendeeQuantity'] = 'totalAttendeeQuantity';
-        expressionAttributeValues[':newAttendeeQuantity'] = app.attendeeQuantity;
+        expressionAttributeValues[':newAttendeeQuantity'] = app.totalQuantity;
 
         updateExpression += ', #remainQuantity = #remainQuantity - :newAttendeeQuantity';
         expressionAttributeNames['#remainQuantity'] = 'remainQuantity';
-        expressionAttributeValues[':newAttendeeQuantity'] = app.attendeeQuantity;
+        expressionAttributeValues[':newAttendeeQuantity'] = app.totalQuantity;
 
         // 공구장 가정산 수량 업데이트
         // 신청자가 구매하는 만큼 공구장 가정산 수량이 감소함
         updateExpression += ', #ownerQuantity = #ownerQuantity - :newAttendeeQuantity';
         expressionAttributeNames['#ownerQuantity'] = 'ownerQuantity';
-        expressionAttributeValues[':newAttendeeQuantity'] = app.attendeeQuantity;
+        expressionAttributeValues[':newAttendeeQuantity'] = app.totalQuantity;
 
         // 신청자가 구매할 세부 옵션 신청 가능 수량 업데이트
         const indexes = app.itemOptions?.map((itemOption: ItemOptionBase) => {
-                const index = coBuyingDetail.itemOptions.findIndex((detailItemOption) => detailItemOption.name === itemOption.name);
+                const index = coBuyingDetail.itemOptions.findIndex((detailItemOption) => detailItemOption.optionId === itemOption.optionId);
                 return {
                     // item Option 인덱스
                     index: index,
@@ -162,7 +162,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
 
         // 정산용으로 옵션 정보 추가
         const indexesForOwner = app.itemOptions?.map((itemOption: ItemOptionBase) => {
-            const index = coBuyingDetail.ownerOptions?.findIndex((ownerItemOption) => ownerItemOption.name === itemOption.name);
+            const index = coBuyingDetail.ownerOptions?.findIndex((ownerItemOption) => ownerItemOption.optionId === itemOption.optionId);
             return {
                 // item Option 인덱스
                 index: index,
@@ -224,7 +224,7 @@ function validateApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
 }
 
 function validateQuantityApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq) {
-    if (!app.attendeeQuantity) {
+    if (!app.totalQuantity) {
         throw new APIERROR(400, '수량을 입력해주세요.');
     }
     // if (Math.round(app.attendeePrice) !== Math.round((coBuyingDetail as QuantityCoBuyingDetail).unitPrice * app.attendeeQuantity)) {
@@ -234,8 +234,8 @@ function validateQuantityApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq
     const coBuyingItemOptions = (coBuyingDetail as QuantityCoBuyingDetail).itemOptions;
 
     appItemOptions?.forEach((itemOption) => {
-        const coBuyingItemOption = coBuyingItemOptions?.find((coBuyingItemOption) => coBuyingItemOption.name === itemOption.name);
-        if(!coBuyingItemOption) {
+        const coBuyingItemOption = coBuyingItemOptions?.find((coBuyingItemOption) => coBuyingItemOption.optionId === itemOption.optionId);
+        if(!coBuyingItemOption || coBuyingItemOption.optionId === -1) {
             throw new APIERROR(400, '신청 가능한 옵션이 아닙니다. '+itemOption.name);
         }
         if (itemOption.quantity > (coBuyingItemOption?.remainQuantity || 0)) {
@@ -243,7 +243,7 @@ function validateQuantityApp(coBuyingDetail: CoBuyingDetail, app: ApplicationReq
         }
     });
 
-    if (app.attendeeQuantity > (coBuyingDetail as QuantityCoBuyingDetail).remainQuantity) {
+    if (app.totalQuantity > (coBuyingDetail as QuantityCoBuyingDetail).remainQuantity) {
         throw new APIERROR(400, '남은 수량보다 많은 수량을 신청할 수 없습니다.');
     }    
 }

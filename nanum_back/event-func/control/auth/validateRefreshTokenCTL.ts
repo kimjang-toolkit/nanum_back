@@ -12,8 +12,11 @@ import { regenerateToken } from '@auth/authEncrptorSRV';
  * Get
  * {domain}/api/refresh
  * 
- * @param event 
- * @returns 
+ * @param {APIGatewayProxyEventV2} event - API Gateway 이벤트 객체
+ * @returns {APIGatewayProxyResult} - Lambda 함수의 응답 객체
+ * @returns {string} response.message - 응답 메시지
+ * @returns {string} response.ownerName - 사용자 이름
+ * @returns {string} response.coBuyingId - 공구 ID
  */
 export const validateRefreshTokenCTL = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
     let token: string;

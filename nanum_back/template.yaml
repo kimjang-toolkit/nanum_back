@@ -96,11 +96,34 @@ Resources:
     Type: AWS::Serverless::HttpApi
     Properties:
       CorsConfiguration:
-        AllowMethods: "'POST, GET, PUT, DELETE, OPTIONS'"
-        AllowHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie'"
-        AllowOrigins: "'https://gonggong99.store', 'http://localhost:5173'"
-        ExposeHeaders: "'Content-Type, Authorization, X-Forwarded-For, X-Api-Key, X-Amz-Security-Token, GongGong99-AccessToken, GongGong99-RefreshToken, Set-Cookie'"
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Forwarded-For"
+          - "X-Api-Key"
+          - "X-Amz-Security-Token"
+          - "GongGong99-AccessToken"
+          - "GongGong99-RefreshToken"
+          - "Set-Cookie"
+        ExposeHeaders:
+          - "Content-Type"
+          - "Authorization"
+          - "X-Forwarded-For"
+          - "X-Api-Key"
+          - "X-Amz-Security-Token"
+          - "GongGong99-AccessToken"
+          - "GongGong99-RefreshToken"
+          - "Set-Cookie"
         AllowCredentials: true
+        AllowOrigins:
+          - "https://gonggong99.store"
+          - "http://localhost:5173"
 
   ApiGatewayProdStage:
     Type: AWS::ApiGatewayV2::Stage
@@ -115,6 +138,39 @@ Resources:
       ApiId: !Ref ApiGatewayApi
       StageName: GongGong99Stg
       AutoDeploy: true
+
+  SharingCheckCoBuyingFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Description: 공구글 나눔 체크 함수
+    Properties:
+      FunctionName: !Sub "${DEPLOYSTAGE}-SharingCheckCoBuyingFunction"
+      CodeUri: event-func/control/manage
+      Handler: sharingCheckCoBuyingCTL.sharingCheckCoBuyingHandler
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+        SharingCheckCoBuying:
+          Type: HttpApi
+          Properties:
+            Path: /api/co-buying/{coBuyingId}/sharing-check
+            Method: put
+            ApiId: !Ref ApiGatewayApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CoBuyingTableName
+        - S3CrudPolicy:
+            BucketName: !Ref S3BUCKETNAME
+    Metadata: # Manage esbuild properties
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2023"
+        Sourcemap: true
+        EntryPoints:
+          - sharingCheckCoBuyingCTL.ts
 
   ExtractProductInfoFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction

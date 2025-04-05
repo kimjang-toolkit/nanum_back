@@ -5,6 +5,8 @@ import { GongGongS3Client } from "@connect/createS3Client";
 import { APIERROR } from "@common/responseType";
 import { v4 as uuidv4 } from 'uuid';
 import { base64ToFile } from "@common/image";
+import { getTodayDate } from "@common/time";
+import { ItemOptionBase } from "@domain/product";
 const s3Client = new GongGongS3Client();
 
 /**
@@ -18,6 +20,13 @@ const s3Client = new GongGongS3Client();
  * @returns 
  */
 export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq) : Promise<ProductExtractDto> => {
+  let rawTaskResult = '';
+  let extractedProductInfo = {} as ExtractedProductInfo;
+  let productUUID = '';
+  let originalImageUrl = '';
+  let thumbnailImageUrl = '';
+  let itemOptions: ItemOptionBase[] = [];
+  let productName = '';
 
   const taskRequest : TaskRequest = {
     taskType: TaskType.productInfoExtract,
@@ -26,22 +35,34 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
     // imageUrl: originalImageUrl,
   };
 
-  console.log("taskRequest: "+JSON.stringify(taskRequest));
-  const rawTaskResult = await createGenerativeAIClient(taskRequest);
+  console.log("taskRequest taskType: "+taskRequest.taskType+" imageMimeType: "+taskRequest.imageMimeType);
+  rawTaskResult = await createGenerativeAIClient(taskRequest);
   console.log("rawTaskResult: "+rawTaskResult);
-  const extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
+  extractedProductInfo = JSON.parse(rawTaskResult) as ExtractedProductInfo;
   console.log("extractedProductInfo: "+extractedProductInfo);
 
-  const productUUID = uuidv4(); 
-  const originalImageUrl = await saveOriginalImage(productUUID, productExtactReq, extractedProductInfo.main_thumbnail.box_2d);
-  const thumbnailImageUrl = getThumbnailImageUrl(originalImageUrl);
+  productUUID = uuidv4(); 
+  originalImageUrl = await saveOriginalImage(productUUID, productExtactReq, extractedProductInfo.main_thumbnail.box_2d);
+  thumbnailImageUrl = getThumbnailImageUrl(originalImageUrl);
   console.log("originalImageUrl: "+originalImageUrl);
   console.log("thumbnailImageUrl: "+thumbnailImageUrl);
 
+  itemOptions = extractedProductInfo.item_options.map((item, idx) => ({
+    optionId: idx,
+    name: item.name,
+    quantity: item.quantity,
+  } as ItemOptionBase));
+  
+  if(extractedProductInfo.product_name === '' && extractedProductInfo.selected_product_option.name !== ''){
+    productName = extractedProductInfo.selected_product_option.name;
+  }else{
+    productName = extractedProductInfo.product_name;
+  }
+
   return {
-    productName: extractedProductInfo.product_name,
-    price: extractedProductInfo.price.amount,
-    itemVariants: extractedProductInfo.item_variants,
+    productName: productName,
+    totalPrice: extractedProductInfo.price.amount,
+    itemOptions: itemOptions,
     originalImageUrl: originalImageUrl,
     thumbnailImageUrl: thumbnailImageUrl,
   } as ProductExtractDto;
@@ -51,8 +72,9 @@ async function saveOriginalImage(productUUID: string, productExtactReq: ProductE
   const originalImageFile = await base64ToFile(productExtactReq.imgBase64
                                               , productUUID+productExtactReq.imgType
                                               , productExtactReq.imgType);
+  const todayDate = getTodayDate();
   const imageType = "."+productExtactReq.imgType.split("/")[1];
-  const originalImageUrl = await s3Client.uploadFile("productImages/generativeAI/original"
+  const originalImageUrl = await s3Client.uploadFile(`productImages/generativeAI/original/${todayDate}`
                                                   , productUUID+imageType
                                                   , originalImageFile, metadata);
   if(!originalImageUrl){

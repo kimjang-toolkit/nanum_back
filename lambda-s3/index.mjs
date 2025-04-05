@@ -14,6 +14,7 @@ import {
   GetObjectCommand,
   PutObjectCommand,
 } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 import { Readable } from "stream";
 import sharp from "sharp";
 import util from "util";
@@ -33,92 +34,140 @@ export const handler = async (event, context) => {
   const srcKey = decodeURIComponent(
     event.Records[0].s3.object.key.replace(/\+/g, " ")
   );
-  const dstBucket = srcBucket; // 썸네일 저장할 버킷
+  // const dstBucket = srcBucket; // 썸네일 저장할 버킷
   const dstKey = srcKey.replace("original", "thumbnail"); // 썸네일 저장할 키;
 
   // ✅ 2️⃣ 이미지 타입 확인
   const typeMatch = srcKey.match(/\.([^.]*)$/);
+
   if (!typeMatch) {
     console.log("Could not determine the image type.");
     return;
   }
   const imageType = typeMatch[1].toLowerCase();
-  if (imageType !== "jpg" && imageType !== "png") {
+  console.log("이미지 타입: " + imageType);
+  if (
+    imageType !== "jpg" &&
+    imageType !== "png" &&
+    imageType !== "jpeg" &&
+    imageType !== "webp" &&
+    imageType !== "heic" &&
+    imageType !== "heif"
+  ) {
     console.log(`Unsupported image type: ${imageType}`);
     return;
   }
 
   // ✅ 원본 이미지 가져오기 (메타데이터 포함)
-  const response = await s3.send(
-    new GetObjectCommand({ Bucket: srcBucket, Key: srcKey })
-  );
-
+  let originalFileResponse;
+  try {
+    console.log("Bucket: " + srcBucket + " Key: " + srcKey);
+    originalFileResponse = await s3.send(
+      new GetObjectCommand({ Bucket: srcBucket, Key: srcKey })
+    );
+  } catch {
+    console.log("Error image GetObject :", error);
+    return;
+  }
+  console.log("저장 목표 위치: " + dstKey);
+  // console.log("originalFileResponse: " + JSON.stringify(originalFileResponse));
   // ✅ 이미지 데이터 읽기
-  const stream = response.Body;
-  if (!(stream instanceof Readable)) throw new Error("Invalid image stream.");
-  const contentBuffer = Buffer.concat(await stream.toArray());
-
-  // ✅ 메타데이터 추출
-  const s3Metadata = response.Metadata;
-  if (!s3Metadata) throw new Error("No metadata found in the source image.");
-
-  // ✅ Sharp 라이브러리를 사용하여 이미지의 width, height 가져오기
-  const metadata = await sharp(contentBuffer).metadata();
-  const width = metadata.width;
-  const height = metadata.height;
-
-  // ✅ 메타데이터 확인
-  console.log(`Image dimensions - Width: ${width}, Height: ${height}`);
-
-  // ✅ 좌표 정규화 (0~1000 → 실제 픽셀 값)
-  let xMin = Math.round((parseInt(s3Metadata["x_min"], 10) / 1000) * width);
-  let yMin = Math.round((parseInt(s3Metadata["y_min"], 10) / 1000) * height);
-  let xMax = Math.round((parseInt(s3Metadata["x_max"], 10) / 1000) * width);
-  let yMax = Math.round((parseInt(s3Metadata["y_max"], 10) / 1000) * height);
-
-  console.log("xMin: ", xMin, "yMin: ", yMin, "xMax: ", xMax, "yMax: ", yMax);
-
-  if (isNaN(xMin) || isNaN(yMin) || isNaN(xMax) || isNaN(yMax)) {
-    throw new Error("Invalid crop metadata.");
+  const { Body, ...rest } = originalFileResponse;
+  console.log("originalFileResponse metadata:", rest);
+  const stream = Body;
+  if (!(stream instanceof Readable)) {
+    console.log("Invalid image stream.");
+    return;
   }
 
-  // ✅ 5️⃣ 이미지 크롭 및 320x320 리사이징 (비율 유지)
   let outputBuffer;
   try {
-    outputBuffer = await sharp(contentBuffer)
-      .extract({
-        // 메타데이터 기반 크롭
-        left: xMin,
-        top: yMin,
-        width: xMax - xMin,
-        height: yMax - yMin,
-      })
-      .resize(320, 320, {
-        // 비율 유지하며 320x320 크기로 조정
-        fit: "inside",
-      })
-      .toBuffer();
+    const contentBuffer = Buffer.concat(await stream.toArray());
+    console.log("valid image download, start to resize");
+    outputBuffer = await resizeImageToThumbnail(
+      contentBuffer,
+      320,
+      320,
+      "jpeg"
+    );
+    console.log("이미지 썸네일 생성 완료");
   } catch (error) {
-    console.log("Error processing image:", error);
+    console.log("썸네일 생성 실패:", error);
     return;
   }
 
   // ✅ 6️⃣ 변환된 이미지 S3에 업로드
+  console.log("목표 버킷: " + srcBucket);
+  const s3Client = new S3Client({
+    region: process.env.REGIONNAME,
+  });
   try {
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: dstBucket,
+    const upload = new Upload({
+      client: s3Client,
+      params: {
+        Bucket: srcBucket,
         Key: dstKey,
         Body: outputBuffer,
+        ContentDisposition: "inline",
         ContentType: "image/png",
-      })
-    );
+      },
+    });
+    // await s3.send(
+    //   new PutObjectCommand({
+    //     Bucket: srcBucket,
+    //     Key: dstKey,
+    //     Body: outputBuffer,
+    //     ContentType: "image/png",
+    //   })
+    // );
+    try {
+      const url = await upload.done();
+      console.log("Uploading file to S3...", url);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      throw new Error("이미지 업로드 실패");
+    }
   } catch (error) {
     console.log("Error uploading image:", error);
     return;
   }
 
   console.log(
-    `Successfully cropped & resized ${srcBucket}/${srcKey} → ${dstBucket}/${dstKey}`
+    `Successfully cropped & resized ${srcBucket}/${srcKey} → ${srcBucket}/${dstKey}`
   );
+};
+
+// utils/sharpUtils.ts 또는 상단에 따로 함수로 분리
+const resizeImageToThumbnail = async (
+  inputBuffer,
+  width = 320,
+  height = 320,
+  format = "jpeg"
+) => {
+  try {
+    console.log("inputBuffer로 이미지 변환 시작");
+    const transformer = sharp(inputBuffer).resize(width, height, {
+      fit: "inside", // 비율 유지하면서 최대한 맞추기
+      background: { r: 255, g: 255, b: 255, alpha: 1 }, // 여백 배경색 (white)
+    });
+    console.log("inputBuffer로 이미지 변환 완료");
+    if (format === "jpeg") {
+      transformer.jpeg({ quality: 80 });
+    } else if (format === "png") {
+      transformer.png();
+    } else if (format === "webp") {
+      transformer.webp({ quality: 80 });
+    }
+    console.log("sharp 변환 완료");
+    const outputBuffer = await transformer.toBuffer();
+    if (!outputBuffer || outputBuffer.length === 0) {
+      console.log("⚠️ outputBuffer가 비어있습니다.");
+      return;
+    }
+    console.log("✅ outputBuffer 크기:", outputBuffer.length, "bytes");
+    return outputBuffer;
+  } catch (error) {
+    console.log("sharp 변환 에러:", error);
+    throw new Error("이미지 변환 실패");
+  }
 };

@@ -3,7 +3,6 @@ import { ImageMimeType, ProductExtractDto, ProductExtractReq } from "@interface/
 import { extractProductInfoSRV } from "@product/extractProductInfoSRV";
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda";
 import { LambdaReturnDto } from "dto/LambdaReturnDto";
-import fs from 'fs';
 
 export const extractProductInfoCTL = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
   let productExtractReq: ProductExtractReq;

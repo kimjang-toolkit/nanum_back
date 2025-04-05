@@ -18,7 +18,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
     const baseCoBuying: CoBuyingDB = {
         deletedYN: item.deletedYN.S,
         createdAtId: item.createdAtId.S,
-        deadlineId: item.deadlineId.S,
+        // deadlineId: item.deadlineId.S,
         ownerNameId: item.ownerNameId.S,
         id: item.id.S,
         productName: item.productName.S,
@@ -28,7 +28,7 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
         totalPrice: Number(item.totalPrice.N),
         totalQuantity: Number(item.totalQuantity.N),
         attendeeCount: Number(item.attendeeCount.N),
-        deadline: item.deadline.S,
+        // deadline: item.deadline.S,
         type: item.type.S === 'quantity' ? DivideType.quantity : DivideType.attendee,
         memo: item.memo?.S,
         imageUrl: item.imageUrl?.S,
@@ -49,6 +49,17 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
             totalAttendeeQuantity: Number(item.totalAttendeeQuantity.N),
             unitPrice: Number(item.unitPrice.N),
             remainQuantity: Number(item.remainQuantity.N),
+            itemOptions: item.itemOptions?.L?.map((item: any) => ({
+                optionId: Number(item.M.optionId?.N || -1),
+                name: item.M.name.S,
+                quantity: Number(item.M.quantity.N || 0),
+                remainQuantity: Number(item.M.remainQuantity?.N || 0),
+            })) || [],
+            ownerOptions: item.ownerOptions?.L?.map((item: any) => ({   
+                optionId: Number(item.M.optionId?.N || -1),
+                name: item.M.name.S,
+                quantity: Number(item.M.quantity.N || 0),
+            })) || [],
         };
 
         return quantityCoBuying;
@@ -58,21 +69,24 @@ export const mapToCoBuyingPost = (item: Record<string, Record<string, any>>): Co
             type: DivideType.attendee,
             targetAttendeeCount: Number(item.planAttendeeCount.N), // 예시로 총 참석자 수를 사용
             perAttendeePrice: Number(item.perAttendeePrice.N), // 예시로 단가를 사용
+            perAttendeeQuantity: Number(item.perAttendeeQuantity.N),
             remainAttendeeCount: Number(item.remainAttendeeCount.N),
         };
 
         return attendeeCoBuying;
     }
-
-    // 유효하지 않은 type일 경우 에러 처리
-    throw new Error(`알 수 없는 공구글 타입입니다: ${item.type}`);
 };
 
 // 신청자 리스트를 매핑하는 함수
 function mapAttendeeList(attendeeList: any[]): Attendee[] {
     return attendeeList.map((attendee) => ({
-        attendeeName: attendee.M.attendeeName.S,
-        attendeePrice: Number(attendee.M.attendeePrice.N),
-        appliedQuantity: Number(attendee.M.appliedQuantity.N),
+        name: attendee.M.name.S,
+        totalPrice: Number(attendee.M.totalPrice.N),
+        totalQuantity: Number(attendee.M.totalQuantity.N),
+        options: attendee.M.options.L.map((option: any) => ({
+            optionId: Number(option.M.optionId.N),
+            name: option.M.name.S,
+            quantity: Number(option.M.quantity.N),
+        })),
     }));
 }
