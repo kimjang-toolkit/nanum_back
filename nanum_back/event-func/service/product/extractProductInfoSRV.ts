@@ -42,7 +42,8 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
   console.log("extractedProductInfo: "+extractedProductInfo);
 
   productUUID = uuidv4(); 
-  originalImageUrl = await saveOriginalImage(productUUID, productExtactReq, extractedProductInfo.main_thumbnail.box_2d);
+  // 썸네일 스크립 기능 문제로 썸네일 metadata 전달 안함
+  originalImageUrl = await saveOriginalImage(productUUID, productExtactReq, {});
   thumbnailImageUrl = getThumbnailImageUrl(originalImageUrl);
   console.log("originalImageUrl: "+originalImageUrl);
   console.log("thumbnailImageUrl: "+thumbnailImageUrl);
@@ -52,15 +53,9 @@ export const extractProductInfoSRV = async (productExtactReq: ProductExtractReq)
     name: item.name,
     quantity: item.quantity,
   } as ItemOptionBase));
-  
-  if(extractedProductInfo.product_name === '' && extractedProductInfo.selected_product_option.name !== ''){
-    productName = extractedProductInfo.selected_product_option.name;
-  }else{
-    productName = extractedProductInfo.product_name;
-  }
 
   return {
-    productName: productName,
+    productName: extractedProductInfo.product_name,
     totalPrice: extractedProductInfo.price.amount,
     itemOptions: itemOptions,
     originalImageUrl: originalImageUrl,

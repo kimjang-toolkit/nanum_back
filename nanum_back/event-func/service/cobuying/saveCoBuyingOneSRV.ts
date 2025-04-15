@@ -262,8 +262,8 @@ function getItemOptionsInitial(input: CoBuyingCreateReq<DivideType.quantity>): {
     return {itemOptions, ownerOptions};
 }
 
-// 인당 구매 수량 계산, 소수점 3자리 미만 버림
+// 인당 구매 수량 계산, 소수점 2자리 미만 버림
 function calculatPerAttendeeQuantity(input: CoBuyingCreateReq<DivideType.attendee>): number {
     const perAttendeeQuantity = input.totalQuantity / input.targetAttendeeCount;
-    return Math.floor(perAttendeeQuantity * 1000) / 1000;
+    return Math.floor(perAttendeeQuantity * 10) / 10;
 }

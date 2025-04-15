@@ -159,10 +159,7 @@ export const productInfoExtractPrompt = `
     - A numeric amount and currency (e.g., "원", "USD"). 
     - The total price of the selected product. 
     - If unavailable, amount = 0, currency = "".
-  3. product_options
-    - An array of package sizes or variants with their prices (string form, e.g., "19,000원").
-    - If none, return an empty array [].
-  4. item_options
+  3. item_options
     - A list of **distinct item variants** visible in the image.
     - Each "item" here is considered a different option if it differs by:
       - Label text (e.g., "Smoked Chicken" vs. "Herb Chicken")
@@ -175,12 +172,6 @@ export const productInfoExtractPrompt = `
     - If item options are not found, use a simplified title of the main product as the name.
     - If quantity cannot be inferred, try to extract it from the product_name.
     - If the model cannot find any separate variants and product_name is empty, return an empty array [].
-  5. selected_product_option
-    - The user-selected package or variant from the webpage.
-    - If not specified, use an empty object {}.
-  7. main_thumbnail
-    - The largest, most prominent product image bounding box in near 1:1 aspect ratio.
-    - If none found, default to { x_min: 0, y_min: 0, x_max: 0, y_max: 0 } with label = "".
  
  All extracted data must conform to the following interface:
  
@@ -192,24 +183,17 @@ export const productInfoExtractPrompt = `
 
  (You could optionally add a "selected_item_option" field if needed to track
  which variant from item_options is chosen. But that depends on your design.) 
+
+ 캡처화면에 별다른 언어가 보이지 않는다면, 기본적으로 한국어를 이용해줘.
  
  Example:
  {
    "product_name": "꼬꼬벨리 치킨브라더스 12팩",
    "price": { "amount": 19000, "currency": "원" },
-   "product_options": [
-     { "name": "10pcs", "price": "10,000원" },
-     { "name": "20pcs", "price": "19,000원" }
-   ],
-   "selected_product_option": { "name": "10pcs", "price": "10,000원" },
    "item_options": [
      { "name": "후라이드", "quantity": 1 },
      { "name": "콩", "quantity": 2 }
-   ],
-   "main_thumbnail": {
-     "box_2d": { "x_min": 0, "y_min": 0, "x_max": 320, "y_max": 320 },
-     "label": "꼬꼬벨리 치킨브라더스 12팩"
-   }
+   ]
  }
 `
 
@@ -262,25 +246,25 @@ export const productInfoExtractJsonConfig = {
         },
         required: ['amount', 'currency'],
       },
-      product_options: {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            name: { type: Type.STRING, nullable: false },
-            price: { type: Type.STRING, nullable: false },
-          },
-          required: ['name', 'price'],
-        },
-      },
-      selected_product_option: {
-        type: Type.OBJECT,
-        properties: {
-          name: { type: Type.STRING, nullable: false },
-          price: { type: Type.STRING, nullable: false },
-        },
-        required: ['name', 'price'],
-      },
+      // product_options: {
+      //   type: Type.ARRAY,
+      //   items: {
+      //     type: Type.OBJECT,
+      //     properties: {
+      //       name: { type: Type.STRING, nullable: false },
+      //       price: { type: Type.STRING, nullable: false },
+      //     },
+      //     required: ['name', 'price'],
+      //   },
+      // },
+      // selected_product_option: {
+      //   type: Type.OBJECT,
+      //   properties: {
+      //     name: { type: Type.STRING, nullable: false },
+      //     price: { type: Type.STRING, nullable: false },
+      //   },
+      //   required: ['name', 'price'],
+      // },
       item_options: {
         type: Type.ARRAY,
         items: {
@@ -292,34 +276,34 @@ export const productInfoExtractJsonConfig = {
           required: ['name', 'quantity'],
         },
       },
-      main_thumbnail: {
-        type: Type.OBJECT,
-        properties: {
-          box_2d: {
-            type: Type.OBJECT,
-            properties: {
-              x_min: { type: Type.NUMBER, nullable: false },
-              y_min: { type: Type.NUMBER, nullable: false },
-              x_max: { type: Type.NUMBER, nullable: false },
-              y_max: { type: Type.NUMBER, nullable: false },
-            },
-            required: ['x_min', 'y_min', 'x_max', 'y_max'],
-          },
-          label: {
-            type: Type.STRING,
-            description: '이미지에 대한 레이블/설명',
-            nullable: false,
-          },
-        },
-        required: ['box_2d', 'label'],
-      },
+      // main_thumbnail: {
+      //   type: Type.OBJECT,
+      //   properties: {
+      //     box_2d: {
+      //       type: Type.OBJECT,
+      //       properties: {
+      //         x_min: { type: Type.NUMBER, nullable: false },
+      //         y_min: { type: Type.NUMBER, nullable: false },
+      //         x_max: { type: Type.NUMBER, nullable: false },
+      //         y_max: { type: Type.NUMBER, nullable: false },
+      //       },
+      //       required: ['x_min', 'y_min', 'x_max', 'y_max'],
+      //     },
+      //     label: {
+      //       type: Type.STRING,
+      //       description: '이미지에 대한 레이블/설명',
+      //       nullable: false,
+      //     },
+      //   },
+      //   required: ['box_2d', 'label'],
+      // },
     },
     // 어떤 필드를 반드시 포함해야 하는지 명시
     required: [
       'product_name',
       'price',
       'item_options',
-      'main_thumbnail',
+      // 'main_thumbnail',
     ],
   }
 }

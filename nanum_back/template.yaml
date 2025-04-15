@@ -27,6 +27,7 @@ Globals:
         FacebookAppId: !Ref FacebookAppId
         FacebookAppSecret: !Ref FacebookAppSecret
         GoogleApiKey: !Ref GoogleApiKey
+
 Parameters:
   CoBuyingTableName:
     Type: String
@@ -91,6 +92,10 @@ Parameters:
     Description: Google API Key
     Default: "AIzaSyB9000000000000000000000000000000"
 
+# Conditions:
+#   IsProd: !Equals [!Ref DEPLOYSTAGE, "Prod"]
+#   IsStg: !Equals [!Ref DEPLOYSTAGE, "Stg"]
+
 Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::HttpApi
@@ -124,9 +129,11 @@ Resources:
         AllowOrigins:
           - "https://gonggong99.store"
           - "http://localhost:5173"
+          # - !If [IsStg, "http://localhost:5173", !Ref "AWS::NoValue"]
 
   ApiGatewayProdStage:
     Type: AWS::ApiGatewayV2::Stage
+    # Condition: IsProd
     Properties:
       ApiId: !Ref ApiGatewayApi
       StageName: GongGong99Prod
@@ -134,6 +141,7 @@ Resources:
 
   ApiGatewayStgStage:
     Type: AWS::ApiGatewayV2::Stage
+    # Condition: IsStg
     Properties:
       ApiId: !Ref ApiGatewayApi
       StageName: GongGong99Stg
