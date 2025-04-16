@@ -506,6 +506,20 @@ Resources:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
 
+  CustomerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${DEPLOYSTAGE}-CustomerTable"
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S # ID
+      KeySchema:
+        - AttributeName: id
+          KeyType: Hash # 정렬 키는 createdAt#id
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM

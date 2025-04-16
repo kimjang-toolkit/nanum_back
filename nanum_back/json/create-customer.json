@@ -1,10 +1,10 @@
 {
-  "TableName": "PersonTable",
+  "TableName": "CustomerTable",
   "KeySchema": [
-    { "AttributeName": "Id", "KeyType": "HASH" }
+    { "AttributeName": "id", "KeyType": "HASH" }
   ],
   "AttributeDefinitions": [
-    { "AttributeName": "Id", "AttributeType": "S" }
+    { "AttributeName": "id", "AttributeType": "S" }
   ],
   "ProvisionedThroughput": {
     "ReadCapacityUnits": 1,
