@@ -148,18 +148,18 @@ Resources:
       AutoDeploy: true
 
   SharingCheckCoBuyingFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 공구글 나눔 체크 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-SharingCheckCoBuyingFunction"
-      CodeUri: event-func/control/manage
+      CodeUri: event-func/manage/control
       Handler: sharingCheckCoBuyingCTL.sharingCheckCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         SharingCheckCoBuying:
           Type: HttpApi
           Properties:
@@ -171,7 +171,7 @@ Resources:
             TableName: !Ref CoBuyingTableName
         - S3CrudPolicy:
             BucketName: !Ref S3BUCKETNAME
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -181,30 +181,30 @@ Resources:
           - sharingCheckCoBuyingCTL.ts
 
   ExtractProductInfoFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 상품 정보 추출 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-ExtractProductInfoFunction"
-      CodeUri: event-func/control/product
+      CodeUri: event-func/product/control
       Handler: extractProductInfoCTL.extractProductInfoCTL
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         ExtractProductInfo:
           Type: HttpApi
           Properties:
             Path: /api/product/extract
-            Method: post # 상품 정보 추출 및 저장
+            Method: post
             ApiId: !Ref ApiGatewayApi
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
         - S3CrudPolicy:
             BucketName: !Ref S3BUCKETNAME
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -214,18 +214,18 @@ Resources:
           - extractProductInfoCTL.ts
 
   CreateCoBuyingFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 공구방 생성 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-CreateCoBuyingFunction"
-      CodeUri: event-func/control/cobuying
+      CodeUri: event-func/cobuying/control
       Handler: saveCoBuyingOneCTL.createCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         CreateCoBuying:
           Type: HttpApi
           Properties:
@@ -237,7 +237,7 @@ Resources:
             TableName: !Ref CoBuyingTableName
         - S3CrudPolicy:
             BucketName: !Ref S3BUCKETNAME
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -250,7 +250,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-OptionsFunction"
-      CodeUri: event-func/control
+      CodeUri: event-func/common
       Handler: optionsHandler.optionsHandler
       Runtime: nodejs20.x
       MemorySize: 128
@@ -274,18 +274,18 @@ Resources:
           - optionsHandler.ts
 
   AuthenticateOwnerAuthFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 공구장 인증 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-AuthenticateOwnerAuthFunction"
-      CodeUri: event-func/control/auth
+      CodeUri: event-func/auth/control
       Handler: authenticateOwnerAuthCTL.authenticateOwnerAuth
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         AuthenticateOwnerAuth:
           Type: HttpApi
           Properties:
@@ -295,7 +295,7 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -305,18 +305,18 @@ Resources:
           - authenticateOwnerAuthCTL.ts
 
   ValidateRefreshTokenFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 리프레시 토큰 검증 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-ValidateRefreshTokenFunction"
-      CodeUri: event-func/control/auth
+      CodeUri: event-func/auth/control
       Handler: validateRefreshTokenCTL.validateRefreshTokenCTL
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         ValidateRefreshToken:
           Type: HttpApi
           Properties:
@@ -326,7 +326,7 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -336,18 +336,18 @@ Resources:
           - validateRefreshTokenCTL.ts
 
   ApplicationsInCoBuyingFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 공구방 참여 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-ApplicationsInCoBuyingFunction"
-      CodeUri: event-func/control/application
+      CodeUri: event-func/application/control
       Handler: applicationsInCoBuyingCTL.applicationsInCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         ApplicationsInCoBuying:
           Type: HttpApi
           Properties:
@@ -357,7 +357,7 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -367,18 +367,18 @@ Resources:
           - applicationsInCoBuyingCTL.ts
 
   ManageCoBuyingFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Description: 공구방 관리 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-ManageCoBuyingFunction"
-      CodeUri: event-func/control/manage
+      CodeUri: event-func/manage/control
       Handler: manageCoBuyingCTL.manageCoBuyingHandler
       Runtime: nodejs20.x
       MemorySize: 2048
       Timeout: 20
       Architectures:
         - x86_64
-      Events: # API Gateway 이벤트 설정으로 암시적 생성 -> 자동 생성
+      Events:
         ManageCoBuying:
           Type: HttpApi
           Properties:
@@ -388,7 +388,7 @@ Resources:
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref CoBuyingTableName
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -402,7 +402,7 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-GetCoBuyingDetailFunction"
-      CodeUri: event-func/control/cobuying
+      CodeUri: event-func/cobuying/control
       Handler: queryCoBuyingDetailOneCTL.getCoBuyingDetailHandler
       Runtime: nodejs20.x
       MemorySize: 2048
@@ -433,7 +433,7 @@ Resources:
     Description: 공구방 생성 함수
     Properties:
       FunctionName: !Sub "${DEPLOYSTAGE}-GetCoBuyingListFunction"
-      CodeUri: event-func/control/cobuying
+      CodeUri: event-func/cobuying/control
       Handler: queryCoBuyingListCTL.getCoBuyingListHandler
       Runtime: nodejs20.x
       MemorySize: 2048
