@@ -18,29 +18,19 @@
         "@domain/*": ["../api-interface/src/domain/*"],
         "@interface/*": ["../api-interface/src/interface/*"],
         "@cobuying/*": [
-          "../event-func/control/cobuying/*", 
-          "../event-func/service/cobuying/*", 
-          "../event-func/dao/cobuying/*"
+          "../event-func/cobuying/*", 
         ],
         "@product/*": [
-          "../event-func/control/product/*", 
-          "../event-func/service/product/*", 
-          "../event-func/dao/product/*"
+          "../event-func/product/*", 
         ],
         "@auth/*": [
-          "../event-func/control/auth/*", 
-          "../event-func/service/auth/*", 
-          "../event-func/dao/auth/*"
+          "../event-func/auth/*", 
         ],
         "@application/*": [
-          "../event-func/control/application/*", 
-          "../event-func/service/application/*", 
-          "../event-func/dao/application/*",
+          "../event-func/application/*", 
         ],
         "@manage/*": [
-          "../event-func/control/manage/*", 
-          "../event-func/service/manage/*", 
-          "../event-func/dao/manage/*",
+          "../event-func/manage/*", 
         ],
         "@connect/*": [
           "../event-func/connect/*"
