@@ -20,6 +20,9 @@
         "@cobuying/*": [
           "../event-func/cobuying/*", 
         ],
+        "@user/*": [
+          "../event-func/user/*", 
+        ],
         "@product/*": [
           "../event-func/product/*", 
         ],

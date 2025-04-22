@@ -14,7 +14,7 @@ Prod는 Stg 브랜치만 병합 가능
 stage에 따라 prod는 aws 클라우드 DB를 호출하고 local은 로컬 도커 컨테이너로 실행 중인 DB를 호출한다.
 
 `aws dynamodb create-table --cli-input-json file://./json/create-cobuying.json --endpoint-url http://localhost:3300`
-`aws dynamodb create-table --cli-input-json file://./json/create-customer.json --endpoint-url http://localhost:3300`
+`aws dynamodb create-table --cli-input-json file://./json/create-user.json --endpoint-url http://localhost:3300`
 
  로컬 DynamoDB에 테이블 만들기
 

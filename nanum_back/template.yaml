@@ -506,10 +506,10 @@ Resources:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
 
-  CustomerTable:
+  UserTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "${DEPLOYSTAGE}-CustomerTable"
+      TableName: !Sub "${DEPLOYSTAGE}-UserTable"
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S # ID
