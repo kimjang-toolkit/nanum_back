@@ -1,12 +1,12 @@
 import { extractPayload, regenerateToken } from '@auth/service/authEncrptorSRV';
 import { queryCoBuyingById } from '@cobuying/dao/queryCoBuyingOneDAO';
-import { AuthToken, UserAuthDto } from '@interface/auth';
+import { AuthToken, OwnerUserAuthDTO } from '@interface/auth';
 import { CoBuyingSummary } from '@interface/cobuying';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
 import { APIERROR } from '@common/responseType';
 import { JwtPayload } from 'jsonwebtoken';
 
-export const validateTokenSRV = async (token: string): Promise<UserAuthDto> => {
+export const validateTokenSRV = async (token: string): Promise<OwnerUserAuthDTO> => {
     // let userAuth: UserAuth;
 
     // token 유효성 검증
@@ -35,10 +35,10 @@ export const validateTokenSRV = async (token: string): Promise<UserAuthDto> => {
         throw new APIERROR(401, '옳바르지 않은 인증 정보입니다. 다시 로그인해주세요.');
     }
 
-    const userAuth: UserAuthDto = {
+    const userAuth: OwnerUserAuthDTO = {
         ownerName: cobuying.ownerName,
         coBuyingId: cobuying.id,
-    } as UserAuthDto;
+    } as OwnerUserAuthDTO;
 
 
     // const authToken: AuthToken = regenerateToken(userAuth);
@@ -56,7 +56,7 @@ export const extractTokenFromHeader = (event: APIGatewayProxyEventV2): string =>
     return token;
 }
 
-export const validateTokenFromHeader = async (event: APIGatewayProxyEventV2): Promise<UserAuthDto> => {
+export const validateTokenFromHeader = async (event: APIGatewayProxyEventV2): Promise<OwnerUserAuthDTO> => {
     const token = extractTokenFromHeader(event);
     return validateTokenSRV(token);
 }

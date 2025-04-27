@@ -53,7 +53,7 @@ export const saveNewUserLocalSRV = async (query: SaveNewUserQuery): Promise<Save
  */
 const checkUserOneExistDAO = async (query: SaveNewUserQuery)=> {
   // 이미 존재하는 id라면 오류 발생
-  const queryUser: UserMaster | null = await queryUserOneByIdDAO(query.id);
+  const queryUser: UserMaster | null = await queryUserOneByIdDAO(query.id, query.nickName);
   if(queryUser){
     throw new APIERROR(400, '이미 존재하는 아이디 또는 이름이에요. 다른 id나 이름을 사용해주세요.');
   }

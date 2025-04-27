@@ -1,7 +1,7 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR} from '@common/responseType';
 import { authenticateOwnerAuthSRV } from '@auth/service/authenticateOwnerAuthSRV';
-import { AuthToken, CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { AuthToken, CoBuyingOwnerAuth, CookieOptions, HeaderOptions, TokenName, OwnerUserAuthDTO } from '@interface/auth';
 import { LambdaReturnDto } from '@common/LambdaReturnDto';
 const validateInput = (event: APIGatewayProxyEventV2): CoBuyingOwnerAuth => {
     const coBuyingId = event.pathParameters?.coBuyingId;
@@ -60,11 +60,11 @@ export const authenticateOwnerAuth = async (event: APIGatewayProxyEventV2): Prom
         const headerOptions: HeaderOptions = {
             Authorization: `Bearer ${jwt.accessToken}`,
         };
-        const userAuthDto: UserAuthDto = {
+        const OwnerUserAuthDTO: OwnerUserAuthDTO = {
             ownerName: auth.ownerName,
             coBuyingId: auth.coBuyingId,
         }
-        const lamdbdaReturnDto = new LambdaReturnDto(200, userAuthDto, event, headerOptions, refreshCookieOptions);
+        const lamdbdaReturnDto = new LambdaReturnDto(200, OwnerUserAuthDTO, event, headerOptions, refreshCookieOptions);
 
         // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
         console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);

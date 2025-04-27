@@ -11,7 +11,7 @@ const ddbDocClient = createDynamoDBDocClient();
  * @param id 고객 고유 ID
  * @returns 고객 마스터 정보
  */
-export const queryUserOneByIdDAO = async (id: string): Promise<UserMaster | null> => {
+export const queryUserOneByIdDAO = async (id: string, nickName: string | undefined): Promise<UserMaster | null> => {
   let result: UserMaster | null = null;
   const deployEnv = process.env.DEPLOY_ENV === 'Prod' ? process.env.DEPLOY_ENV : 'Dev'
   const tableName = `${deployEnv}-UserTable`
@@ -29,5 +29,24 @@ export const queryUserOneByIdDAO = async (id: string): Promise<UserMaster | null
   if(queryResult.Items && queryResult.Items.length > 0){
     result = mapUserMasterOne(queryResult.Items[0]);
   }
+
+  // ToDo: 닉네임이 유니트하도록 하기 위해 조회
+  // if(nickName){
+  //   const params = {
+  //     TableName: tableName,
+  //     KeyConditionExpression: 'nickName = :nickName',
+  //     ExpressionAttributeValues: {
+  //         ':nickName': { S: nickName }
+  //     }
+  //   };
+  //   const command = new QueryCommand(params);
+  //   const queryResult = await ddbDocClient.send(command);
+  
+  //   if(queryResult.Items && queryResult.Items.length > 0){
+  //     result = mapUserMasterOne(queryResult.Items[0]);
+  //   }
+  // }
+
+
   return result;
 }
