@@ -16,7 +16,7 @@ export const saveNewUserKaKaoSRV = async (query: SaveNewUserQuery): Promise<Save
       joinedAt: getFormattedKoreaTime(),
       socialIds: [{
         type: SocialType.KAKAO,
-        account: query.email,
+        account: query.email ?? "",
         socialUserId: "",
       }],
       coBuyingHistory: [],

@@ -27,7 +27,7 @@ export const saveNewUserCTL = async (event: APIGatewayProxyEventV2): Promise<API
     } else {
       throw new Error("소셜 타입이 올바르지 않습니다.");
     }
-    return new LambdaReturnDto(200, { message: '고객 정보 저장 완료' }, event).getLambdaReturnDto();
+    return new LambdaReturnDto(200, result , event).getLambdaReturnDto();
   } catch (error) {
     return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
   }
