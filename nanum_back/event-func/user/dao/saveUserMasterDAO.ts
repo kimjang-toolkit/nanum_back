@@ -1,9 +1,8 @@
-import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { APIERROR } from "@common/responseType";
 import { createDynamoDBDocClient } from "@connect/createDDbDocClient";
 import { UserMaster } from "@domain/user";
-import { SaveNewUserQuery, SaveUserRes } from "@interface/user";
+import { SaveUserRes } from "@interface/user";
 
 
 const ddbDocClient = createDynamoDBDocClient();
@@ -11,9 +10,10 @@ const ddbDocClient = createDynamoDBDocClient();
 export const saveUserMasterDAO = async (userMaster: UserMaster): Promise<SaveUserRes> => {
 
   const deployEnv = process.env.DEPLOY_ENV === 'Prod' ? process.env.DEPLOY_ENV : 'Dev'
-
+  const tableName = `${deployEnv}-UserTable`
+  console.log("tableName", tableName);
   const params = {
-    TableName:  deployEnv + "-UserTable",
+    TableName:  tableName,
     Item: userMaster
   }
   let result;
@@ -25,7 +25,7 @@ export const saveUserMasterDAO = async (userMaster: UserMaster): Promise<SaveUse
         message: '유저 정보 저장 완료',
         id: userMaster.id,
         name: userMaster.name,
-        email: userMaster.email,
+        email: userMaster.email ?? "",
       }
     }
   }catch(error){

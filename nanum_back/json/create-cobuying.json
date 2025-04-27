@@ -1,5 +1,5 @@
 {
-  "TableName": "CoBuyingTable",
+  "TableName": "Dev-CoBuyingTable",
   "AttributeDefinitions": [
     {
       "AttributeName": "ownerName",

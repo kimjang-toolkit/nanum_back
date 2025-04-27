@@ -1,5 +1,5 @@
 {
-  "TableName": "UserTable",
+  "TableName": "Dev-UserTable",
   "KeySchema": [
     { "AttributeName": "id", "KeyType": "HASH" }
   ],

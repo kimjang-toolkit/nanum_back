@@ -14,7 +14,7 @@ export const saveNewUserLocalSRV = async (query: SaveNewUserQuery): Promise<Save
   const userMaster: UserMaster = {
     id: query.id,
     name: query.name,
-    email: query.email,
+    email: query.email ?? "",
     joinedAt: getFormattedKoreaTime(), // 가입일시 (ISO 포맷)
     socialIds: [], // 등록한 소셜 계정 목록, 직접 회원가입만 했다면 빈 배열
     coBuyingHistory: [], // 공구글 개설 이력
@@ -24,7 +24,7 @@ export const saveNewUserLocalSRV = async (query: SaveNewUserQuery): Promise<Save
   try{
     // 유저 마스터 정보 저장
     const result: SaveUserRes = await saveUserMasterDAO(userMaster);
-
+    console.log("유저 정보 저장 완료", result);
     return result;
   }catch(error){
     // console.error('유저 정보 저장 중 오류 발생:', error);
