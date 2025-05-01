@@ -56,7 +56,14 @@ export const extractTokenFromHeader = (event: APIGatewayProxyEventV2): string =>
     return token;
 }
 
-export const validateTokenFromHeader = async (event: APIGatewayProxyEventV2): Promise<OwnerUserAuthDTO> => {
+export const validateCobuyingTokenFromHeader = async (event: APIGatewayProxyEventV2): Promise<OwnerUserAuthDTO> => {
     const token = extractTokenFromHeader(event);
     return validateTokenSRV(token);
 }
+
+// export const validateUserTokenSRV(token)
+
+// export const validateUserTokenFromHeader = async (event: APIGatewayProxyEventV2): Promise<OwnerUserAuthDTO> => {
+//     const token = extractTokenFromHeader(event);
+//     return validateUserTokenSRV(token);
+// }

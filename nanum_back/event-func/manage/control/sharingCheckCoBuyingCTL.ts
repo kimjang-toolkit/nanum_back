@@ -1,4 +1,4 @@
-import { validateTokenFromHeader } from "@auth/service/validateTokenSRV";
+import { validateCobuyingTokenFromHeader } from "@auth/service/validateTokenSRV";
 import { APIERROR } from "@common/responseType";
 import { OwnerUserAuthDTO } from "@interface/auth";
 import { ManageCoBuyingDto, SharingCheckCoBuyingParams, SharingCheckCoBuyingReq } from "@interface/manage";
@@ -51,7 +51,7 @@ async function validateSharingCoBuying(event: APIGatewayProxyEventV2): Promise<S
     throw new APIERROR(400, "공구글 나눔 완료 체크 값이 옳바르지 않아요.");
   }
 
-  const userAuth : OwnerUserAuthDTO = await validateTokenFromHeader(event);
+  const userAuth : OwnerUserAuthDTO = await validateCobuyingTokenFromHeader(event);
   
   const coBuyingId = event.pathParameters?.coBuyingId;
   const ownerName = event.queryStringParameters?.ownerName;
