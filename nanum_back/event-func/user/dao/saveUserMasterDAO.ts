@@ -2,12 +2,12 @@ import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { APIERROR } from "@common/responseType";
 import { createDynamoDBDocClient } from "@connect/createDDbDocClient";
 import { UserMaster } from "@domain/user";
-import { SaveUserRes } from "@interface/user";
+import { UserMasterRes } from "@interface/user";
 
 
 const ddbDocClient = createDynamoDBDocClient();
 
-export const saveUserMasterDAO = async (userMaster: UserMaster): Promise<SaveUserRes> => {
+export const saveUserMasterDAO = async (userMaster: UserMaster): Promise<UserMasterRes> => {
 
   const deployEnv = process.env.DEPLOY_ENV === 'Prod' ? process.env.DEPLOY_ENV : 'Dev'
   const tableName = `${deployEnv}-UserTable`
@@ -22,7 +22,6 @@ export const saveUserMasterDAO = async (userMaster: UserMaster): Promise<SaveUse
     result = await ddbDocClient.send(command);
     if (result.$metadata.httpStatusCode == 200){
       return {
-        message: '유저 정보 저장 완료',
         id: userMaster.id,
         name: userMaster.name,
         email: userMaster.email ?? "",

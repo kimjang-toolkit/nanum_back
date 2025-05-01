@@ -2,7 +2,7 @@ import { hashPassword } from "@auth/service/authEncrptorSRV";
 import { APIERROR } from "@common/responseType";
 import { getFormattedKoreaTime } from "@common/time";
 import { UserMaster } from "@domain/user";
-import { SaveNewUserQuery, SaveUserRes, UserMasterRes } from "@interface/user";
+import { SaveNewUserQuery, UserMasterRes } from "@interface/user";
 import { queryUserOneByIdDAO } from "@user/dao/queryUserOneDAO";
 import { saveUserMasterDAO } from "@user/dao/saveUserMasterDAO";
 
@@ -12,7 +12,7 @@ import { saveUserMasterDAO } from "@user/dao/saveUserMasterDAO";
  * @param query
  * @returns 
  */
-export const saveNewUserLocalSRV = async (query: SaveNewUserQuery): Promise<SaveUserRes> => {
+export const saveNewUserLocalSRV = async (query: SaveNewUserQuery): Promise<UserMasterRes> => {
 
   try{
     await checkUserOneExistDAO(query);
@@ -36,7 +36,7 @@ export const saveNewUserLocalSRV = async (query: SaveNewUserQuery): Promise<Save
 
   try{
     // 유저 마스터 정보 저장
-    const result: SaveUserRes = await saveUserMasterDAO(userMaster);
+    const result: UserMasterRes = await saveUserMasterDAO(userMaster);
     console.log("유저 정보 저장 완료", result);
     return result;
   }catch(error){

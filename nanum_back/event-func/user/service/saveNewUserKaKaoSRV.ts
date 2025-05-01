@@ -1,11 +1,11 @@
 import { APIERROR } from "@common/responseType";
 import { getFormattedKoreaTime } from "@common/time";
 import { SocialType, UserMaster } from "@domain/user";
-import { SaveNewUserQuery, SaveUserRes } from "@interface/user";
+import { SaveNewUserQuery, SaveUserRes, UserMasterRes } from "@interface/user";
 import { saveUserMasterDAO } from "@user/dao/saveUserMasterDAO";
 
-export const saveNewUserKaKaoSRV = async (query: SaveNewUserQuery): Promise<SaveUserRes> => {
-  let result: SaveUserRes;
+export const saveNewUserKaKaoSRV = async (query: SaveNewUserQuery): Promise<UserMasterRes> => {
+  let result: UserMasterRes;
   let userMaster: UserMaster;
   
   try{

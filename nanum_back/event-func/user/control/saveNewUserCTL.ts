@@ -1,16 +1,23 @@
+import { createAuthResponse } from "@auth/service/authEncrptorSRV";
 import { LambdaReturnDto } from "@common/LambdaReturnDto";
 import { SocialType } from "@domain/user";
-import { SaveNewUserQuery, SaveUserRes } from "@interface/user";
+import { SaveNewUserQuery, SaveUserRes, UserMasterRes } from "@interface/user";
 import { saveNewUserKaKaoSRV } from "@user/service/saveNewUserKaKaoSRV";
 import { saveNewUserLocalSRV } from "@user/service/saveNewUserLocalSRV";
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda";
 
 /**
  * 신규 고객 정보 저장
+ * 
+ * Post
+ * {domain}/api/user/save
+ * 
+ * @param event
+ * @returns
  */
 export const saveNewUserCTL = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
   let query: SaveNewUserQuery;
-  let result: SaveUserRes;
+  let userMasterRes: UserMasterRes;
   try {
     query = validateInput(event);
   } catch (error) {
@@ -20,20 +27,20 @@ export const saveNewUserCTL = async (event: APIGatewayProxyEventV2): Promise<API
   try{
     if(query.socialType === SocialType.LOCAL){
       // 일반 회원가입 진행, 단순 입력 값 저장 로직타기
-      result = await saveNewUserLocalSRV(query);
+      userMasterRes = await saveNewUserLocalSRV(query);
     } else if(query.socialType === SocialType.KAKAO){
       // 소셜 회원가입 진행, 소셜 로그인 정보 저장 로직 타기
-      result = await saveNewUserKaKaoSRV(query);
+      userMasterRes = await saveNewUserKaKaoSRV(query);
     } else {
       throw new Error("소셜 타입이 올바르지 않습니다.");
     }
-    return new LambdaReturnDto(200, result , event).getLambdaReturnDto();
+
+    const lamdbdaReturnDto = createAuthResponse(200, userMasterRes, event);
+    return lamdbdaReturnDto.getLambdaReturnDto();
   } catch (error) {
     return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
   }
-  
 
-  
 }
 
 function validateInput(event: APIGatewayProxyEventV2): SaveNewUserQuery {
