@@ -459,6 +459,38 @@ Resources:
         EntryPoints:
           - queryCoBuyingListCTL.ts
 
+  SaveNewUserFunction:
+    Type: AWS::Serverless::Function
+    Description: 신규 고객 정보 저장 함수
+    Properties:
+      FunctionName: !Sub "${DEPLOYSTAGE}-SaveNewUserFunction"
+      CodeUri: event-func/user/control
+      Handler: saveNewUserCTL.saveNewUserCTL
+      Runtime: nodejs20.x
+      MemorySize: 2048
+      Timeout: 20
+      Architectures:
+        - x86_64
+      Events:
+        SaveNewUser:
+          Type: HttpApi
+          Properties:
+            Path: /api/user
+            Method: post
+            ApiId: !Ref ApiGatewayApi
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Sub "${DEPLOYSTAGE}-UserTable"
+
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints:
+          - saveNewUserCTL.ts
+
   CoBuyingTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -506,10 +538,10 @@ Resources:
             ReadCapacityUnits: 1
             WriteCapacityUnits: 1
 
-  CustomerTable:
+  UserTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub "${DEPLOYSTAGE}-CustomerTable"
+      TableName: !Sub "${DEPLOYSTAGE}-UserTable"
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S # ID

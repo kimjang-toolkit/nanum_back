@@ -1,8 +1,8 @@
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from 'aws-lambda';
 import { APIERROR } from '@common/responseType';
-import { validateTokenSRV } from '@auth/service/validateTokenSRV';
+import { validateCobuyingTokenSRV } from '@auth/service/validateTokenSRV';
 import { LambdaReturnDto } from '@common/LambdaReturnDto';
-import { AuthToken, CookieOptions, HeaderOptions, TokenName, UserAuthDto } from '@interface/auth';
+import { AuthToken, CookieOptions, HeaderOptions, TokenName, OwnerUserAuthDTO } from '@interface/auth';
 import { regenerateToken } from '@auth/service/authEncrptorSRV';
 
 /**
@@ -28,7 +28,7 @@ export const validateRefreshTokenCTL = async (event: APIGatewayProxyEventV2): Pr
 
     try {
         // 토큰 기반 사용자 인증
-        const userAuth : UserAuthDto = await validateTokenSRV(token);
+        const userAuth : OwnerUserAuthDTO = await validateCobuyingTokenSRV(token);
         const authToken : AuthToken = regenerateToken(userAuth);
         // httpOnly로 refreshToken을 쿠키에 setting
         const refreshCookieOptions: CookieOptions = {
@@ -51,7 +51,7 @@ export const validateRefreshTokenCTL = async (event: APIGatewayProxyEventV2): Pr
         const lamdbdaReturnDto = new LambdaReturnDto(200, {
             ownerName: authToken.user.ownerName,
             coBuyingId: authToken.user.coBuyingId,
-        } as UserAuthDto, event, headerOptions,refreshCookieOptions);
+        } as OwnerUserAuthDTO, event, headerOptions,refreshCookieOptions);
 
         // console.log('tobe headers : ', lamdbdaReturnDto.getLambdaReturnDto().headers);
     

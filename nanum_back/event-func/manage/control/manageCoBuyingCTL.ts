@@ -4,8 +4,8 @@ import { ManageCoBuyingParams, ManageCoBuyingReq } from "@interface/manage";
 import { APIERROR } from "@common/responseType";
 import { manageCoBuyingSRV } from "@manage/service/manageCoBuyingSRV";
 import { CoBuyingStatus } from "@domain/cobuying";
-import { validateTokenFromHeader } from "@auth/service/validateTokenSRV";
-import { UserAuthDto } from "@interface/auth";
+import { validateCobuyingTokenFromHeader } from "@auth/service/validateTokenSRV";
+import { OwnerUserAuthDTO } from "@interface/auth";
 
 export const manageCoBuyingHandler = async (event: APIGatewayProxyEventV2): Promise<APIGatewayProxyResult> => {
 
@@ -69,7 +69,7 @@ async function validateManageCoBuying(event: APIGatewayProxyEventV2): Promise<Ma
   }
   
 
-  const userAuth : UserAuthDto = await validateTokenFromHeader(event);
+  const userAuth : OwnerUserAuthDTO = await validateCobuyingTokenFromHeader(event);
 
   const coBuyingId = event.pathParameters?.coBuyingId;
   const ownerName = event.queryStringParameters?.ownerName;

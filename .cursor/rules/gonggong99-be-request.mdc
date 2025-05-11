@@ -1,0 +1,24 @@
+---
+description: Use this template when you want the AI to implement a new feature, refactor existing code, or perform a specific modification task.
+globs: 
+alwaysApply: false
+---
+# Cursor AI Request Template for gonggong99-be
+
+User Request: {my request}
+
+## Context
+This request is for the `gonggong99-be` backend project, which is built using a layered architecture (control → service → dao) with domain separation and event-driven design.
+
+## Guidelines for Implementation
+- Integrate the new feature according to the existing domain structure (e.g., user, cobuying, product).
+- Use DTOs for request/response payloads.
+- Maintain consistency with existing file locations: controllers in `control/`, services in `service/`, database logic in `dao/`, and types in `dto/`.
+- If the change involves external communication (e.g., messaging, notifications), add the necessary adapter in `adapter/`.
+- For significant state changes, consider emitting an event in `event/producer`.
+
+## Deliverables
+- Fully implemented feature code in the correct layer.
+- Any associated DTOs or type definitions.
+- Updated or new event producers if applicable.
+- Instructions for how to test the feature (unit test or integration note).
