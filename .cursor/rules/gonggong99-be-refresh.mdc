@@ -1,0 +1,26 @@
+---
+description: Use this template when you need the AI to re-diagnose and fix an issue that wasn't resolved previously.
+globs: 
+alwaysApply: false
+---
+# Cursor AI Refresh Template for gonggong99-be
+
+User Query: {my query}
+
+## Context
+This is a bug or issue in the `gonggong99-be` backend project. Previous fixes may have failed or addressed only part of the problem.
+
+## Diagnostic Instructions
+- Do not limit analysis to the current file. Check related layers and event flows.
+- If the problem involves a state transition (e.g., application closing, distribution completion), verify related service and event logic.
+- Reevaluate any adapter or DAO logic that may contribute to the issue.
+
+## Fix Strategy
+- Propose and apply a fix that covers all potentially related layers.
+- Ensure that the fix preserves DTO and event interface compatibility unless explicitly changed.
+- Include tests or verification notes if possible.
+
+## Output
+- A complete fix spanning necessary files.
+- Clarified reasoning for changes if the logic has shifted.
+- Clean, readable code following project conventions.

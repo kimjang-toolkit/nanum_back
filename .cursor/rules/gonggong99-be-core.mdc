@@ -1,0 +1,116 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# gonggong99-be Cursor Core Rules
+
+These foundational rules guide Cursor AI when generating, modifying, or analyzing backend code for the gonggong99 group-buying service.
+
+---
+
+## 1. Architecture Principles
+
+- Use **layered architecture** (`control → service → dao`) consistently across all domains.
+- Respect domain separation: Place each feature under its own directory (e.g., `user/`, `cobuying/`, `product/`).
+- Do not place business logic in controllers. Controllers only orchestrate requests and responses.
+- Avoid mixing unrelated concerns within a file or module. Maintain **single responsibility**.
+
+---
+
+## 2. Naming Conventions
+
+- Use descriptive, domain-specific names: `CompleteDistributionService`, `CreateApplicationDTO`, `UserActivityHistoryDAO`.
+- Name event objects using **past tense** (e.g., `ParticipantJoinedEvent`, `DistributionCompletedEvent`).
+- Prefix interfaces with `I` only if required to differentiate from class (optional per project convention).
+- Suffix validation logic with `Validator`, mapping logic with `Mapper`, and database logic with `DAO`.
+
+---
+
+## 3. Event-Driven Design
+
+- When processing a major state change (e.g., 공구 마감, 나눔 완료), emit a domain event.
+- Events should be placed under `event/producer` or `event/consumer`.
+- Follow the structure:
+  ```
+  event/
+  ├── producer/
+  │   └── ApplicationClosedProducer.ts
+  └── consumer/
+      └── UserReportedConsumer.ts
+  ```
+
+---
+
+## 4. Adapter & Integration Layer
+
+- Any integration with external systems (e.g., KakaoTalk, payment gateways) must go through the `adapter/` layer.
+- Never call external services (e.g., `axios`, `fetch`) directly in `service/` or `control/`.
+
+Example:
+```ts
+// ❌ Bad
+await axios.post('https://kakao.com/api/...');
+
+// ✅ Good
+await kakaoNotifier.sendAlert(...);
+```
+
+---
+
+## 5. DTO & Type Management
+
+- All request/response or DB-transfer models must use DTOs, stored in `dto/`.
+- Keep types in `dto/xxxType.ts` and DTO structures in `xxxDTO.ts`.
+- Validate incoming data in `control/` or via middleware before passing to `service/`.
+
+---
+
+## 6. Testing & Reliability
+
+- Write tests for all `service/` and `dao/` logic. Place them in the corresponding `tests/` subfolder.
+- Use mocks for external calls or adapters.
+- If a bug fix involves multiple files, ensure that related parts (e.g., event consumers) are verified too.
+
+---
+
+## 7. Safety & Clarity
+
+- Avoid silent failures. Always log and handle errors explicitly.
+- Functions should do only what their names suggest.
+- Return consistent types and clearly indicate failure paths (`Result`, `Either`, or exceptions).
+
+---
+
+## 8. Documentation & Consistency
+
+- Include JSDoc comments for all exported service and adapter functions.
+- Maintain consistent project structure across all domains.
+
+---
+
+## 9. File Structure Example (Strict Convention)
+
+```
+user/
+├── control/
+│   └── userControl.ts
+├── service/
+│   ├── userService.ts
+│   └── userValidator.ts
+├── dao/
+│   └── userDao.ts
+├── dto/
+│   ├── userDTO.ts
+│   └── userType.ts
+├── mapper/
+│   └── userMapper.ts
+```
+
+---
+
+## 10. Cursor Usage Guidelines
+
+- When creating new features, ask for full integration into the existing `control → service → dao` pattern.
+- When fixing bugs, check related `event/` logic and not just a single file.
+- When modifying existing behavior, preserve DTO types and adapter interfaces unless the request specifies otherwise.
