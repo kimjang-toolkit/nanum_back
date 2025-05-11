@@ -1,5 +1,5 @@
 import { LambdaReturnDto } from '@common/LambdaReturnDto';
-import { CoBuyingOwnerAuth, CookieOptions, HeaderOptions, OwnerUserAuthDTO, TokenName } from '@interface/auth';
+import { CoBuyingOwnerAuth, CookieOptions, HeaderOptions, OwnerUserAuthDTO } from '@interface/auth';
 import { AuthToken } from '@interface/auth';
 import { UserMasterRes } from '@interface/user';
 import { APIGatewayProxyEventV2 } from 'aws-lambda';
@@ -45,6 +45,10 @@ function createToken<T>(body: T, expiresIn: number): string {
 
 function createCobuyingToken(tokenOwner: OwnerUserAuthDTO, expiresIn: number): string {
     return createToken<OwnerUserAuthDTO>(tokenOwner, expiresIn);
+}
+
+function createUserToken(userDto: UserMasterRes, expiresIn: number): string {
+    return createToken<UserMasterRes>(userDto, expiresIn);
 }
 
 function getCobuyingAuthToken(
@@ -165,22 +169,7 @@ export function extractPayload(token: string): JwtPayload {
 /**
  * 임의의 body를 받아서 해당 값으로 JWT를 생성하고, LambdaReturnDto를 반환
  */
-export function createAuthResponse<T>(statusCode: number, body: T, event: APIGatewayProxyEventV2, headers?: HeaderOptions, cookies?: CookieOptions): LambdaReturnDto {
-    const jwt: AuthToken = createJwt(body);
-
-    const refreshCookieOptions: CookieOptions = {
-        SameSite: 'None',
-        'Max-Age': 604800,
-        Path: '/',
-        cookies : {
-            [TokenName.refreshToken] : jwt.refreshToken
-        }
-    };
-
-    const headerOptions: HeaderOptions = {
-        Authorization: `Bearer ${jwt.accessToken}`,
-    };
-
-    const lamdbdaReturnDto = new LambdaReturnDto(statusCode, body, event, headerOptions, refreshCookieOptions);
-    return lamdbdaReturnDto;
+export function getLambdaReturnDto<T>(statusCode: number, body: T, event: APIGatewayProxyEventV2, headers?: HeaderOptions, cookies?: CookieOptions): LambdaReturnDto {
+    const jwt: AuthToken = generateToken(body as CoBuyingOwnerAuth);
+    return new LambdaReturnDto(statusCode, body, event, headers, cookies);
 }
