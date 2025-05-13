@@ -1,5 +1,15 @@
 # nanum_back
 
+## 6각형 아키텍처 적용
+
+- 비즈니스 로직을 호출하는 Inbound Adapter(Consumer, RestAPI, RPC, RMI, ...) 
+- 외부 서비스를 호출하는 Outbound Adapter(Publisher, RestAPI, Repository, ...)
+- 비즈니스 로직이 있는 Application Layer(Lambda)
+- 서비스 간 이벤트 전달하는 메시지 브로커(Kafka, SQS, SNS, ...)
+- 분산 환경에서 ACD 트랜잭션을 구현하는 Saga (오케스트레이션 방식은 러닝커브가 있어서 코레오그래피 방식으로 구현)
+  - 각 서비스의 SagaManager가 보상 가능 트랜잭션, 피봇 트랜잭션, 재시도 가능 트랜잭션 순서를 관리함.
+
+
 ## CICD 구성
 
 Feature branch에서 작업 후 Stg 브랜치에 병합 시 Stg-nanum-back 스택 배포
