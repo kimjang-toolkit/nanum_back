@@ -1,4 +1,4 @@
-import { createAuthResponse } from "@auth/service/authEncrptorSRV";
+import { getLambdaReturnDto } from "@auth/service/authEncrptorSRV";
 import { LambdaReturnDto } from "@common/LambdaReturnDto";
 import { SocialType } from "@domain/user";
 import { SaveNewUserQuery, SaveUserRes, UserMasterRes } from "@interface/user";
@@ -35,7 +35,7 @@ export const saveNewUserCTL = async (event: APIGatewayProxyEventV2): Promise<API
       throw new Error("소셜 타입이 올바르지 않습니다.");
     }
 
-    const lamdbdaReturnDto = createAuthResponse(200, userMasterRes, event);
+    const lamdbdaReturnDto = getLambdaReturnDto(200, userMasterRes, event);
     return lamdbdaReturnDto.getLambdaReturnDto();
   } catch (error) {
     return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
