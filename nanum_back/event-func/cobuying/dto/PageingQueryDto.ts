@@ -1,5 +1,8 @@
 import { CoBuyingKey, CoBuyingSummary } from "@interface/cobuying";
 
+/**
+ * 페이지네이션 쿼리 인터페이스
+ */
 export interface PageingQueryDto {
   // 페이지네이션 기본 필드
   page: number;
@@ -16,6 +19,9 @@ export interface PageingQueryDto {
   ProjectionExpression?: string;
 }
 
+/**
+ * 페이지네이션 쿼리 빌더 클래스
+ */
 export class PageingQueryDtoBuilder {
   private dto: PageingQueryDto;
 
