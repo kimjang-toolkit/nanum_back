@@ -119,7 +119,7 @@ function getUpdateCommand(manageCoBuyingParams: ManageCoBuyingParams, coBuyingDe
   }
 
   const param = {
-      TableName: process.env.CoBuyingTableName || 'CoBuyingTable',
+      TableName: `${process.env.DEPLOYSTAGE}-${process.env.CoBuyingTableName}` || 'Dev-CoBuyingTable',
       Key: {
           ownerName: manageCoBuyingParams.ownerName,
           id: manageCoBuyingParams.coBuyingId,

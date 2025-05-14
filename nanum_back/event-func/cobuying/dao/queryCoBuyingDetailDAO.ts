@@ -15,7 +15,7 @@ export const queryCoBuyingDetail = async (ownerName: string, id: string): Promis
     // console.log(createdAtId === '2025-01-07#3e3ad1dd-3ef0-4a50-8e77-d3344bc4da98');
 
     const params = {
-        TableName: process.env.CoBuyingTableName || '', // 테이블 이름
+        TableName: `${process.env.DEPLOYSTAGE}-${process.env.CoBuyingTableName}` || 'Dev-CoBuyingTable', // 테이블 이름
         KeyConditionExpression: 'ownerName = :ownerName AND id = :id', // 쿼리 조건
         ExpressionAttributeValues: {
             ':ownerName': { S: ownerName }, // GSI 파티션 키 값

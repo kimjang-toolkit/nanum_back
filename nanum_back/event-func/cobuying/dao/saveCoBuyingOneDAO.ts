@@ -11,7 +11,7 @@ export const insertCoBuying = async (cobuying: CoBuyingPost): Promise<CoBuyingSu
 
     // DynamoDB에 삽입할 데이터 맵핑
     const params: PutCommandInput = {
-        TableName: process.env.CoBuyingTableName || 'Dev-CoBuyingTable', // 환경 변수로 테이블 이름 지정
+        TableName: `${process.env.DEPLOYSTAGE}-${process.env.CoBuyingTableName}` || 'Dev-CoBuyingTable', // 환경 변수로 테이블 이름 지정
         Item: {
             ...cobuying,
         },

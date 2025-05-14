@@ -198,7 +198,7 @@ function getUpdateCommand(app: ApplicationReq, coBuyingDetail: CoBuyingDetail): 
     }
 
     const param = {
-        TableName: process.env.CoBuyingTableName || 'Dev-CoBuyingTable',
+        TableName: `${process.env.DEPLOYSTAGE}-${process.env.CoBuyingTableName}` || 'Dev-CoBuyingTable',
         Key: {
             ownerName: coBuyingDetail.ownerName,
             id: coBuyingDetail.id,

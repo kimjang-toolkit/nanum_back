@@ -66,7 +66,7 @@ function getUpdateCommand(sharingCoBuyingParams: SharingCheckCoBuyingParams, coB
   expressionAttributeValues[atValueKey] = getFormattedKoreaTime();
 
   const param = {
-    TableName: process.env.CoBuyingTableName || 'Dev-CoBuyingTable',
+    TableName: `${process.env.DEPLOYSTAGE}-${process.env.CoBuyingTableName}` || 'Dev-CoBuyingTable',
     Key: {
         ownerName: coBuyingDetail.ownerName,
         id: coBuyingDetail.id,

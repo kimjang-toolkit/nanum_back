@@ -5,7 +5,7 @@ import { CoBuyingPageingRes, CoBuyingQueryParams, PageingQuery } from '@interfac
 
 export const queryCoBuyingListSRV = async (input: CoBuyingQueryParams): Promise<CoBuyingPageingRes> => {
     const query: PageingQuery = {
-        TableName: process.env.CoBuyingTableName || 'Dev-CoBuyingTable', // 테이블 이름
+        TableName: `${process.env.DEPLOYSTAGE}-${process.env.CoBuyingTableName}` || 'Dev-CoBuyingTable', // 테이블 이름
         Limit: input.size || 20, // 최대 개수 (기본값 20)
         IndexName: 'PagenationIndex',
         KeyConditionExpression: 'deletedYN = :deletedYN',
