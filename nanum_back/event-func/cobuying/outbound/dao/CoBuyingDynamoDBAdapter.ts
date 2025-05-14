@@ -1,6 +1,6 @@
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import { CoBuyingKey, CoBuyingSummary, CoBuyingDetail } from '@interface/cobuying';
-import { PageingQueryDto, CoBuyingPageingRes } from '../dto';
+import { PageingQueryDto, CoBuyingPageingRes } from '@cobuying/dto';
 import { ICoBuyingRepository } from './ICoBuyingRepository';
 import { DynamoDBClientFactory } from '@common/dynamodb';
 import { QueryCoBuyingList, GetCoBuyingSummaryByOnwerNameAndId, GetCoBuyingDetailByOnwerNameAndId } from './query';
