@@ -1,4 +1,5 @@
-import { CoBuyingKey, CoBuyingSummary } from "@interface/cobuying";
+import { CreatedAtIdKey } from "@cobuying/dto";
+import { CoBuyingSummary } from "@interface/cobuying";
 
 /**
  * 페이지네이션 쿼리 인터페이스
@@ -83,6 +84,11 @@ export class PageingQueryDtoBuilder {
     this.dto.ProjectionExpression = expression;
     return this;
   }
+  
+  setLimit(limit: number): PageingQueryDtoBuilder {
+    this.dto.Limit = limit;
+    return this;
+  }
 
   build(): PageingQueryDto {
     return this.dto;
@@ -109,6 +115,6 @@ export class PageingQueryDtoBuilder {
 
 export interface CoBuyingPageingRes {
   coBuyingList: CoBuyingSummary[];
-  lastEvaluatedKey?: CoBuyingKey;
+  lastEvaluatedKey?: CreatedAtIdKey;
   count: number;
 }

@@ -1,7 +1,7 @@
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingSummary } from '@interface/cobuying';
 import { CoBuyingPageingRes, PageingQuery } from '@interface/cobuyingList';
-import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSummary } from 'mappers/mapCoBuyingList';
+import { mapToCoBuyingEvaluatedKey, mapToCoBuyingSummary } from '@cobuying/mapper';
 import { createDynamoDBDocClient } from 'connect/createDDbDocClient';
 
 const ddbDocClient = createDynamoDBDocClient();

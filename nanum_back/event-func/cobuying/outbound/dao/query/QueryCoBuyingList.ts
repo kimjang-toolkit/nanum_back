@@ -1,7 +1,8 @@
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import { QueryCommand } from '@aws-sdk/client-dynamodb';
 import { CoBuyingKey, CoBuyingSummary } from '@interface/cobuying';
-import { PageingQueryDto, CoBuyingPageingRes } from '../../dto/PageingQueryDto';
+import { PageingQueryDto, CoBuyingPageingRes, CreatedAtIdKey } from '@cobuying/dto';
+import { mapToCoBuyingSummary, mapToCreatedAtIdKey } from '@cobuying/mapper';
 
 export class QueryCoBuyingList {
   private readonly tableName = 'CoBuying';
@@ -21,8 +22,8 @@ export class QueryCoBuyingList {
     const result = await this.client.send(command);
     
     return {
-      coBuyingList: (result.Items || []) as unknown as CoBuyingSummary[],
-      lastEvaluatedKey: result.LastEvaluatedKey as unknown as CoBuyingKey,
+      coBuyingList: mapToCoBuyingSummary(result.Items) as CoBuyingSummary[],
+      lastEvaluatedKey: mapToCreatedAtIdKey(result.LastEvaluatedKey) as CreatedAtIdKey,
       count: result.Count || 0,
     };
   }

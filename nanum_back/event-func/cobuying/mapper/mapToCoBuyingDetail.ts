@@ -1,0 +1,95 @@
+import { CoBuyingStatus, DivideType } from '@domain/cobuying';
+import { Attendee } from '@domain/user';
+import {
+    AttendeeCoBuyingDetail,
+    BaseCoBuyingDetailDTO,
+    CoBuyingDetail,
+    QuantityCoBuyingDetail,
+} from '@interface/cobuying';
+
+// export const CoBuyingDetailProjectionExpression = `
+//   id, productName, productLink, ownerName, totalPrice, totalQuantity,
+//   attendeeCount, deadline, type, memo , createdAt,
+//   coBuyingStatus, sharingDateTime, sharingLocation,
+//   ownerQuantity, ownerPrice, totalAttendeePrice, totalAttendeeQuantity,
+//   remainQuantity, unitPrice, remainAttendeeCount, targetAttendeeCount,
+//   perAttendeePrice, attendeeList`;
+
+export function mapToCoBuyingDetail(res: any): CoBuyingDetail {
+    console.log('res.attendeeList : ', res.attendeeList.L[0].M);
+    console.log('res.coBuyingStatus : ', res.coBuyingStatus);
+    const baseDetail: BaseCoBuyingDetailDTO = {
+        id: res.id.S,
+        productName: res.productName.S,
+        productLink: res.productLink?.S,
+        ownerName: res.ownerName.S,
+        totalPrice: Number(res.totalPrice.N),
+        totalQuantity: Number(res.totalQuantity.N),
+        attendeeCount: Number(res.attendeeCount.N),
+        // deadline: res.deadline.S,
+        type: res.type.S as DivideType,
+        memo: res.memo?.S,
+        attendeeList:
+            res.attendeeList?.L?.map(
+                (attendee: any) =>
+                    ({
+                        name: attendee.M.name.S,
+                        totalQuantity: Number(attendee.M.totalQuantity.N || 0),
+                        totalPrice: Number(attendee.M.totalPrice.N || 0),
+                        options: attendee.M.options?.L?.map((item: any) => ({
+                            optionId: Number(item.M.optionId?.N || -1),
+                            name: item.M.name.S,
+                            quantity: Number(item.M.quantity.N || 0),
+                        })) || [],
+                        // 공구물품 수령 체크
+                        isShared: Boolean(attendee.M.isShared?.BOOL) || false,
+                        sharingCheckAt: attendee.M.sharingCheckAt?.S || '0000-00-00T00:00:00',
+                    } as Attendee),
+            ) || [],
+        createdAt: res.createdAt.S,
+        coBuyingStatus: Number(res.coBuyingStatus.N || res.coBuyingStatus.S) as CoBuyingStatus,
+        imageUrl: res.originalImageUrl?.S,
+        sharingDateTime: res.sharingDateTime?.S,
+        sharingLocation: res.sharingLocation?.S,
+        previewPageUrl: res.previewPageUrl?.S,
+    };
+
+    if (baseDetail.type === DivideType.quantity) {
+        return {
+            ...baseDetail,
+            type: DivideType.quantity,
+            totalQuantity: Number(res.totalQuantity.N),
+            ownerQuantity: Number(res.ownerQuantity.N),
+            ownerPrice: Number(res.ownerPrice.N),
+            totalAttendeePrice: Number(res.totalAttendeePrice.N),
+            totalAttendeeQuantity: Number(res.totalAttendeeQuantity.N),
+            remainQuantity: Number(res.remainQuantity.N),
+            unitPrice: Number(res.unitPrice.N),
+            itemOptions: res.itemOptions?.L?.map((item: any) => ({
+                optionId: Number(item.M.optionId?.N || -1),
+                name: item.M.name.S,
+                quantity: Number(item.M.quantity.N || 0),
+                remainQuantity: Number(item.M.remainQuantity?.N || 0),
+            })) || [],
+            ownerOptions: res.ownerOptions?.L?.map((item: any) => ({
+                optionId: Number(item.M.optionId?.N || -1),
+                name: item.M.name.S,
+                quantity: Number(item.M.quantity.N || 0),
+            })) || [],
+        } as QuantityCoBuyingDetail;
+    } else if (baseDetail.type === DivideType.attendee) {
+        return {
+            ...baseDetail,
+            type: DivideType.attendee,
+            remainAttendeeCount: Number(res.remainAttendeeCount.N),
+            totalAttendeePrice: Number(res.totalAttendeePrice.N),
+            targetAttendeeCount: Number(res.targetAttendeeCount.N),
+            ownerQuantity: Number(res.ownerQuantity.N || 0), // 공구장이 구매할 가정산 수량
+            ownerPrice: Number(res.ownerPrice.N || 0), // 공구장이 부담할 가정산 금액
+            perAttendeePrice: Number(res.perAttendeePrice.N),
+            perAttendeeQuantity: Number(res.perAttendeeQuantity.N || 0),
+        } as AttendeeCoBuyingDetail;
+    } else {
+        throw new Error('Invalid type in response');
+    }
+}
