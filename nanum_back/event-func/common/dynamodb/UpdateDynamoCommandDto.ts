@@ -12,6 +12,16 @@ export interface UpdateDynamoCommandDto {
 
 /**
  * 업데이트 쿼리 빌더 클래스  
+ * 예시
+ * const updateUserQuery = new UpdateDynamoQueryBuilder()
+ *  .setTableName('UserTable')
+ *  .setKey({id: '123'})
+ *  .setUpdateExpression('SET #name = :name')
+ *  .setExpressionAttributeNames({'#name': 'name'})
+ *  .setExpressionAttributeValues({':name': 'John Doe'})
+ *  .setConditionExpression('attribute_exists(#name)') // 조건 표현식, #name 속성이 없으면 업데이트 안됨
+ *  .setReturnValues(ReturnValue.ALL_NEW) // 업데이트 후 반환되는 값
+ *  .build();
  */
 export class UpdateDynamoQueryBuilder {
   private dto: UpdateDynamoCommandDto;
