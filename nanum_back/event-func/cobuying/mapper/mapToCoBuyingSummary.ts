@@ -81,8 +81,8 @@ export function mapToCoBuyingEvaluatedKey(req: any): CoBuyingKey {
 
 
 export function mapToCreatedAtIdKey(req: any): CreatedAtIdKey {
+    // console.log('req : ', req);
     return {
-        createdAt: req.createdAt.S,
-        id: req.id.S,
+        createdAtId: req.createdAtId.S
     } as CreatedAtIdKey;
 }

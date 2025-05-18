@@ -5,7 +5,7 @@ import { PageingQueryDto, CoBuyingPageingRes, CreatedAtIdKey } from '@cobuying/d
 import { mapToCoBuyingSummary, mapToCreatedAtIdKey } from '@cobuying/mapper';
 
 export class QueryCoBuyingList {
-  private readonly tableName = 'CoBuying';
+  // private readonly tableName = 'CoBuying';
   private readonly client: DynamoDBDocument;
 
   constructor(client: DynamoDBDocument) {
@@ -15,16 +15,15 @@ export class QueryCoBuyingList {
   async execute(queryDto: PageingQueryDto): Promise<CoBuyingPageingRes> {
     const command = new QueryCommand({
       ...queryDto,
-      TableName: this.tableName,
       ScanIndexForward: queryDto.ScanIndexForward === 'ASC',
     });
 
     const result = await this.client.send(command);
-    
+    // console.log('result : ', result);
     return {
       coBuyingList: mapToCoBuyingSummary(result.Items) as CoBuyingSummary[],
-      lastEvaluatedKey: mapToCreatedAtIdKey(result.LastEvaluatedKey) as CreatedAtIdKey,
+      lastEvaluatedKey: result.LastEvaluatedKey ? mapToCreatedAtIdKey(result.LastEvaluatedKey) as CreatedAtIdKey : undefined,
       count: result.Count || 0,
-    };
+    } as CoBuyingPageingRes;
   }
 } 

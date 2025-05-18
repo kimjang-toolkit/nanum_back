@@ -52,6 +52,7 @@ export const queryCoBuyingListSRV = async (input: CoBuyingQueryParams): Promise<
         const query = new PageingQueryDtoBuilder()
             .setTableName(tableName)
             .setLimit(targetSize - allItems.length) // 남은 개수만큼만 조회
+            .setIndexName("PagenationIndex")
             .setKeyConditionExpression('deletedYN = :deletedYN')
             .setExpressionAttributeValues({
                 ':deletedYN': { S: 'N' },
