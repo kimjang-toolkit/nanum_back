@@ -1,5 +1,6 @@
 import { CoBuyingKey, CoBuyingSummary, CoBuyingDetail } from '@interface/cobuying';
 import { PageingQueryDto, CoBuyingPageingRes } from '@cobuying/dto';
+import { CoBuyingPost } from '@domain/cobuying';
 
 /**
  * CoBuying 데이터 저장소 인터페이스
@@ -10,7 +11,7 @@ export interface ICoBuyingRepository {
   queryCoBuyingList(queryDto: PageingQueryDto): Promise<CoBuyingPageingRes>;
   getCoBuyingById(ownerName: string, id: string): Promise<CoBuyingSummary | null>;
   getCoBuyingDetailById(ownerName: string, id: string): Promise<CoBuyingDetail | null>;
-  createCoBuying(coBuying: CoBuyingSummary): Promise<void>;
+  createCoBuying(coBuying: CoBuyingPost): Promise<void>;
   updateCoBuying(key: CoBuyingKey, updateData: Partial<CoBuyingSummary>): Promise<void>;
   deleteCoBuying(key: CoBuyingKey): Promise<void>;
 } 

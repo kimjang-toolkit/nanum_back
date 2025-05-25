@@ -5,6 +5,7 @@ import { ICoBuyingRepository } from './ICoBuyingRepository';
 import { DynamoDBClientFactory } from '@common/dynamodb';
 import { QueryCoBuyingList, GetCoBuyingSummaryByOnwerNameAndId, GetCoBuyingDetailByOnwerNameAndId } from './query';
 import { CreateCoBuying, UpdateCoBuying, DeleteCoBuying } from './command';
+import { CoBuyingPost } from '@domain/cobuying';
 
 /**
  * DynamoDB 구현체를 사용하는 CoBuying 데이터 저장소 어댑터
@@ -39,7 +40,7 @@ export class CoBuyingDynamoDBAdapter implements ICoBuyingRepository {
     return this.getDetailHandler.execute(ownerName, id);
   }
 
-  async createCoBuying(coBuying: CoBuyingSummary): Promise<void> {
+  async createCoBuying(coBuying: CoBuyingPost): Promise<void> {
     await this.createHandler.execute(coBuying);
   }
 

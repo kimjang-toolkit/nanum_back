@@ -1,5 +1,5 @@
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
-import { CoBuyingSummary } from '@interface/cobuying';
+import { CoBuyingPost } from '@domain/cobuying';
 
 export class CreateCoBuying {
   private readonly tableName = 'CoBuying';
@@ -9,7 +9,7 @@ export class CreateCoBuying {
     this.client = client;
   }
 
-  async execute(coBuying: CoBuyingSummary): Promise<void> {
+  async execute(coBuying: CoBuyingPost): Promise<void> {
     await this.client.put({
       TableName: this.tableName,
       Item: coBuying,

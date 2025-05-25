@@ -4,13 +4,14 @@ import { SocialType } from "@domain/user";
 import { SaveNewUserQuery, SaveUserRes, UserMasterRes } from "@interface/user";
 import { saveNewUserKaKaoSRV } from "@user/service/saveNewUserKaKaoSRV";
 import { saveNewUserLocalSRV } from "@user/service/saveNewUserLocalSRV";
+import { SaveLocalUserService } from "@user/service/saveUser/saveLocalUserSRV";
 import { APIGatewayProxyEventV2, APIGatewayProxyResult } from "aws-lambda";
 
 /**
  * 신규 고객 정보 저장
  * 
  * Post
- * {domain}/api/user/save
+ * {domain}/api/user
  * 
  * @param event
  * @returns
@@ -27,7 +28,8 @@ export const saveNewUserCTL = async (event: APIGatewayProxyEventV2): Promise<API
   try{
     if(query.socialType === SocialType.LOCAL){
       // 일반 회원가입 진행, 단순 입력 값 저장 로직타기
-      userMasterRes = await saveNewUserLocalSRV(query);
+      const service = new SaveLocalUserService();
+      userMasterRes = await service.saveUser(query);
     } else if(query.socialType === SocialType.KAKAO){
       // 소셜 회원가입 진행, 소셜 로그인 정보 저장 로직 타기
       userMasterRes = await saveNewUserKaKaoSRV(query);

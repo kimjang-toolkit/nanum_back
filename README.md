@@ -18,7 +18,15 @@
 
 1. 클라이언트가 공구글 생성을 요청
 2. 공구서비스가 CREADTE_PENDING 상태로 공구글을 생성 (Semantic lock)
-3. 
+  
+### 도메인
+
+- cobuying : 공구글 원장을 관리하는 서비스
+- manage : 공구글 운영 관리 서비스
+- product : 상품, 태그 관리 서비스
+- user : 유저, 인증 관리 서비스
+- common : CTL 출력 DTO 관리, Time 관리 등
+- connect : AI, DB, Facebook, Lambda, S3 연결 클랑이언트 생성
 
 ## CICD 구성
 
