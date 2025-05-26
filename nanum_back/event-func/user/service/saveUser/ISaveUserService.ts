@@ -1,4 +1,4 @@
-import { SaveNewUserQuery, UserMasterRes } from "@interface/user";
+import { SaveNewUserQuery, SaveUserResDto } from "@interface/user";
 
 /**
  * 사용자 저장 서비스 인터페이스
@@ -10,5 +10,5 @@ export interface ISaveUserService {
    * @param query 사용자 저장에 필요한 정보
    * @returns 저장된 사용자 정보
    */
-  saveUser(query: SaveNewUserQuery): Promise<UserMasterRes>;
+  saveUser(query: SaveNewUserQuery): Promise<SaveUserResDto>;
 } 

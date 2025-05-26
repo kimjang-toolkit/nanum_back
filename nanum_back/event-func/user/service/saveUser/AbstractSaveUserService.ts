@@ -1,10 +1,11 @@
 import { UserMaster } from "@domain/user";
-import { SaveNewUserQuery, UserMasterRes } from "@interface/user";
+import { SaveNewUserQuery, SaveUserResDto } from "@interface/user";
 import { IUserRepository } from "@user/outbound/dao/IUserRepository";
 import { ISaveUserService } from "@user/service/saveUser/ISaveUserService";
-import { SaveUserQueryDtoBuilder } from "@user/dto/SaveUserQueryDto";
 import { hashPassword } from "@user/service/authEncrptorSRV";
 import { UserDynamoDBAdapter } from "@user/outbound/dao/UserDynamoDBAdapter";
+import { APIERROR } from "@common/responseType";
+import { QueryDynamoDBCommandFactory } from "@common/dynamodb";
 
 /**
  * 사용자 저장 서비스 추상 클래스
@@ -23,24 +24,36 @@ export abstract class AbstractSaveUserService implements ISaveUserService {
    * 사용자 저장 메서드
    * 템플릿 메서드 패턴을 사용하여 공통 로직 구현
    */
-  async saveUser(query: SaveNewUserQuery): Promise<UserMasterRes> {
-    // 1. 사용자 존재 여부 확인
-    await this.checkUserExists(query);
+  async saveUser(query: SaveNewUserQuery): Promise<SaveUserResDto> {
+    let encryptPassword: string;
+    let userMaster: UserMaster;
 
-    // 2. 비밀번호 암호화
-    const encryptPassword = await this.encryptPassword(query.password);
+    try{
+      // 1. 사용자 존재 여부 확인
+      await this.checkUserExists(query);
+    } catch(error){
+      throw new APIERROR(400, (error as Error).message);
+    }
 
-    // 2. UserMaster 객체 생성
-    const userMaster = await this.createUserMaster(query, encryptPassword);
+    try{
+      // 2. 비밀번호 암호화
+      encryptPassword = await this.encryptPassword(query.password);
+    } catch(error){
+      throw new APIERROR(500, (error as Error).message);
+    }
 
-    // 3. 저장 쿼리 생성
-    const saveQuery = new SaveUserQueryDtoBuilder()
-      .setTableName(this.tableName)
-      .setItem(userMaster)
-      .build();
+    try{
+      // 3. UserMaster 객체 생성
+      userMaster = await this.createUserMaster(query, encryptPassword);
+    } catch(error){
+      throw new APIERROR(500, (error as Error).message);
+    }
 
-    // 4. 저장 실행
-    await this.repository.saveUser(saveQuery);
+    try{
+      await this.repository.saveUser(userMaster, this.tableName);
+    } catch(error){
+      throw new APIERROR(500, (error as Error).message);
+    }
 
     // 5. 응답 생성
     return this.createResponse(userMaster);
@@ -50,8 +63,9 @@ export abstract class AbstractSaveUserService implements ISaveUserService {
    * 사용자 존재 여부 확인
    * 하위 클래스에서 구현
    */
-  protected checkUserExists(query: SaveNewUserQuery): Promise<void> {
-    throw new Error("Method not implemented.");
+  protected async checkUserExists(query: SaveNewUserQuery): Promise<void> {
+    
+    await this.repository.queryUserExistsById(query.id, this.tableName);
   }
 
   /**
@@ -73,8 +87,9 @@ export abstract class AbstractSaveUserService implements ISaveUserService {
    * 응답 객체 생성
    * 공통 응답 형식
    */
-  protected createResponse(userMaster: UserMaster): UserMasterRes {
+  protected createResponse(userMaster: UserMaster): SaveUserResDto {
     return {
+      statusCode: 200,
       id: userMaster.id,
       name: userMaster.name,
       email: userMaster.email ?? "",

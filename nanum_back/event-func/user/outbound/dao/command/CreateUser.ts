@@ -1,6 +1,7 @@
 import { DynamoDBDocument, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { CreateDynamoDBCommandDto, CreateDynamoDBCommandFactory } from '@common/dynamodb';
 import { APIERROR } from '@common/responseType';
-import { SaveUserQueryDto } from '@user/dto/SaveUserQueryDto';
+import { UserMaster } from '@domain/user';
 
 export class CreateUser {
   private readonly client: DynamoDBDocument;
@@ -9,10 +10,15 @@ export class CreateUser {
     this.client = client;
   }
 
-  async execute(saveUserQuery: SaveUserQueryDto): Promise<void> {
+  async execute(userMaster: UserMaster, tableName: string): Promise<void> {
+    // 4. 저장 실행
+    const saveQuery = new CreateDynamoDBCommandFactory<UserMaster>()
+      .setTableName(tableName)
+      .setItem(userMaster)
+      .build();
     try{
       const command = new PutCommand({
-        ...saveUserQuery,
+        ...saveQuery,
       });
       await this.client.send(command);
     } catch (error) {
