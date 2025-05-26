@@ -12,19 +12,21 @@ export class UserDynamoDBAdapter implements IUserRepository {
   private readonly client: DynamoDBDocument;
   private readonly createUserHandler: CreateUser;
   private readonly CheckUserByIdHandler: CheckUserById;
+  private readonly tableName: string;
 
   constructor() {
     this.client = DynamoDBClientFactory.getInstance();
     this.createUserHandler = new CreateUser(this.client);
     this.CheckUserByIdHandler = new CheckUserById(this.client);
+    this.tableName = `${process.env.DEPLOYSTAGE}-UserTable`;
   }
 
-  async saveUser(userMaster: UserMaster, tableName: string): Promise<void> {
-    await this.createUserHandler.execute(userMaster, tableName);
+  async saveUser(userMaster: UserMaster): Promise<void> {
+    await this.createUserHandler.execute(userMaster, this.tableName);
   }
 
-  async queryUserExistsById(id: string, tableName: string): Promise<void> {
-    await this.CheckUserByIdHandler.execute(id, tableName);
+  async queryUserExistsById(id: string): Promise<void> {
+    await this.CheckUserByIdHandler.execute(id, this.tableName);
   }
 
 } 

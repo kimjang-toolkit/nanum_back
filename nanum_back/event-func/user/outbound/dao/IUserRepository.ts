@@ -6,6 +6,6 @@ import { UserMaster } from "@domain/user";
  * Adapter 패턴을 사용하여 다양한 DB 구현체를 사용할 수 있도록 함. 현재는 DynamoDB 구현체만 있음.
  */
 export interface IUserRepository {
-  saveUser(userMaster: UserMaster, tableName: string): Promise<void>;
-  queryUserExistsById(id: string, tableName: string): Promise<void>;
+  saveUser(userMaster: UserMaster): Promise<void>;
+  queryUserExistsById(id: string): Promise<void>;
 } 

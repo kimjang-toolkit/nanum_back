@@ -13,11 +13,9 @@ import { QueryDynamoDBCommandFactory } from "@common/dynamodb";
  */
 export abstract class AbstractSaveUserService implements ISaveUserService {
   protected readonly repository: IUserRepository;
-  protected readonly tableName: string;
 
   constructor() {
     this.repository = new UserDynamoDBAdapter();
-    this.tableName = `${process.env.DEPLOYSTAGE}-User`;
   }
 
   /**
@@ -50,7 +48,7 @@ export abstract class AbstractSaveUserService implements ISaveUserService {
     }
 
     try{
-      await this.repository.saveUser(userMaster, this.tableName);
+      await this.repository.saveUser(userMaster);
     } catch(error){
       throw new APIERROR(500, (error as Error).message);
     }
@@ -65,7 +63,7 @@ export abstract class AbstractSaveUserService implements ISaveUserService {
    */
   protected async checkUserExists(query: SaveNewUserQuery): Promise<void> {
     
-    await this.repository.queryUserExistsById(query.id, this.tableName);
+    await this.repository.queryUserExistsById(query.id);
   }
 
   /**

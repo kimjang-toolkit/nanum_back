@@ -39,7 +39,7 @@ export const saveNewUserCTL = async (event: APIGatewayProxyEventV2): Promise<API
     }
     console.log("userMasterRes 생성 완료");
 
-    const lamdbdaReturnDto = getLambdaReturnDto(200, userMasterRes, event);
+    const lamdbdaReturnDto = new LambdaReturnDto(200, userMasterRes, event);
     return lamdbdaReturnDto.getLambdaReturnDto();
   } catch (error) {
     return new LambdaReturnDto(500, { message: (error as Error).message }, event).getLambdaReturnDto();
