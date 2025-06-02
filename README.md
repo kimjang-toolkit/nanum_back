@@ -9,6 +9,8 @@
   - consumer는 SQS, SNS에서 발생한 요청을 받아드리는 어댑터
 - 외부 서비스를 호출하는 Outbound Adapter(Publisher, RestAPI, Repository, ...)
 - 비즈니스 로직이 있는 Application Layer(Lambda)
+  - Service 클래슨는 Outbound의 구현체에 의존하면 안되고, 인터페이스(어댑터)만을 의존해야한다!
+  - 추후 구현제를 바꾸던가할 때 도움이 되도록!!
 - 서비스 간 이벤트 전달하는 메시지 브로커(Kafka, SQS, SNS, ...)
 - 분산 환경에서 ACD 트랜잭션을 구현하는 Saga (오케스트레이션 방식은 러닝커브가 있어서 코레오그래피 방식으로 구현)
   - 각 서비스의 SagaManager가 보상 가능 트랜잭션, 피봇 트랜잭션, 재시도 가능 트랜잭션 순서를 관리함.

@@ -5,7 +5,6 @@ import { ISaveUserService } from "@user/service/saveUser/ISaveUserService";
 import { hashPassword } from "@user/service/authEncrptorSRV";
 import { UserDynamoDBAdapter } from "@user/outbound/dao/UserDynamoDBAdapter";
 import { APIERROR } from "@common/responseType";
-import { QueryDynamoDBCommandFactory } from "@common/dynamodb";
 
 /**
  * 사용자 저장 서비스 추상 클래스
